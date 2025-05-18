@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  productionable_id: 1
+  productionable_type: MyString
+  company_id: 1
+
+two:
+  productionable_id: 1
+  productionable_type: MyString
+  company_id: 1

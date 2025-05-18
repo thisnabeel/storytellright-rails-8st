@@ -1,0 +1,26 @@
+<style>
+
+	/**/
+	.story-acts {
+		display: none;
+	}
+	
+</style>
+
+<% if m.check("climax") %>
+	<br>
+	<div class="fa fa-expand text-center toggle-acts"></div>
+	<ol class="story-acts" style="text-align: left;">
+		<li>
+			<b>Intro:</b> <span><%= m.check("whose-hell").try(:html_safe) %></span>
+		</li>
+		<li>
+			<b>Body:</b> <span><%= m.check("plot-curtain").try(:html_safe) %></span>
+		</li>
+		<li>
+			<b style="border-bottom: 2px solid #D2C628;">Conclusion:</b> 
+			<span><%= m.check("red-3").try(:html_safe) %></span>
+			<span><%= m.check("climax").try(:html_safe) %></span>
+		</li>
+	</ol>
+<% end %>

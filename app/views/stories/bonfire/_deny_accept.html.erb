@@ -1,0 +1,101 @@
+<style>
+	.bonfire-view section {
+		padding: 10px;
+	}
+	.back-red {
+		background: #c23616;
+		color: #fff;
+	}
+
+	.back-red .fr-view {
+		color: #ffda6b;
+	}
+
+	.back-green {
+    	background: #b0ffa4;
+	}
+
+	.back-blue {
+		background: #1c84bb;
+    	color: #fff;
+    	border: 8px dashed #00263b
+	}
+
+	.back-blue .fr-view {
+    	color: #fff;
+	}
+
+	.froalize.plot-curtain {
+		/* border-top: 2px dashed #ff6b00; */
+		/* margin-top: 20px; */
+	}
+
+</style>
+
+	
+	<section class="back-red hidden">
+		<p class="tip-intro">Sometimes, Because... <span class="fa fa-pencil abstractify hide-guest"></span></p>
+		<hr>
+		<div class="message-form froalize save-this" data-save-code="bonfire-deny-accept-2" fetch="hellish-1">
+			<textarea>
+				<%= @story.story_details["bonfire-deny-accept-2"].try(:html_safe) if @story.story_details.present?  %>
+			</textarea>
+		</div>
+	</section>
+
+	<section class="back-red" fetch="hellish-2">
+		<p class="tip-intro">You will think that...<span class="fa fa-pencil abstractify hide-guest"></span></p>
+		<hr>
+		<div class="message-form froalize save-this" data-save-code="bonfire-deny-accept-1">
+			<textarea>
+				<%= @story.story_details["bonfire-deny-accept-1"].try(:html_safe) if @story.story_details.present?  %>
+			</textarea>
+		</div>
+	</section>
+	
+	<section class="back-blue">
+		<p class="tip-intro">This belief is dangerous, because in reality... <span class="fa fa-pencil abstractify hide-guest"></span>
+		</p>
+		<hr>
+		<div class="message-form froalize save-this" data-save-code="armature" fetch="armature">
+			<textarea>
+				<%= @story.story_details["armature"].html_safe if @story.story_details.present?  %>
+			</textarea>
+
+			
+		</div>
+	</section>
+	
+<%
+=begin %>
+	<div class="row">
+		<div class="col-md-6 col-lg-6">
+			<section class="back-green">
+				<p class="tip-intro">& if you realize that in time,...<span class="fa fa-pencil abstractify hide-guest"></span></p>
+				<hr>
+				<div class="message-form froalize save-this" data-save-code="bonfire-deny-accept-4" fetch="victory">
+					<textarea>
+						<%= @story.story_details["bonfire-deny-accept-4"].try(:html_safe) if @story.story_details.present?  %>
+					</textarea>
+				</div>
+			</section>	
+		</div>
+		<div class="col-md-6 col-lg-6">
+			<section class="back-red">
+				<p class="tip-intro">But if you don't realize that in time,...<span class="fa fa-pencil abstractify hide-guest"></span></p>
+				<hr>
+				<div class="message-form froalize save-this" data-save-code="bonfire-deny-accept-5" fetch="hellish-3">
+					<textarea>
+						<%= @story.story_details["bonfire-deny-accept-5"].try(:html_safe) if @story.story_details.present?  %>
+					</textarea>
+				</div>
+			</section>
+		</div>
+	</div>
+<%
+=end %>
+
+	
+	<!-- <hr> -->
+
+<!-- 	<h3>So... will you realize it in time? Especially since...</h3> -->

@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Title:</strong>
+  <%= @essay.title %>
+</p>
+
+<p>
+  <strong>Body:</strong>
+  <%= @essay.body %>
+</p>
+
+<p>
+  <strong>Essay:</strong>
+  <%= @essay.essay %>
+</p>
+
+<p>
+  <strong>Position:</strong>
+  <%= @essay.position %>
+</p>
+
+<%= link_to 'Edit', edit_essay_path(@essay) %> |
+<%= link_to 'Back', essays_path %>

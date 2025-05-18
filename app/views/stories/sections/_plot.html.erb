@@ -1,0 +1,149 @@
+<style>
+
+	.highlight-blue {
+		padding: 20px;
+    	color: #1C84BB;
+	}
+
+	.proof-page-header {
+		font-size: 24px;
+	}
+
+
+	/**/
+
+	.proof {
+		position: relative;
+		padding: 4px;
+		border-bottom: 1px solid #ccc;
+    	border-radius: 10px;
+	}
+
+	.proof input {
+		background: transparent;
+    	border: 0;
+    	border-bottom: 1px solid #1d83bb;
+    	font-size: 20px;
+
+	}
+
+	.proof .remove-proof {
+	    position: absolute;
+	    left: -16px;
+	    top: 8px;
+	    display: none;
+	    width: 34px;
+	}
+
+	.proof:hover .remove-proof {
+		display: block;
+	}
+
+
+	.proofs_list {
+		padding: 30px;
+	}
+	/**/
+
+	.from-hell {
+		background: #fe3839;
+    	color: #fff;
+    	padding: 20px;
+	}
+
+	.now-proofs {
+		color: #1c84bb;
+	    padding: 40px;
+    	font-size: 34px;
+    	text-align: center;
+	}
+
+	.for-climax {
+		background: #ede57b;
+    	padding: 20px;
+	}
+
+	.proof-page-p {
+    	margin-bottom: 0;
+	}
+
+	/**/
+	.pbs [put="plot-curtain"],
+	.pbs [put="red-3"] {
+		background: #940f10;
+    	color: #fff;
+    	padding: 10px;
+    	border-radius: 10px;
+		display: block;
+	}
+
+	.pbs [put="proofs"] {
+		background: #156a94;
+    	color: #fff;
+    	padding: 10px;
+    	border-radius: 10px;
+		display: block;
+	}
+
+	.pbs [put="climax"] {
+		margin-top: 10px;
+		background: #EDE57B;
+    	padding: 10px;
+    	border-radius: 10px;
+		display: block;
+	}
+
+	.blue-point {
+		color: #1c84bb;
+		padding: 20px;
+		text-align: center;
+		border: 1px dashed;
+	}
+
+	.hdr .showdown {
+		max-width: 40px;
+		top: -10px;
+		right: -47px;
+		position: absolute;
+		transform: rotate(20deg);
+	}
+
+	.pink-point {
+    background: #ffdaf2;
+	padding: 20px;
+    text-align: left;
+    border: 1px dashed;
+	}
+
+</style>
+
+<article class="plot" key="plot">
+
+
+	<div put="whose-hell" class="hellish-2" style="padding: 20px;"></div>
+
+	<br>
+	<small class='hdr'> Insert Flawed Belief Test: <img src="<%= asset_path('uhoh.png') %>" alt="" class="uhoh"></small>
+	<div class="message-form froalize save-this plot-curtain" fetch="plot-curtain" data-save-code="plot-curtain">
+		
+		<textarea>
+			<%= @story.story_details.try(:[], "plot-curtain").try(:html_safe) if @story.story_details.present?  %>
+		</textarea>
+	</div>
+    <p style="background: #7e0f97; color: #fff; padding: 20px; font-size: 20px;"><i class="fa fa-arrow-up"></i> <i class="fa fa-arrow-right"></i> <span put="during"></span></p>
+
+
+	<p style="background: #7e0f97; color: #fff; padding: 20px; font-size: 20px;"><i class="fa fa-arrow-down"></i> <i class="fa fa-arrow-right"></i> <span put="during-2"></span></p>
+    
+    <small class='hdr'> Insert Armature Test Here: <img class="showdown" src="<%= asset_path('final_showdown.png') %>" alt="" class="uhoh"></small>
+    <div class="message-form froalize save-this red-3" fetch="red-3" data-save-code="red-3">
+		
+		<textarea>
+			<%= @story.story_details.try(:[], "red-3").try(:html_safe) if @story.story_details.present?  %>
+		</textarea>
+	</div>
+
+	
+	<div class="for-climax" put="climax" style="font-size: 24px;"></div>
+
+</article>

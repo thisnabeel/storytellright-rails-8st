@@ -1,0 +1,219 @@
+<style>
+
+	.highlight-blue {
+		padding: 20px;
+    	color: #1C84BB;
+	}
+
+	.proof-page-header {
+		font-size: 24px;
+	}
+
+
+	/**/
+
+	.proof {
+		position: relative;
+		padding: 4px;
+		border-bottom: 1px solid #ccc;
+    	border-radius: 10px;
+	}
+
+	.proof input {
+		background: transparent;
+    	border: 0;
+    	border-bottom: 1px solid #1d83bb;
+    	font-size: 20px;
+
+	}
+
+	.proof .remove-proof {
+	    position: absolute;
+	    left: -16px;
+	    top: 8px;
+	    display: none;
+	    width: 34px;
+	}
+
+	.proof:hover .remove-proof {
+		display: block;
+	}
+
+
+	.proofs_list {
+		padding: 30px;
+	}
+	/**/
+
+	.from-hell {
+		background: #fe3839;
+    	color: #fff;
+    	padding: 20px;
+	}
+
+	.now-proofs {
+		color: #1c84bb;
+	    padding: 40px;
+    	font-size: 34px;
+    	text-align: center;
+	}
+
+	.for-climax {
+		background: #ede57b;
+    	padding: 20px;
+	}
+
+	.proof-page-p {
+    	margin-bottom: 0;
+	}
+
+	/**/
+	.pbs [put="plot-curtain"],
+	.pbs [put="red-3"] {
+		background: #940f10;
+    	color: #fff;
+    	padding: 10px;
+    	border-radius: 10px;
+		display: block;
+	}
+
+	.pbs [put="proofs"] {
+		background: #156a94;
+    	color: #fff;
+    	padding: 10px;
+    	border-radius: 10px;
+		display: block;
+	}
+
+	.pbs [put="climax"] {
+		margin-top: 10px;
+		background: #EDE57B;
+    	padding: 10px;
+    	border-radius: 10px;
+		display: block;
+	}
+
+	.blue-point {
+		color: #1c84bb;
+		padding: 20px;
+		text-align: center;
+		border: 1px dashed;
+	}
+
+	.hdr .showdown {
+		max-width: 40px;
+		top: -10px;
+		right: -47px;
+		position: absolute;
+		transform: rotate(20deg);
+	}
+
+	.pink-point {
+    background: #ffdaf2;
+	padding: 20px;
+    text-align: left;
+    border: 1px dashed;
+	}
+
+</style>
+
+<article class="proofs" key="proofs">
+
+
+
+	
+
+	<div put="whose-hell" class="hellish-2" style="padding: 20px;"></div>
+
+	<div style="padding: 20px;">
+		<h4 style="padding: 20px; margin: 0;" class="text-center">Act II <br>(Burning Wisdom):</h4>
+
+		<small style="padding: 10px; display: inline-block; margin-bottom: 10px; background: #000; color: #fff;"><i class="fa fa-eye-slash"></i> Impact of flawed belief:</small>
+		<div class="message-form froalize save-this during" fetch="during" data-save-code="during">
+			<textarea>
+				<%= @story.story_details.try(:[], "during").try(:html_safe) if @story.story_details.present?  %>
+			</textarea>
+		</div>
+
+		<%# !!!!!!!!! %>
+		<!-- MIDPOINT -->
+		<%# !!!!!!!! %>
+		
+		<hr>
+		<small style="padding: 10px; display: inline-block; margin-bottom: 10px; background: #000; color: #fff;"><i class="fa fa-eye"></i> Wisdom In The Air:</small>
+		<div class="message-form froalize save-this during" fetch="during-2" data-save-code="during-2">
+				<textarea>
+					<%= @story.story_details.try(:[], "during-2").try(:html_safe) if @story.story_details.present?  %>
+				</textarea>
+		</div>
+
+	</div>
+
+	
+	<div class="for-climax" put="climax" style="font-size: 24px;"></div>
+
+</article>
+
+<script>
+	$("body").on("click", ".add-proof", function(){
+		li = $(".proofs_list")
+		li.append(
+			`
+			<article class="proof">
+				<span class="fa fa-times remove-proof"></span>
+				<textarea class="froalize"></textarea>
+			</article>`
+		)
+		
+		$(".proof input").typeWatch( options );
+		
+		makeFroala()
+		saveStory()
+	})	
+
+	$("body").on("click", ".remove-proof", function(){
+		li = $(this).closest(".proof")
+		li.remove()
+		saveStory()
+	})
+
+	function saveProofs(){
+		proofs = []
+		$(".proofs_list .proof").each(function(){
+
+			
+			
+			val = $(this).find(".fr-view").html()
+
+			hash = {
+				proof: val,
+			}
+
+			proofs.push(hash)
+		})
+		return proofs
+	}
+		
+
+	// 
+	<% if @story.story_details.try(:[], "proofs").present? %>
+		
+		proofs = <%= @story.story_details["proofs"].to_json.html_safe %>;
+		console.log(proofs)
+		$.each(proofs, function(index, item){
+			title = item["proof"]
+
+
+			$(".proofs_list").append(`
+				<article class="proof">
+					<span class="fa fa-times remove-proof"></span>
+					<textarea class="froalize">`+title+`</textarea>
+				</article>`)
+		})
+
+		makeFroala()
+
+		$(".proofs input").typeWatch( options );
+
+	<% end %>
+</script>

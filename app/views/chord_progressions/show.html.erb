@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Title:</strong>
+  <%= @chord_progression.title %>
+</p>
+
+<p>
+  <strong>Progression:</strong>
+  <%= @chord_progression.progression %>
+</p>
+
+<p>
+  <strong>Tags:</strong>
+  <%= @chord_progression.tags %>
+</p>
+
+<p>
+  <strong>Scale:</strong>
+  <%= @chord_progression.scale %>
+</p>
+
+<%= link_to 'Edit', edit_chord_progression_path(@chord_progression) %> |
+<%= link_to 'Back', chord_progressions_path %>

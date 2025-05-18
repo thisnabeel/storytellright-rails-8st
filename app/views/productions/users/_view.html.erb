@@ -1,0 +1,10 @@
+<div class="production-users clean-list">
+  <li><%= @production.company.user.name %></li>
+  <% @production.company.users.where.not(id: @production.company.user.id).each do |user| %>
+    <li data-id="<%= user.id %>">
+      <%# <i class="fa fa-times remove-user"></i> %>
+      <%= user.name || user.email %>
+    </li>
+  <% end %>
+  <%# <li class="add-user"><i class="fa fa-plus"></i></li> %>
+</div>

@@ -1,0 +1,250 @@
+<style>
+    .question-head {
+        padding: 10px 0;
+        display: block;
+        /* font-size: 24px; */
+        /* border-left: 12px dashed #ffdb98; */
+    }
+    .questions > article {
+        padding: 20px 0;
+    }
+
+    .questions .answer {
+        /* display: none; */
+    }
+
+    .done .nav-link {
+        background: #f0ffdf !important;
+    }
+
+    #questions article {
+        /* border: 1px dashed #ccc; */
+        /* padding: 20px; */
+        position: relative;
+    }
+
+    #questions article .handle {
+        position: absolute;
+        left: -20px;
+        top: 0;
+    }
+
+    #questions article .remove-question {
+        position: absolute;
+        left: -40px;
+        top: 0;
+    }
+
+    .answer {
+        display: none;
+    }
+    article .answer:first-child {
+        display: block;
+    }
+</style>
+
+<% if @admin %>
+<h3 admin="true">Questions: <div class="fa fa-plus add-question"></div></h3>
+<% end %>
+
+<section class="questions" id="questions">
+    <% @discussion.questions.order("position ASC").try(:each) do |question| %>
+        <%= render "discussions/question", question: question, discussion: @discussion %>
+    <% end %>
+</section>
+
+<script>
+
+$("body").on("click", ".show-answer", function(){
+
+    user_id = $(this).attr("user-id")
+    
+    if ($(".jumbotron").attr("unlocked") == "false") {
+
+        if (user_id != "<%= current_user.id %>") {
+            Swal.fire({
+                icon: 'error',
+                title: "Not Yet!",
+                text: "You can't view other's entries until Unlock Time!",
+            })
+        }
+    } else {
+        article = $(this).closest('article')
+        article.find(".answer").hide()
+        article.find('.answer[user-id="'+user_id+'"]').show()
+
+        article.find(".nav-link").removeClass("active")
+        $(this).find(".nav-link").addClass("active")
+    }
+})
+
+
+$("body").on("click", ".add-question", function(){
+    $.ajax({
+        type: "POST",
+        dataType: "json",
+        url: '/discussion_questions',
+        contentType: 'application/json',
+        data: JSON.stringify({ 
+          body: "Untitled",
+          discussion_id: "<%= @discussion.id %>",
+          position: $(".questions > article").length,
+          _method:'post' 
+        }),
+        success: function(res){
+          console.log(res)
+          $.notify("Saved!", "success");
+          $(".questions").append(res["html"])
+          makeFroala()
+        }
+    })
+})
+
+function saveQuestions() {
+    array = []
+    $(".questions > article").each(function(){
+        hash = {
+            id: $(this).attr("data-id"),
+            body: $(this).find(".question-head .fr-view").html(),
+            icon: "",
+            color: "",
+            answers: {}
+        }
+        array.push(hash)
+    })
+    console.log(array)
+    return array
+}
+
+function create_UUID(){
+    var dt = new Date().getTime();
+    var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = (dt + Math.random()*16)%16 | 0;
+        dt = Math.floor(dt/16);
+        return (c=='x' ? r :(r&0x3|0x8)).toString(16);
+    });
+    return uuid;
+}
+
+
+  makeEditor()
+
+  function makeEditor(){
+    $("[contentEditable]").contentEdit(function(val, el){
+        // saveQuestions()
+    })
+  }
+  
+  makeFroala()
+  function makeFroala(){
+	$(".froalize").froalaEditor({
+		key: froalaKey,
+		toolbarInline: true,
+		charCounterCount: false,
+		saveInterval: 500,
+	})
+	.on('froalaEditor.save.before', function (e, editor) {
+    // Before save request is made.
+    // saveStory()
+        id = $(this).attr("data-id")
+        
+
+        if ($(this).hasClass("answer")) {
+            answer = $(this).find(".fr-view").html()
+            user_id = $(this).attr('user-id')
+            $.ajax({
+                type: "POST",
+                dataType: "json",
+                url: '/discussion_answers',
+                contentType: 'application/json',
+                data: JSON.stringify({ 
+                    body: answer,
+                    discussion_question_id: id,
+                    user_id: user_id,
+                    _method:'post' 
+                }),
+                success: function(res){
+                    console.log(res)
+                    $.notify("Saved!", "success");
+                }
+            })
+        } else {
+            $.ajax({
+                type: "PUT",
+                dataType: "json",
+                url: '/discussion_questions/'+id,
+                contentType: 'application/json',
+                data: JSON.stringify({ 
+                    body: $(this).find(".fr-view").html(),
+                    _method:'post' 
+                }),
+                success: function(res){
+                    console.log(res)
+                    $.notify("Saved!", "success");
+                }
+            })
+
+        }
+
+	})
+	.on('froalaEditor.save.after', function (e, editor, response) {
+	// After successfully save request.
+	})
+	.on('froalaEditor.save.error', function (e, editor, error) {
+	// Do something here.
+	});
+  }
+console.log(create_UUID());
+makeSortableQuestions()
+function makeSortableQuestions(){
+    new Sortable(document.getElementById('questions'), {
+        handle: '.handle', // handle's class
+        animation: 150,
+        onUpdate: function (/**Event*/evt) {
+            // same properties as onEnd
+            $("#questions article").each(function(index, item){
+                $(this).attr("position", index)
+                $.ajax({
+                    type: "PUT",
+                    dataType: "json",
+                    url: '/discussion_questions/'+$(this).attr("data-id"),
+                    contentType: 'application/json',
+                    data: JSON.stringify({ 
+                        position: index,
+                        _method:'post' 
+                    }),
+                    success: function(res){
+                        console.log(res)
+                        $.notify("Saved!", "success");
+                    }
+                })
+
+            })
+        },
+    });
+}
+
+$("body").on("click", ".remove-question", function(){
+    var r = confirm("Remove Question? (No Undo)");
+    if (r == true) {
+        article = $(this).closest("article")
+        id = article.attr('data-id')
+        $.ajax({
+            type: "DELETE",
+            dataType: "json",
+            url: '/discussion_questions/'+id,
+            contentType: 'application/json',
+            data: JSON.stringify({ 
+                _method:'post' 
+            }),
+            success: function(){
+                article.remove()
+                $.notify("Saved!", "success");
+            }
+        })
+    } else {
+    }
+
+})
+
+</script>

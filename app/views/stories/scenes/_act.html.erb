@@ -1,0 +1,32 @@
+<% if @story.story_details.present? && @story.story_details["act-#{act}-scenes"].present? %>
+    <% @story.story_details["act-#{act}-scenes"].each_with_index do |s, index| %>
+        <li
+            <% if s["script"].present? %>
+                data-script="<%= s["script"] %>"
+            <% end %>
+
+            emotion="<%= s["emotion"].present? ? s["emotion"] : 1 %>"
+        >
+            <span class="remove">
+                <i class="fa fa-times"></i>
+            </span>
+            <span class="scene-dragger">
+                <i class="fa fa-bars"></i>
+            </span>
+            <span class="draw-scene" data-id="<%= index %>">
+                <i class="fa fa-camera"></i>
+            </span>
+            <span class="write-scene" data-id="<%= index %>">
+                <i class="fa fa-pencil"></i>
+            </span>
+            <span class="play-timestamp"><i class="fa fa-play"></i></span>
+            <input type="text" class="form-control timestamp" value="<%= s["timestamp"] %>">
+            <article class="body">
+                <%= s["body"].try(:html_safe) %>
+            </article>
+
+            <input type="range" min="1" max="2" value="<%= s["emotion"].present? ? s["emotion"] : 1 %>" class="emotion-slider">
+        </li>
+    <% end %>
+<% else %>
+<% end %>

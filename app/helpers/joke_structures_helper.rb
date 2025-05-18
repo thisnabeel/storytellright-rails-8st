@@ -1,0 +1,2 @@
+module JokeStructuresHelper
+end

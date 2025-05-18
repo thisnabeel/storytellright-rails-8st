@@ -1,0 +1,244 @@
+<style>
+	@import url('https://fonts.googleapis.com/css?family=Lato');
+
+  #article {
+    /* background: #fff; */
+    border-radius: 10px;
+    padding: 4em;
+    position: relative;
+  }
+
+  .article-title {
+    font-weight: 900;
+    font-size: 3.125em;
+    line-height: 1.12;
+    margin: 0px 0px 15px;
+    /* color: rgb(0, 0, 0); */
+  }
+
+  .change-file {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+  }
+
+  .fr-view {
+    font-family: 'Lato';
+    font-size: 19px;
+	  /* font-weight: lighter; */
+    /* color: #0a0909; */
+  	line-height: 1.58em;
+  	/* margin: 0 auto; */
+  	/* max-width: 740px; */
+  }
+
+
+</style>
+
+
+<div class="blog-box">
+    <article class="blog-post">
+        <a href="/articles/<%= @article.slug %>" target="_blank">
+            <div class="blog-post-img-container">
+                <img src="<%= @article.cover %>" alt="" role="presentation" class="jsx-2920405963 progressive-image image jsx-2126225085 expand" pinger-seen="true">
+                <div class="blog-card-bottom">
+                    <div class="blog-post-title-cover">
+                    </div>
+                    <div class="blog-post-title">
+                        <%= @article.title %>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </article>
+</div>
+
+<div id="article">
+  <div class="article-title">
+    <div class="btn btn-warning fa fa-image change-file"></div>
+    <input type="file" class="hidden" id="coverChange">
+    <% if User.is_admin? current_user %>
+    <span contentEditable url="/articles/<%= @article.id %>" key="title">
+        <%= @article.title %>
+    </span>
+    <% else %>
+      <%= @article.title %>
+    <% end %>
+  </div>
+  <hr>
+  <br>
+<div id="article-content">
+  <%= @article.try(:body).try(:html_safe) %>
+</div>
+</div>
+<br>
+
+<script>
+
+    $('[contentEditable]').contentEdit(function(val, el){
+      console.log(val)
+      $(".blog-post-title").html(val)
+      $.notify("Saved!", "success");
+    });
+
+
+    // 
+    <% @hash = getAmazonSignature %>
+    $("#article-content").froalaEditor({
+        key: froalaKey,
+        toolbarInline: true,
+        charCounterCount: false,
+        tabSpaces: 4,
+        saveInterval: 750,
+        // Set max image size to 5MB.
+        imageMaxSize: 5 * 1024 * 1024,
+
+        // Allow to upload PNG and JPG.
+        imageAllowedTypes: ['jpeg', 'jpg', 'png', 'gif'],
+        
+        imageUploadToS3: {
+          bucket: '<%= @hash[:bucket] %>',
+          region: 's3', // Change the region if it is different
+          keyStart: '<%= @hash[:key_start] %>',
+          callback: function (url, key) {
+            // The URL and Key returned from Amazon.
+            console.log (url);
+            console.log (key);
+          },
+          params: {
+            acl: '<%= @hash[:acl] %>', // ACL according to Amazon Documentation.
+            AWSAccessKeyId: '<%= @hash[:access_key] %>', // Access Key from Amazon.
+            policy: '<%= @hash[:policy] %>', // Policy string computed in the backend.
+            signature: '<%= @hash[:signature] %>', // Signature computed in the backend.
+          }
+        },
+        fileUploadToS3: {
+          bucket: '<%= @hash[:bucket] %>',
+          region: 's3', // Change the region if it is different
+          keyStart: '<%= @hash[:key_start] %>',
+          callback: function (url, key) {
+            // The URL and Key returned from Amazon.
+            console.log (url);
+            console.log (key);
+          },
+          params: {
+            acl: '<%= @hash[:acl] %>', // ACL according to Amazon Documentation.
+            AWSAccessKeyId: '<%= @hash[:access_key] %>', // Access Key from Amazon.
+            policy: '<%= @hash[:policy] %>', // Policy string computed in the backend.
+            signature: '<%= @hash[:signature] %>', // Signature computed in the backend.
+          },
+          saveInterval: 100
+        }
+      })
+      .on('froalaEditor.save.before', function (e, editor) {
+          
+          console.log(this);
+            html = $("#article-content .fr-view").html()
+
+            $.ajax({
+                type: "PUT",
+                dataType: "json",
+                url: '/articles/<%= @article.id %>',
+                contentType: 'application/json',
+                data: JSON.stringify({ 
+                  body: html,
+                  _method:'post' 
+                }),
+                success: function(res){
+                  console.log(res)
+                  $.notify("Saved!", "success");
+                }
+            })
+      })
+      .on('froalaEditor.save.after', function (e, editor, response) {
+          // After successfully save request.
+      })
+      .on('froalaEditor.save.error', function (e, editor, error) {
+          // Do something here.
+      });
+
+      // 
+
+    $("body").on("click touchend", ".change-file", function(){
+        $("#coverChange").trigger("click")
+    })
+
+
+    $("body").on("change", "#coverChange", function(e){
+
+      
+          e.preventDefault();
+      
+          created = false;
+
+          var bucket = new AWS.S3({params: {Bucket: 'storytellright'}});
+          var fileChooser = document.getElementById('coverChange');
+          var file = fileChooser.files[0];
+
+
+          if (file) {
+              console.log(file.name)
+              var params = {
+                Key: 'articles/<%= @article.id %>/cover.'+file.name.split(".")[1], 
+                ContentType: file.type, 
+                Body: file,
+                ACL:'public-read'
+              };
+
+              Swal.fire({
+                title: 'Uploading...',
+                text: "0%",
+                allowOutsideClick: false,
+                showCancelButton: false,
+                showConfirmButton: false,
+              })
+
+              bucket.upload(params).on('httpUploadProgress', function(evt) {
+                
+                console.log("Uploaded :: " + parseInt((evt.loaded * 100) / evt.total)+'%');
+            
+                digit = parseInt((evt.loaded * 100) / evt.total)
+                      percent = parseInt((evt.loaded * 100) / evt.total)+'%'
+
+
+                Swal.update({ 
+                  text: percent,
+                })  
+
+
+              }).send(function(err, data) {
+                  console.log(data)
+
+                  hash = {
+
+                  }
+
+                  hash["cover"] = data["Location"]
+                  hash["_method"] = "post"
+
+                  if (created == false) {
+                    $.ajax({
+                        type: "PUT",
+                        dataType: "json",
+                        url: '/articles/<%= @article.id %>',
+                        contentType: 'application/json',
+                        data: JSON.stringify(hash),
+                        success: function(res){
+                          console.log(res)
+                          Swal.close()
+                          window.location = window.location
+                        }
+                    })
+                  }
+
+                  created = true;
+
+              });
+          } else {
+              
+              Swal.fire("No File Selected!")
+
+          }
+  })
+    
+</script>

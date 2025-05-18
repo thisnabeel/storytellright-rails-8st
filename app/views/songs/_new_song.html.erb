@@ -1,0 +1,134 @@
+<style>
+
+    #newStoryModal {
+        display: none;
+        background: #2c3e50 !important;
+        /*background: #fff !important;*/
+    }
+
+    .newStory-body {
+        font-family: 'Merriweather', serif;
+        font-size: 21px;
+        font-weight: 300;
+        line-height: 1.58em;
+        margin: 0 auto;
+        padding: 100px;
+        max-width: 740px;
+        color: #fffbf3;
+    }
+
+
+
+    .newStory-body input {
+        font-family: 'VT323', monospace;
+        text-align: center;
+        padding: 20px;
+        border-radius: 0;
+        background-color: transparent;
+        border: 0;
+        color: #F8EC23 !important;
+        outline: none; 
+        font-size: 24px;
+    }
+
+    .newStory-body input:focus {
+        background-color: transparent;
+        color: #F8EC23 !important;
+        border: 0;
+        outline: none; 
+    }
+
+    .close-newStoryModal {
+        position: fixed;
+        background: #e6ac38;
+        color: #fff;
+        padding: 10px;
+    }
+
+    
+</style>
+
+    <!--  ROOM -->
+    <!--Call your modal-->
+    <a id="newStory" style="display:none;" href="#newStoryModal">DEMO02</a>
+
+    <!--DEMO01-->
+    <div id="newStoryModal">
+        <!--THIS IS IMPORTANT! to close the modal, the class name has to match the name given on the ID  class="close-animatedModal" -->
+        <div class="close-newStoryModal"> 
+        	X
+        </div>
+        
+        <div class="newStory-body">
+
+            <h2 class="text-center">Let's Start a New Song</h2>   
+            <input type="text" class="form-control new-story-title-input" placeholder="Give it a name... anything works for now">
+            <input type="text" class="form-control new-story-artist-input" placeholder="Artist?">
+            <input type="text" class="form-control new-story-link-input" placeholder="Link?">
+            <span class="btn btn-info save-new-story btn-block text-center">Save</span>
+
+        </div>
+
+    </div>
+
+<script>
+    $("#newStory").animatedModal({
+        animatedIn: "bounceInUp",
+        animatedOut: "bounceOutDown",
+        modalTarget:'newStoryModal'
+    });
+    
+    function makeBox(title, id){
+        story_box = `
+        <li>
+            <span class="delete-story" data-id="`+id+`">X</span>
+            <span class="story-title">
+                `+title+`
+            </span>
+            <span class="enter-btn" data-id="`+id+`">
+                Enter
+            </span>
+        </li>`
+        return story_box
+    }
+
+
+    $(".save-new-story").on("click", function(){
+        title = $(".new-story-title-input").val()
+        artist = $(".new-story-artist-input").val()
+        link = $(".new-story-link-input").val()
+        saveStory(title, artist, link)
+    })
+
+    function saveStory(title, artist, link){
+        original = <%= @original %>
+
+
+        // alert(original)
+       $.ajax({
+           type: "POST",
+           dataType: "json",
+           url: '/songs',
+           contentType: 'application/json',
+           data: JSON.stringify({ 
+              title: title,
+              artist: artist,
+              link: link,
+              original: original,
+              user_id: <%= current_user.id %>,
+              _method:'post' 
+           }),
+           success: function(res){
+             console.log(res["id"])
+             $(".stories-list li:last").before(makeBox(title, res["id"]))
+             $(".close-newStoryModal").trigger("click")
+           }
+       })
+    }
+
+    $("body").on("click", ".add-song", function(){
+        $("#newStoryModal").show()
+        $("#newStory").trigger("click")
+    })
+
+</script>

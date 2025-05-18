@@ -1,0 +1,33 @@
+<%= form_for(@joke_structure) do |f| %>
+  <% if @joke_structure.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@joke_structure.errors.count, "error") %> prohibited this joke_structure from being saved:</h2>
+
+      <ul>
+      <% @joke_structure.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :title %><br>
+    <%= f.text_field :title %>
+  </div>
+  <div class="field">
+    <%= f.label :description %><br>
+    <%= f.text_area :description %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>
+
+<!--  -->
+
+<script type="text/javascript">
+  $("textarea").froalaEditor({
+    key: froalaKey,
+  })
+</script>

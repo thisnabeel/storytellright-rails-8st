@@ -1,0 +1,128 @@
+<style>
+
+  #presentationModal {
+    text-align: left;
+  }
+
+  #presentationModal .modal-content {
+    border-radius: 0;
+  }
+
+  #presentationModal .modal-body {
+
+  }
+
+  #presentation-content {
+  }
+
+  #presentationModal .modal-body {
+    padding: 0 !important;
+    border: 0;
+  }
+
+  #presentationModal iframe {
+    height: 100% !important;
+    width: 100% !important;
+  }
+
+  #presentationModal .edit-presentation {
+    position: absolute;
+    left: -50px;
+  }
+
+
+  #presentationModal .go-fullscreen {
+    position: absolute;
+    right: -50px;
+  }
+
+  body.modal-open {
+    overflow: visible;
+  }
+
+
+
+
+</style>
+
+<!-- Modal -->
+<div class="modal fade" id="presentationModal" tabindex="-1" role="dialog" aria-labelledby="presentationModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    
+
+    
+    <div class="modal-content">
+        <% if User.is_admin? current_user %>
+          <a class="edit-presentation btn btn-warning fa fa-cog clean-a" target="_blank" href=""></a>
+          <a class="go-fullscreen clean-a btn btn-info fa fa-expand" target="_blank" href=""></a>
+        <% end %>
+
+      <div class="modal-body">
+                    
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  function presentationModal(data){
+    modal = $("#presentationModal")
+
+    modal.find(".edit-presentation").attr('href', "/presentations/"+data["id"]+"/edit")
+    modal.find(".go-fullscreen").attr('href', "/presentations/"+data["id"])
+
+    
+
+    modal.find(".modal-body").html(`<iframe src="/presentations/`+data["id"]+`" frameborder="0" width="100%">
+          </iframe>`)
+    
+    modal.modal("show")
+  }
+
+
+
+  $("body").on("click", ".view-presentation", function(){
+    id = $(this).attr("data-id")
+    console.log(id)
+
+    if (id > 0) {
+      $.getJSON( "/presentations/"+id, function( data ) {
+        console.log(data)
+        presentationModal(data)
+      });
+    } else {
+      $.ajax({
+          type: "POST",
+          dataType: "json",
+          url: '/presentations',
+          contentType: 'application/json',
+          data: JSON.stringify({ 
+            presentable_id: $(this).attr("abstraction-id"), 
+            presentable_type: "Abstraction",
+            title: "untitled",
+            _method:'post' 
+          }),
+          success: function(res){
+            console.log(res)
+            $.getJSON( "/presentations/"+res["id"], function( data ) {
+              console.log(data)
+              presentationModal(data)
+            });
+          }
+      })
+
+    }
+
+  })
+
+  // 
+
+  // $("#presentationModal").on("shown.bs.modal", function () {
+  //   $("body").addClass("pr-modal");
+  // }).on("hidden.bs.modal", function () {
+  //   $("body").removeClass("pr-modal")
+  // });
+
+
+</script>

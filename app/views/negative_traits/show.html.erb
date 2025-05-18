@@ -1,0 +1,42 @@
+<p id="notice"><%= notice %></p>
+
+  <h1>
+  <%= @negative_trait.title %>
+  </h1>
+
+  <hr>
+
+<% deets = {
+		"definition" => "def",
+		"similar flaws" => "similar-flaws",
+		"possible causes/justifications" => "pos-causes",
+		"associated behaviors and attitudes" => "assoc-behaviors",
+		"associated thoughts" => "assoc-thoughts",
+		"associated emotions" => "assoc-emotions",
+		"positive aspects" => "pos-aspects",
+		"negative aspects" => "neg-aspects",
+		"examples from stories" => "char-examples",
+		"overcoming this trait as a major flaw" => "flaw-keys",
+		"traits in major characters that may cause conflict" => "conflicting-traits",
+		"armatures" => "armatures"
+	} %>
+
+<section class="details">
+	<% deets.each do |d| %>
+	<div class="deet" data-title="<%= d[1] %>">
+		<h3><%= d[0].capitalize %>:</h3>
+		<p>
+			<%= @negative_trait.details[d[1]].html_safe if @negative_trait.details.present? && @negative_trait.details[d[1]].present? %>
+		</p>
+		<hr>
+	</div>
+	<% end %>
+	<div class="bq-list">
+		<ul>
+		</ul>
+	</div>
+</section>
+
+<%= link_to 'Edit', edit_negative_trait_path(@negative_trait) %> |
+<%= link_to 'Back', negative_traits_path %>
+

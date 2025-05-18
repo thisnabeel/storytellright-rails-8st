@@ -1,0 +1,284 @@
+<style>
+	.inspiration-click	{
+		padding: 20px;
+    	right: 0;
+    	/* background: #8854d0; */
+    	color: #8854d0;
+    	border-radius: 10px 10px 0px 0px;
+    	position: fixed;
+    	bottom: 0;
+    	font-size: 16px;
+	}
+
+	.inspiration-click:hover {
+		background: #5e319e;
+		color: #fff;
+	}
+</style>
+
+<div class="inspiration-click">
+  Inspirations
+</div>
+
+<!-- ******************************** -->
+
+<style>
+  #inspireModal {
+
+  }
+
+  #inspireModal .modal-content {
+
+  }
+
+  #inspireModal .modal-body {
+
+  }
+
+  .search-inspirations {
+  	background-color: #ccc;
+  }
+	
+  .local-inspirations li {
+  	padding: 10px;
+  	padding-right: 30px;
+  	position: relative;
+  }
+
+  .local-inspirations textarea,
+  .local-inspirations textarea:disabled {
+  	background: #542594;
+    color: #fff;
+  }
+
+  .local-inspirations input,
+  .local-inspirations input:disabled {
+  	background: #190b2d;
+    color: #fff;
+  }
+
+  .remove-inspiration {
+	position: absolute;
+    top: 10px;
+    right: -13px;
+  }
+
+  #inspireModal section {
+  	padding: 20px;
+  }
+
+  #inspireModal .global {
+  	background: #def9ff;
+  }
+
+  #inspireModal .local {
+
+  }
+
+  <% if @disabled_inputs.present? %>
+    /**/
+  .add-local-inspiration {
+    display: none;
+  }
+
+  .remove-inspiration {
+    display: none;
+  }
+
+  .local-inspirations li {
+    padding-right: inherit;
+  }
+  <% end %>
+
+</style>
+
+<!-- Modal -->
+<div class="modal fade" id="inspireModal" tabindex="-1" role="dialog" aria-labelledby="inspireModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="inspireModalLabel">Inspirations</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+      	<%= render "inspirations/inspirations_globe" %>
+		
+		<hr>
+
+		<section class="local">
+
+			<h4>Local Inspirations: <i class="fa btn btn-primary fa-plus add-local-inspiration"></i></h4>
+			<ul class="local-inspirations clean-list">
+			</ul>
+			
+		</section>
+			
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function inspireModal(){
+  	$(".search-inspirations").val("")
+  	$(".inspi-search-results").hide()
+    $("#inspireModal").modal("show")
+  }
+
+  	$("body").on("click", ".inspiration-click", function(){
+		<% unless @inspirable.present? %>
+  		$(".local").hide()
+  		<% end %>
+		inspireModal()
+	})
+
+	// 
+
+	$("body").on("click", ".add-local-inspiration", function(){
+		body = ""
+		tags = ""
+
+		$.ajax({
+		    type: "POST",
+		    dataType: "json",
+		    url: '/inspirations',
+		    contentType: 'application/json',
+		    data: JSON.stringify({ 
+		      inspirable_id: "<%= @inspirable_id %>",
+		      inspirable_type: "<%= @inspirable_type %>",
+		      position: $(".local-inspirations li").length + 1,
+		      _method:'post' 
+		    }),
+		    success: function(res){
+		    	console.log(res)
+		     	$(".local-inspirations").append(
+					inspireMaker(body, tags, res["position"], res["id"])
+				)
+				makeInspireTypewatch()
+		    }
+		})
+
+
+	})
+	
+	<% if @inspirable.try(:inspirations).present? %>
+		local_inspirations = `<%= @inspirable.inspirations.to_json.html_safe %>`;
+		lji = JSON.parse(local_inspirations);
+
+		console.log("lji", lji)
+
+		$.each(lji, function(index, item){
+			$(".local-inspirations").append(
+				inspireMaker(item["body"], item["tags"], item["position"], item["id"])
+			)
+		})
+
+		makeInspireTypewatch()
+
+	<% end %>
+
+	$("body").on("click", ".has-inspirations", function(){
+		id = $(this).attr("data-id")
+		findInspires(id)
+	})
+
+
+	function findInspires(id){
+		$(".local").hide()
+		$.ajax({
+		    type: "POST",
+		    dataType: "json",
+		    url: '/find_inspirations',
+		    contentType: 'application/json',
+		    data: JSON.stringify({ 
+		      id: id,
+		      type: "<%= @inspirable_type %>",
+		      _method:'post' 
+		    }),
+		    success: function(res){
+		    	console.log(res)
+		    	$(".local-inspirations").empty();
+		        $.each(res, function(index, item){
+					$(".local-inspirations").append(
+						inspireMaker(item["body"], item["tags"], item["position"], item["id"])
+					)
+					$("#inspireModal .local").show()
+				});
+				inspireModal()
+				
+		    }
+		})
+
+	}
+
+
+	function makeInspireTypewatch(){
+		var inspiTypeWatchOptions = {
+		    callback: function (value) { 
+		    	li = $(this).closest("li")
+		    	id = li.attr("data-id")
+
+				$.ajax({
+				    type: "PUT",
+				    dataType: "json",
+				    url: '/inspirations/'+id,
+				    contentType: 'application/json',
+				    data: JSON.stringify({ 
+				    	body: li.find(".inspiration-body").val(),
+				    	tags: li.find(".inspiration-tags").val(),
+				       _method:'post' 
+				    }),
+				    success: function(res){
+				      console.log(res)
+				    }
+				})
+
+		    },
+		    wait: 750,
+		    highlight: true,
+		    allowSubmit: false,
+		    captureLength: 2
+		}
+
+		$(".local-inspirations textarea, .local-inspirations input").typeWatch( inspiTypeWatchOptions );
+	}
+
+
+	// 
+	function inspireMaker(body, tags, position, id){
+		dis = ""
+		<% if @disabled_inputs.present?%>
+			 dis = "disabled"
+		<% end %>
+		return `
+			<li data-id="`+id+`" data-position="`+position+`">
+				<textarea `+dis+` placeholder="Yes you can..." class="form-control inspiration-body">`+body+`</textarea>
+				<input  `+dis+`  type="text" placeholder="Tags..." value="`+tags+`" class="form-control inspiration-tags" />
+				<i class="fa fa-remove btn btn-outline-danger remove-inspiration"></i>
+			</li>`
+	}
+
+	// 
+	$("body").on("click", ".remove-inspiration", function(){
+		li = $(this).closest("li")
+		id = li.attr("data-id")
+		$.ajax({
+		    type: "DELETE",
+		    dataType: "json",
+		    url: '/inspirations/'+id,
+		    contentType: 'application/json',
+		    data: JSON.stringify({ 
+		       _method:'post' 
+		    }),
+		    success: function(){
+				li.remove()
+		    }
+		})
+
+	})
+
+
+</script>

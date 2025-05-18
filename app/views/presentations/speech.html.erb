@@ -1,0 +1,27 @@
+<style>
+.hide-if {
+    display: none;
+}
+
+#speech {
+    font-size: 34px;
+    padding: 4em;
+}
+</style>
+
+<div id="speech">
+    
+</div>
+
+<script>
+
+  var speechChannel = pusher.subscribe("speech");
+
+  speechChannel.bind('client-slide-change', function(data) {
+      console.log(data)
+      speech = decodeURIComponent(data["message"])
+      console.log(speech)
+      $("#speech").html(speech)
+  });
+
+</script>

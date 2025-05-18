@@ -1,0 +1,8 @@
+<script>
+	$.getJSON( "/fetcher/<%= @negative_trait.title %>", function( res ) {
+		console.log(res)
+		$.each(res, function(index, item){
+			$(".bq-list").append("<li>"+item["quote"]+" - <b>"+item["author"]+"</b><br><br></li>")
+		})
+	});
+</script>

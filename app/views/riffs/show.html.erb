@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Title:</strong>
+  <%= @riff.title %>
+</p>
+
+<p>
+  <strong>Demo:</strong>
+  <%= @riff.demo %>
+</p>
+
+<p>
+  <strong>Guide:</strong>
+  <%= @riff.guide %>
+</p>
+
+<p>
+  <strong>Tags:</strong>
+  <%= @riff.tags %>
+</p>
+
+<p>
+  <strong>Position:</strong>
+  <%= @riff.position %>
+</p>
+
+<%= link_to 'Edit', edit_riff_path(@riff) %> |
+<%= link_to 'Back', riffs_path %>

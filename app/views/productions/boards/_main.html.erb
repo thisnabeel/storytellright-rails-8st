@@ -1,0 +1,90 @@
+<style>
+    .boards > section {
+        display:none;
+    }
+    .boards > section.active {
+        display:block;
+    }
+
+     /*  */
+    .prod-options {
+        position: absolute;
+        right: 9px;
+        top: 10px;
+        color: transparent;
+    }
+
+    .title:hover .prod-options{
+        color: #ccc;
+    }
+
+    .prod-options:hover{
+        color: gray;
+    }
+
+    #prod-options {
+        position: absolute;
+        background: #fdfdfd;
+        border-radius: 8px;
+        display: none;
+        z-index: 999999;
+    }
+    #prod-options ul {
+        margin: 0;
+    }
+    #prod-options li{
+        padding: 10px;
+    }
+    #prod-options li:hover {
+        background: #f1f8ff;
+        border-radius: 8px;
+    }
+
+</style>
+
+<%= render "productions/boards/header" %>
+
+
+<div id="prod-options">
+    <ul class="clean-list">
+        <li class="delete-prod">Delete <span id='prod-type'></span></li>
+    </ul>
+</div>
+
+<div class="boards">
+    <%= render "productions/boards/stories" %>
+    <%= render "productions/boards/songs" %>
+</div>
+
+<script>
+    $("body").on("click", ".prod-options", function(e){
+        e.stopPropagation();
+        position = getOffset($(this)[0]);
+        $("#prod-options").show().css({
+            "top": position["top"] + 17,
+            "left": position["left"],
+        })
+        $("#prod-options").attr("prod-id", $(this).closest("li").attr("data-id"))
+        $("#prod-type").html($(this).closest("li").attr("data-type"))
+    })
+
+
+    $("body").on("click", ".delete-prod", function(){
+        id = $(this).closest("#prod-options").attr('prod-id');
+        type = $("#prod-type").html();
+        section = $(".production[data-id="+id+"][data-type="+type+"]");
+        $.ajax({
+            type: "DELETE",
+            dataType: "json",
+            url: '/productions/'+id,
+            contentType: 'application/json',
+            data: JSON.stringify({ 
+                _method:'post' 
+            }),
+            success: function(){
+                section.remove()
+            }
+        })
+        hideOptions()
+    })
+</script>

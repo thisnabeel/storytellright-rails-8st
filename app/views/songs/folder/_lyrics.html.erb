@@ -1,0 +1,45 @@
+<style>
+
+  .tab-lyrics {
+    padding: 26px 20px;
+    padding-bottom: 1px;
+    border-left: 11px solid #00dcdd33;
+  }
+
+  .lyric-chord {
+    background: #ff5757;
+    color: #fff;
+  }
+
+  /**/
+
+  .lyric-chord {
+    position: relative;
+  }
+
+  .lyric-chord[data-chord] {
+    background: #ffff14;
+    color: inherit;
+  }
+
+  .lyric-chord[data-chord]::after {
+    content: attr(data-chord);
+    background: transparent;
+    font-weight: bold;
+    position: absolute;
+    left: 0;
+    top: -20px;
+  }
+
+  .clear-tab-lyrics {
+    left: -127px;
+    color: #ccc;
+    position: relative;
+  }
+
+</style>
+
+<p class="folder-head">Lyrics: <i class="fa fa-times clear-tab-lyrics"></i></p>
+<div class="tab-lyrics froalize">
+    <textarea></textarea>
+</div>

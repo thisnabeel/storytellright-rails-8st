@@ -1,0 +1,43 @@
+<style>
+	.original {
+		padding: 30px;
+		background: #FF0099;  /* fallback for old browsers */
+		background: -webkit-linear-gradient(to right, #493240, #FF0099);  /* Chrome 10-25, Safari 5.1-6 */
+		background: linear-gradient(to right, #493240, #FF0099); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+		color: #fff;
+	}
+
+	.abstra {
+		padding: 30px;
+		background: #a8ff78;  /* fallback for old browsers */
+		background: -webkit-linear-gradient(to right, #78ffd6, #a8ff78);  /* Chrome 10-25, Safari 5.1-6 */
+		background: linear-gradient(to right, #78ffd6, #a8ff78); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+		/*color: #fff;*/
+	}
+</style>
+
+<h1>
+	
+</h1>
+
+<% Story.hunt(params[:code]).each do |story| %>
+	<li>
+		<h1 class="story-title">
+			<%= story.title %>			
+		</h1>
+		<h3><i>In life, sometimes, you will want to believe that:</i></h3>
+		<h4 class="original">
+			<%= story.story_details[params[:code]].html_safe %>			
+		</h4>
+		<% if story.story_details["deny-accept-folder"].present? && story.story_details["deny-accept-folder"].count > 0 %>
+			<h4 class="abstra">
+				<!-- deny-accept-folder -->
+				<% story.story_details["deny-accept-folder"].each do |p| %>
+					<li><%= p["Title"] %></li>
+				<% end %>
+			</h4>
+		<% end %>
+	</li>
+	<hr>
+<% end %>

@@ -1,0 +1,77 @@
+<style>
+
+#jokes-guide {
+    position: fixed;
+    left: 0;
+    width: 16vw;
+    top: 0;
+    background: #fff;
+    padding: 20px;    
+}
+
+#jokes-guide ul {
+    height: 100vh;
+    overflow-y: scroll;
+}
+
+#jokes-guide .js {
+    /* position: relative; */
+    margin-bottom: 4px;
+}
+
+#jokes-guide .js-title {
+    width: 90%;
+    overflow-wrap: break-word;
+    font-size: 14px;
+    padding: 8px;
+}
+
+#jokes-guide .js-description {
+    display: none;
+    position: absolute;
+    top: 0;
+    right: -37vw;
+    max-width: 40vw;
+    background: #fff;
+    border: 12px solid #afe8e8;
+    padding: 30px;
+    height: 100vh;
+    z-index: 9999;
+    overflow-y: scroll;
+}   
+
+#jokes-guide .js:hover .js-description {
+    display: block !important;
+}
+
+#jokes-guide .js:hover .js-title {
+    background: #afe8e8;
+    /* color: #fff; */
+}
+
+#jokes-guide ul {
+    height: 90vh;
+    overflow-y: scroll;
+}
+
+.fr-box {
+    z-index: 0;
+}
+
+</style>
+
+<div id="jokes-guide">
+    <h4>Structures:</h4>
+    <ul class="clean-list">
+        <% JokeStructure.all.each do |js| %>
+            <li class="js">
+                <div class="js-title">
+                    <%= js.title %>
+                </div>
+                <article class="js-description fr-view">
+                        <%= js.description.html_safe %>
+                    </article>
+            </li>
+        <% end %>
+    </ul>
+</div>

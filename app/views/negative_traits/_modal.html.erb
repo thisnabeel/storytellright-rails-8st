@@ -1,0 +1,50 @@
+<!-- The Modal -->
+<div class="modal" id="ntModal" alias="Negative Trait">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title"></h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        
+      <% deets = {
+          "definition" => "def",
+          "similar flaws" => "similar-flaws",
+          "possible causes/justifications" => "pos-causes",
+          "associated behaviors and attitudes" => "assoc-behaviors",
+          "associated thoughts" => "assoc-thoughts",
+          "associated emotions" => "assoc-emotions",
+          "positive aspects" => "pos-aspects",
+          "negative aspects" => "neg-aspects",
+          "examples from stories" => "char-examples",
+          "overcoming this trait as a major flaw" => "flaw-keys",
+          "traits in major characters that may cause conflict" => "conflicting-traits",
+          "armatures" => "armatures"
+        } %>
+
+      <section class="details">
+        <% deets.each do |d| %>
+        <div class="deet" data-title="<%= d[1] %>">
+          <h3><%= d[0].capitalize %>:</h3>
+          <p>
+          </p>
+          <hr>
+        </div>
+        <% end %>
+      </section>
+
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div>

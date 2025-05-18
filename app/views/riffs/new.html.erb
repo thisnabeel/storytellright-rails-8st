@@ -1,0 +1,217 @@
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+
+<style>
+	.riffs .riff {
+		padding: 30px;
+		position: relative;
+	}
+
+	.riff .remove-riff {
+		position: absolute;
+		left: -20px;
+	}
+
+</style>
+
+<p id="notice"><%= notice %></p>
+
+<h1>Listing <a href="/riffs">Riffs</a></h1>
+
+<ul class="clean-list riffs">
+</ul>
+
+<div class="btn btn-outline-primary fa fa-plus add-riff"></div>
+
+
+<script>
+  $("body").on("click", ".add-riff", function(){
+  	item = {}
+    $.ajax({
+	    type: "POST",
+	    dataType: "json",
+	    url: '/riffs',
+	    contentType: 'application/json',
+	    data: JSON.stringify({ 
+	      title: "untitled",
+	      position: ($(".riffs .riff").length + 1),
+	      demo: "",
+	      guide: "",
+	      _method:'post' 
+	    }),
+	    success: function(res){
+	     console.log(res)
+	     $(".riffs").append(makeRiff(res))
+	     makeTW()
+	    }
+	})
+  })
+
+  // $(".riffs").append(makeRiff(res))
+  	$.each(<%= Riff.all.order("position ASC").to_json.html_safe %>, function(index, item){
+  		$(".riffs").append(makeRiff(item))
+	})
+
+	function makeTW() {
+		var riffTypeWatchOptions = {
+		    callback: function (value) { 
+		    	riff = $(this).closest(".riff")
+		    	saveRiff(riff)
+
+		    },
+		    wait: 750,
+		    highlight: true,
+		    allowSubmit: false,
+		    captureLength: 2
+		}
+
+		$(".riff input").typeWatch( riffTypeWatchOptions );
+	}
+
+	makeTW()
+
+	function saveRiff(riff){
+		hash = {}
+		riff.find("[folder]").each(function(){
+			hash[$(this).attr("folder")] = $(this).val() || $(this).attr("value")
+		})
+		hash["_method"] = "post"
+		// console.log(hash)
+		$.ajax({
+		    type: "PUT",
+		    dataType: "json",
+		    url: '/riffs/'+riff.attr("data-id"),
+		    contentType: 'application/json',
+		    data: JSON.stringify(hash),
+		    success: function(res){
+		      console.log(res)
+		      Swal.close()
+		    }
+		})
+	}
+
+
+  function makeRiff(item) {
+    return `
+      <li class="riff" data-id="`+item["id"]+`">
+      	<div class="btn btn-outline-danger remove-riff"><div class="fa fa-times"></div></div>
+        <input type="text" class='riff-title form-control save-this' value="`+item["title"]+`" folder="title" placeholder="Enter Title..." />
+        
+        <div>
+	        <label for="">Demo</label> <i class="fa fa-play-circle save-this play-audio" value="`+item["demo"]+`" folder="demo"></i>
+	        <input type="file" class='riff-demo riff-change' placeholder="Enter Demo..." />
+        </div>
+		<br />
+		
+		<div>
+        	<label for="">Guide</label> <i class="fa fa-play-circle save-this play-audio" value="`+item["guide"]+`" folder="guide"></i>
+        	<input type="file" class='riff-guide riff-change' placeholder="Enter Guide..." />
+        </div>
+      </li>
+    `
+  }
+
+	$("body").on("click", ".remove-riff", function(){
+		riff = $(this).closest('.riff')
+		$.ajax({
+		    type: "DELETE",
+		    dataType: "json",
+		    url: '/riffs/'+riff.attr("data-id"),
+		    contentType: 'application/json',
+		    data: JSON.stringify({
+		       _method:'post' 
+		    }),
+		    success: function(){
+		    	riff.remove()
+		    }
+		})
+	})
+
+	$("body").on("change", ".riff-change", function(){
+		// alert("got em")
+		folder = $(this).closest("div").find('.save-this')
+		slash = folder.attr('folder')
+		id = folder.closest(".riff").attr("data-id")
+		// folder.attr("value", "link")
+
+		riff = $(this).closest(".riff")
+
+		// 
+
+		created = false;
+
+	    var bucket = new AWS.S3({params: {Bucket: 'storytellright'}});
+		var fileChooser = $(this)[0];
+		var file = fileChooser.files[0];
+	    if (file) {
+	    	// console.log(file.name)
+	        var params = {
+	        	Key: 'riffs/'+id+'/'+slash+'.'+file.name.split(".")[1], 
+	        	ContentType: file.type, 
+	        	Body: file,
+	        	ACL:'public-read'
+	        };
+
+			Swal.fire({
+			  title: 'Uploading...',
+			  text: "0%",
+			  allowOutsideClick: false,
+			  showCancelButton: false,
+			  showConfirmButton: false,
+			})
+
+	        bucket.upload(params).on('httpUploadProgress', function(evt) {
+	            console.log("Uploaded :: " + parseInt((evt.loaded * 100) / evt.total)+'%');
+				
+				digit = parseInt((evt.loaded * 100) / evt.total)
+	            percent = parseInt((evt.loaded * 100) / evt.total)+'%'
+
+
+				Swal.update({ 
+					text: percent,
+				})	
+
+	            // $(".progress-bar").css({"width":percent}).attr("aria-valuenow", digit).html(percent)
+
+	            // $(".hide-while-uploading").hide()
+	            // $(".show-while-uploading").show()
+
+	        }).send(function(err, data) {
+	            console.log(data)
+
+				link = data["Location"]
+				folder.attr("value", link)
+
+				saveRiff(riff)
+
+				created = true;
+
+	        });
+	    }
+
+	})
+
+
+	$("body").on("click", ".play-audio", function(){
+		playSound($(this).attr("value"))
+	})
+
+	function playSound(url) {
+		var sounds = document.getElementsByTagName('audio');
+		for(i=0; i<sounds.length; i++) sounds[i].pause();
+		var a = new Audio(url);
+		a.play();
+	}
+
+
+// 
+</script>
+
+
+<script src="https://sdk.amazonaws.com/js/aws-sdk-2.1.24.min.js"></script>
+<script type="text/javascript">
+    AWS.config.update({
+        accessKeyId : '<%= ENV["AWS_ACCESS_KEY_ID"] %>',
+        secretAccessKey : '<%= ENV["AWS_SECRET_ACCESS_KEY"] %>'
+    });
+    AWS.config.region = 'us-east-1';
+</script>

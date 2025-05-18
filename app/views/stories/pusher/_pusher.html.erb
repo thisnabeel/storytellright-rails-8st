@@ -1,0 +1,66 @@
+  <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
+  <script>
+
+    // Enable pusher logging - don't include this in production
+    // Pusher.logToConsole = true;
+
+    var pusher = new Pusher('e6efc10ac1252fe7b8ab', {
+      cluster: 'us3'
+    });
+
+    var channel = pusher.subscribe("<%= "story-#{@story.id}" %>");
+    channel.bind('update-story', function(data) {
+      // alert(JSON.stringify(data));
+
+      writer_id = data["writer_id"]
+
+      if (<%= current_user.id %> != writer_id) {
+
+        console.log("CHAAANGIN")
+
+        story = data["story"]
+        // console.log(story)
+        // console.log(story["story_details"])
+        $.each(story["story_details"], function(index, item){
+
+          if ($.isArray(item)) {
+
+          } else {
+            // console.log(index)
+            $("[data-save-code='"+index+"'] .fr-view").html(item)
+            if (item && item.length > 12) {
+              $("[data-save-code='"+index+"'] .fr-wrapper").removeClass("show-placeholder")
+            }
+          }
+
+        })
+
+        // Act I scenes.
+        // body: "<p>Move</p>"
+        // script: "%5B%7B%22type%22%3A%22scene-heading%22%2C%22articles%22%3A%5B%7B%22type%22%3A%22heading%22%2C%22body%22%3A%22%3Cp%3EInit%3C%2Fp%3E%22%7D%5D%7D%2C%7B%22type%22%3A%22dialogue%22%2C%22articles%22%3A%5B%7B%22type%22%3A%22speaker%22%2C%22body%22%3A%22%3Cp%3EMan%3C%2Fp%3E%22%7D%2C%7B%22type%22%3A%22speech%22%2C%22body%22%3A%22%3Cp%3EThe%20thing%20we%20need%20the%20most%20is%20fire%3C%2Fp%3E%22%7D%5D%7D%5D"
+        // timestamp: ""
+        factory = {
+          "act-1-scenes": story["story_details"]["act-1-scenes"],
+          "act-2-scenes": story["story_details"]["act-2-scenes"],
+          "act-3-scenes": story["story_details"]["act-3-scenes"],
+        }
+
+        $.each(factory, function(index, scenes){
+          console.log(index, scenes)
+          box = $("[key='"+index+"']")
+          box.empty()
+          $.each(scenes, function(index, scene){
+            sceneBox(scene)
+            box.append(sceneBox(scene))
+          })
+        })
+
+
+        
+        refreshFull()
+        makeMagic()
+        makeGlobalFroala()
+      }
+
+    });
+  </script>

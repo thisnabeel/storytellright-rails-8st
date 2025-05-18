@@ -1,0 +1,28 @@
+<div class="panel-group" id="recipes">
+	<% Recipe.all.each_with_index do |t, index| %>
+
+	  <div class="panel panel-default">
+	    <div class="panel-heading">
+	      <h4 class="panel-title">
+	        <a data-toggle="collapse" data-parent="#recipes" class="collapse-clicker" href="#collapse<%= index + 1 %>">:. <%= t.title %></a>
+	      </h4>
+	    </div>
+	    <div id="collapse<%= index + 1 %>" class="panel-collapse collapse">
+	      <ul class="list-group">
+	      	<% StoryRecipe.where(story_id: @story.id, recipe_id: t.id ).each do |sr| %>
+	        <li class="list-group-item">
+	        	<a href="/story_recipes/<%= sr.id %>"><%= t.title %></a>
+	        	<small>- <%= sr.updated_at.strftime("%A, %d %b %Y %l:%M %p") %></small>
+	        	<div class="btn btn-danger pull-right delete-draft" data-id="<%= sr.id %>">Delete</div>
+	        </li>
+	        <% end %>
+	        <li class="list-group-item">
+	        	<a href="/st/<%= @story.id %>/<%= t.id %>" class="btn btn-warning">
+	        		Add A Draft
+	        	</a>
+	        </li>
+	      </ul>
+	    </div>
+	  </div>
+	<% end %>
+</div>

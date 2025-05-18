@@ -1,0 +1,306 @@
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+
+<style>
+.recorder {
+  position: relative;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 3rem;
+  background: #38383d;
+  border: 1px solid #f9f9fa33;
+  cursor: pointer;
+  box-shadow: 0 1px 4px 0 rgba(12, 12, 13, 0.2), 0 0 0 1px rgba(0, 0, 0, 0.15);
+  transition: 0.2s ease;
+}
+
+.recorder-box {
+  display: inline-block;
+}
+.recorder .record {
+  width: 60%;
+  height: 60%;
+  top: 20%;
+  left: 20%;
+  position: absolute;
+  transition: inherit;
+}
+.recorder .arrow {
+  width: 50%;
+  height: 50%;
+  top: 30%;
+  left: 25%;
+  position: absolute;
+  transition: inherit;
+  opacity: 0;
+}
+.recorder:active {
+  border-color: transparent;
+}
+.recorder:active .record {
+  width: 55%;
+  height: 55%;
+  top: 23%;
+  left: 23%;
+}
+.recorder.recording {
+  box-shadow: 0 0 0 1px #45a1ff, 0 0 0 4px rgba(69, 161, 255, 0.3);
+  background: #ff0000;
+}
+.recorder.recording .record {
+  animation: recording 0.7s ease infinite;
+}
+.recorder.download .record {
+  height: 40%;
+  width: 40%;
+  top: 15%;
+  left: 30%;
+  animation: none;
+}
+.recorder.download .arrow {
+  animation: download 0.5s ease infinite;
+}
+.recorder.out .record {
+  animation: out 0.8s ease, in 0.2s 0.8s ease;
+}
+
+@keyframes in {
+  from {
+    height: 0%;
+    top: 60%;
+  }
+}
+@keyframes recording {
+  from,to {
+    transform: rotate(10deg);
+  }
+  50% {
+    transform: rotate(-10deg);
+  }
+}
+@keyframes download {
+  0% {
+    top: 30%;
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    top: 55%;
+    opacity: 0;
+  }
+}
+@keyframes out {
+  20% {
+    top: 8%;
+  }
+  75%,100% {
+    top: 100%;
+    opacity: 0;
+    height: 0px;
+  }
+}
+
+</style>
+
+<script>
+const recordAudio = () =>
+  new Promise(async (resolve) => {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const mediaRecorder = new MediaRecorder(stream);
+    const audioChunks = [];
+    mediaRecorder.addEventListener("dataavailable", (event) => {
+      audioChunks.push(event.data);
+    });
+
+    const start = () => mediaRecorder.start();
+
+    const stop = () =>
+      new Promise((resolve) => {
+        mediaRecorder.addEventListener("stop", () => {
+          const audioBlob = new Blob(audioChunks);
+          const audioUrl = URL.createObjectURL(audioBlob);
+          const audio = new Audio(audioUrl);
+          const play = () => audio.play();
+          resolve({ audioBlob, audioUrl, play });
+          console.log(audioUrl)
+          console.log($(".download"))
+          box = $(".download").closest("li").find(".audio-box")
+          box.empty()
+          id = box.closest("li").attr("data-id")
+		  
+
+		      postUp(audioBlob, id, box)
+
+        });
+        mediaRecorder.stop();
+      });
+    resolve({ start, stop });
+  });
+
+const sleep = (time) => new Promise((resolve) => setTimeout(resolve, time));
+
+var record = true;
+
+const startRecording = async (e) => {
+  const recording = await recordAudio();
+  const recorder = e;
+  recorder.disabled = true;
+  recording.start();
+  while (record == true) {
+    await sleep(1);
+  }
+  const audio = await recording.stop();
+  // await sleep(2000);
+  // audio.play();
+  recorder.disabled = false;
+};
+
+
+$("body").on("click", ".recorder", function(){
+	e = $(this)
+  if (e.hasClass("recording")) {
+    e.removeClass("recording");
+    e.addClass("download");
+    record = false;
+    setTimeout(function () {
+      e.removeClass("download");
+      e.addClass("out");
+
+    }, 1000);
+  } else if (
+    !e.hasClass("recording") &&
+    !e.hasClass("download")
+  ) {
+    e.removeClass("out");
+    e.addClass("recording");
+    record = true;
+    startRecording(e);
+  }
+
+})
+
+
+// 
+function postUp(url, id, box){
+
+          
+      const file = new File([url], "audio.wav");
+
+      filer(file, box)
+}
+
+function filer(file, box) {
+
+      var bucket = new AWS.S3({params: {Bucket: 'storytellright'}});
+
+      id = Math.floor(Math.random() * 1000000)
+      
+      var params = {
+        Key: 'demos/'+id+'.mp3', 
+        ContentType: "audio/wav", 
+        Body: file,
+        ACL:'public-read'
+      };
+
+      Swal.fire({
+        title: 'Uploading...',
+        text: "0%",
+        allowOutsideClick: false,
+        showCancelButton: false,
+        showConfirmButton: false,
+      })
+
+      bucket.upload(params).on('httpUploadProgress', function(evt) {
+          console.log("Uploaded :: " + parseInt((evt.loaded * 100) / evt.total)+'%');
+    
+          digit = parseInt((evt.loaded * 100) / evt.total)
+          percent = parseInt((evt.loaded * 100) / evt.total)+'%'
+
+          Swal.update({ 
+            text: percent,
+          })
+
+
+      }).send(function(err, data) {
+
+        
+          box_src = box.attr("value") || ""
+
+          deleteS3Demo(box_src, function(){
+
+            console.log(data)
+
+            hash = {}
+
+            aws_src = data["Location"]
+
+
+            Swal.close()
+            box.find("audio").remove()
+
+            box.append(`<audio id="`+id+`" src="` + aws_src + `?noCache=` + Math.floor(Math.random() * 1000000) + `" type="audio/mpeg" autoplay controls></audio>`)
+
+            box.attr("value", aws_src)
+            audio = document.getElementById(id);
+
+            saveElements()
+
+          })
+
+
+
+      });
+}
+
+
+
+
+function deleteS3Demo(src, callback){
+  if (src && src != "null" ) {
+
+    var bucket = new AWS.S3({params: {Bucket: 'storytellright'}});
+
+    fileName = src.split(".com/")[1].split("?")[0]
+
+    var params = {
+      Key: fileName
+      /* 
+         where value for 'Key' equals 'pathName1/pathName2/.../pathNameN/fileName.ext'
+         - full path name to your file without '/' at the beginning
+      */
+    };
+
+    bucket.deleteObject(params, function(err, data) {
+      if (err) {
+        console.log(err, err.stack); // an error occurred
+      }
+      else {
+          console.log("Deleted: "+src)
+          console.log(data); // successful response
+          $("audio[src='"+src+"']").closest(".audio-box").empty()
+          $("audio[src='"+src+"']").closest(".audio-box").removeAttr( "value" )
+          callback()
+        return data
+      }
+    });
+
+  } else {
+    
+    callback()
+
+  }
+
+}
+
+
+</script>
+
+<script src="https://sdk.amazonaws.com/js/aws-sdk-2.1.24.min.js"></script>
+<script type="text/javascript">
+    AWS.config.update({
+        accessKeyId : '<%= ENV["AWS_ACCESS_KEY_ID"] %>',
+        secretAccessKey : '<%= ENV["AWS_SECRET_ACCESS_KEY"] %>'
+    });
+    AWS.config.region = 'us-east-1';
+</script>

@@ -1,0 +1,45 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Slides</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Presentation</th>
+      <th>Body</th>
+      <th>Media url</th>
+      <th>Body font size desktop</th>
+      <th>Body font size mobile</th>
+      <th>Media size desktop</th>
+      <th>Media size mobile</th>
+      <th>Title font size desktop</th>
+      <th>Title font size mobile</th>
+      <th>Position</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @slides.each do |slide| %>
+      <tr>
+        <td><%= slide.presentation_id %></td>
+        <td><%= slide.body %></td>
+        <td><%= slide.media_url %></td>
+        <td><%= slide.body_font_size_desktop %></td>
+        <td><%= slide.body_font_size_mobile %></td>
+        <td><%= slide.media_size_desktop %></td>
+        <td><%= slide.media_size_mobile %></td>
+        <td><%= slide.title_font_size_desktop %></td>
+        <td><%= slide.title_font_size_mobile %></td>
+        <td><%= slide.position %></td>
+        <td><%= link_to 'Show', slide %></td>
+        <td><%= link_to 'Edit', edit_slide_path(slide) %></td>
+        <td><%= link_to 'Destroy', slide, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Slide', new_slide_path %>

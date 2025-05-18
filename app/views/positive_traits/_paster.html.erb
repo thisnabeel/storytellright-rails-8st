@@ -1,0 +1,127 @@
+<script>
+	extract_array = {
+		"DEFINITION:" : "def",
+		"CATEGORIES:" : "categories",
+		"SIMILAR ATTRIBUTES:" : "similar-attr",
+		"POSSIBLE CAUSES": "pos-causes",
+		"ASSOCIATED BEHAVIORS": "assoc-behaviors",
+		"ASSOCIATED THOUGHTS": "assoc-thoughts",
+		"ASSOCIATED EMOTIONS:" : "assoc-emotions",
+		"POSITIVE ASPECTS:" : "pos-aspects",
+		"NEGATIVE ASPECTS:" : "neg-aspects",
+		"EXAMPLE FROM FILM:" : "char-examples",
+		"EXAMPLE FROM LITERATURE:" : "char-examples",
+		"EXAMPLE FROM TV:" : "char-examples",
+		"EXAMPLE FROM HISTORY:" : "char-examples",
+		"CONFLICT:" : "conflicting-traits",
+		"CHARACTER:" : "challenges"
+	}
+
+	// extract_array = [
+	// 	{
+	// 		"splitter": "DEFINITION",
+	// 		"input": "def"
+	// 	},
+	// 	{
+	// 		"splitter": "SIMILAR FLAWS",
+	// 		"input": "similar-flaws"
+	// 	},
+	// 	{
+	// 		"splitter": "POSSIBLE CAUSES",
+	// 		"input": "pos-causes"
+	// 	},
+	// 	{
+	// 		"splitter": "ASSOCIATED BEHAVIORS AND ATTITUDES",
+	// 		"input": "assoc-behaviors"
+	// 	},
+	// 	{
+	// 		"splitter": "ASSOCIATED THOUGHTS",
+	// 		"input": "assoc-thoughts"
+	// 	},
+	// 	{
+	// 		"splitter": "ASSOCIATED EMOTIONS",
+	// 		"input": "assoc-emotions"
+	// 	},
+	// 	{
+	// 		"splitter": "POSITIVE ASPECTS",
+	// 		"input": "pos-aspects"
+	// 	},
+	// 	{
+	// 		"splitter": "NEGATIVE ASPECTS",
+	// 		"input": "neg-aspects"
+	// 	},
+	// 	{
+	// 		"splitter": "EXAMPLE FROM",
+	// 		"input": "char-examples"
+	// 	},
+	// 	{
+	// 		"splitter": "OVERCOMING THIS TRAIT AS A MAJOR FLAW:",
+	// 		"input": "flaw-keys"
+	// 	},
+	// 	{
+	// 		"splitter": "TRAITS IN SUPPORTING CHARACTERS THAT MAY CAUSE CONFLICT:",
+	// 		"input": "conflicting-traits"
+	// 	},
+	// ]
+
+
+	$(".paster").on("change", function(){
+		// // alert("hi")
+		output = []
+		val = $("#paster").val()
+		list = []
+		list = val.match(/\b([A-Z]* *[A-Z]*:*)*\b/g)
+		new_list = []
+		$.each(list, function(index, item){
+			if (String(item).length > 3) {
+				new_list.push(item)
+			}
+		})
+
+		console.log(new_list)
+
+		$(".deet").find(".fr-view").html("")
+
+		$.each(new_list, function(index, item){
+
+			if (item == "CHARACTER") {
+				item = "CHARACTER:"
+			}
+			p1 = val.split(item)[1]
+			p2 = p1.split(new_list[index + 1])[0]
+			output.push(p2)
+			ref = $.trim( item ).replace(/\n/g, " ");
+			finder = extract_array[ref]
+			p2 = p2.replace(/\d*/g, "")
+			console.log(ref)
+			console.log(finder)
+			$(".deet[data-title='"+finder+"']").find(".fr-view").html(p2)
+		})
+		
+		spacize()
+		console.log(output)
+	})
+
+	function spacize(){
+		list = ["pos-causes", "assoc-behaviors"]
+		$.each(list, function(index, item){
+			box = $(".deet[data-title='"+item+"']").find(".fr-view")
+			val = box.html()
+			
+			items = ""
+
+			splits = val.match(/[A-Z]*[^A-Z]*/g)
+
+			$.each(splits, function(sense, sentence){
+				if (sentence.length > 2) {
+					items += "<li>"+sentence+"</li>"
+				}
+			})
+			ul = "<ul>"+items+"</ul>"
+			
+			box.html(ul)
+			console.log(splits)
+		})
+		saveStory()
+	}
+</script>

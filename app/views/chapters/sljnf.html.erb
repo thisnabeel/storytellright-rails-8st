@@ -1,0 +1,45 @@
+sljnf<% if @chapter.book.sorting.present? && @chapter.book.sorting.order.split(",").map(&:to_i).count > 1 %>
+<div class="container">
+
+	<% toc = @chapter.book.sorting.order.split(",").map(&:to_i) %>
+	<% m = toc.index(@chapter.id) %>
+
+	<% prev_chapters = toc[0..m].present? && toc[0..m].count > 1 %>
+	<% next_chapters = toc[m..1000].present? && toc[m..1000].count > 1 %>
+	
+
+	<% if prev_chapters == true %>
+		<% p = @chapter.book.chapters.find(toc[0..m-1].last).id %>
+
+		<div class="col-lg-6">
+			<a href="/chapters/<%= p %>">
+			<button class="btn btn-block btn-info">
+			<i class="fa fa-fast-backward fa-3x" aria-hidden="true"></i><br>
+		Previous Chapter</button>
+			</a>
+		</div>
+
+	<% end %>
+
+	<% if next_chapters == true %>
+		<% n = @chapter.book.chapters.find(toc[m+1..1000].first).id %>
+
+		<div class="
+			<% if prev_chapters.present? %>
+				col-lg-6
+			<% else %>
+				col-lg-12
+			<% end %>
+		">
+			<a href="/chapters/<%= n %>">
+			<button class="btn btn-block btn-success">
+			<i class="fa fa-fast-forward fa-3x" aria-hidden="true"></i><br>
+		Next Chapter 
+		</button>
+			</a>
+		</div>
+	
+	<% end %>
+
+</div>
+<% end %>

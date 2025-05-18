@@ -1,0 +1,41 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Listing Discussions</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Description</th>
+      <th>Questions</th>
+      <th>Answers</th>
+      <th>Members</th>
+      <th>Club</th>
+      <th>Unlock time</th>
+      <th>Position</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @discussions.each do |discussion| %>
+      <tr>
+        <td><%= discussion.title %></td>
+        <td><%= discussion.description %></td>
+        <td><%= discussion.questions %></td>
+        <td><%= discussion.answers %></td>
+        <td><%= discussion.members %></td>
+        <td><%= discussion.club_id %></td>
+        <td><%= discussion.unlock_time %></td>
+        <td><%= discussion.position %></td>
+        <td><%= link_to 'Show', discussion %></td>
+        <td><%= link_to 'Edit', edit_discussion_path(discussion) %></td>
+        <td><%= link_to 'Destroy', discussion, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Discussion', new_discussion_path %>

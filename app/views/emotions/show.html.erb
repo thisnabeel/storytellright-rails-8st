@@ -1,0 +1,144 @@
+<h1>Editing Emotion</h1>
+
+<p>Title:</p>
+<input class="title-form form-control" value="<%= @emotion.title %>">
+
+<div class="form-check form-check-inline">
+  <input class="form-check-input" type="radio" <%= 'checked' if @emotion.category == 'green' %> name="inlineRadioOptions" id="inlineRadio1" value="green">
+  <label class="form-check-label" for="inlineRadio1">Green</label>
+</div>
+<div class="form-check form-check-inline">
+  <input class="form-check-input" type="radio" <%= 'checked' if @emotion.category == 'red' %> name="inlineRadioOptions" id="inlineRadio3" value="red">
+  <label class="form-check-label" for="inlineRadio3">Red</label>
+</div>
+
+
+<br>
+<% deets = {
+		"definition" => "def",
+		"physical signs" => "physical-signs",
+		"internal sensations" => "internal-sensations",
+		"mental responses" => "mental-responses",
+		"long term cues" => "long-term-cues",
+		"supressed cues" => "supressed-thoughts",
+		"may escalate to" => "may-escalate",
+		"may de-escalate to" => "may-de-escalate",
+	} %>
+
+<section class="details">
+	<% deets.each do |d| %>
+	<div class="deet" data-title="<%= d[1] %>">
+		<h3><%= d[0].capitalize %>:</h3>
+		<textarea class="form-control froalize">
+			<%= @emotion.details[d[1]].html_safe if @emotion.details.present? && @emotion.details[d[1]].present? %>
+		</textarea>
+		<hr>
+	</div>
+	<% end %>
+	<div class="bq-list">
+		<ul>
+		</ul>
+	</div>
+</section>
+
+<hr>
+
+<style>
+	.table td.green {
+		background: #ceffd9;
+	}
+
+	.table td.red {
+		background: #d63031;
+    	color: #fff;
+	}
+
+	.table {
+		font-size: 24px;
+	}
+
+</style>
+
+<h1>Reaction Trigger:</h1>
+<table class="table text-center">
+	<tbody>
+		<% Emotion.where.not(category: @emotion.category).each do |e| %>
+		<tr>
+			<td class="<%= @emotion.category %>"><%= @emotion.title %></td>
+			<td class="<%= e.category %>"><%= e.title %></td>
+		</tr>
+		<% end %>
+	</tbody>
+</table>
+
+<hr>
+<%= link_to 'Show', @emotion %> |
+<%= link_to 'Back', negative_traits_path %>
+
+<script>
+	$(".froalize").froalaEditor({
+		key: froalaKey,
+		toolbarInline: true,
+		charCounterCount: false,
+		saveInterval: 500,
+		toolbarButtonsMD: ['bold', 'italic', 'underline', 'formatOL', 'formatUL'],
+		toolbarButtonsSM: ['bold', 'italic', 'underline', 'formatOL', 'formatUL']
+	})
+	.on('froalaEditor.save.before', function (e, editor) {
+    // Before save request is made.
+    saveStory()
+	})
+	.on('froalaEditor.save.after', function (e, editor, response) {
+	// After successfully save request.
+	})
+	.on('froalaEditor.save.error', function (e, editor, error) {
+	// Do something here.
+	});
+
+	function saveStory(){
+		details = {}
+
+		$(".deet").each(function(){
+			details[$(this).attr('data-title')] = $(this).find(".fr-view").html()
+		})
+
+		console.log(details)
+		
+
+	   $.ajax({
+	       type: "PUT",
+	       dataType: "json",
+	       url: '/emotions/<%= @emotion.id %>',
+	       contentType: 'application/json',
+	       data: JSON.stringify({ 
+	       	title: $(".title-form").val(),
+	       	details: details,
+	          _method:'post' 
+	       }),
+	       success: function(res){
+	         console.log(res)
+	       }
+	   })	
+	}
+
+	$("body").on("click", ".form-check-input", function(){
+		val = $(this).attr("value")
+		$.ajax({
+	       type: "PUT",
+	       dataType: "json",
+	       url: '/emotions/<%= @emotion.id %>',
+	       contentType: 'application/json',
+	       data: JSON.stringify({ 
+	       	title: $(".title-form").val(),
+	       	category: val,
+	          _method:'post' 
+	       }),
+	       success: function(res){
+	         console.log(res)
+	       }
+	   	})
+	})
+
+
+</script>
+

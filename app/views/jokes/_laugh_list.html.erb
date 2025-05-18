@@ -1,0 +1,129 @@
+<style>
+	.laugh {
+		padding: 30px;
+    	margin: 15px;
+    	border: 20px solid #00e2e2;
+    	position: relative;
+	}
+
+	.remove-laugh {
+		position: absolute;
+		top: -20px;
+    	left: -40px;
+	}
+</style>
+
+<article class="part" id="part-3">
+	<ul class="clean-list laugh-list">
+		
+	</ul>
+	<div class="btn btn-block btn-primary add-laugh">+</div>
+</article>
+
+<div class="hidden jt_selector">
+	<select name="" id="">
+		<% JokeStructure.all.each do |js| %>
+			<option value="<%= js.id %>">
+				<%= js.title %>
+			</option>
+		<% end %>
+	</select>
+</div>
+
+<script>
+	$("body").on("click", ".add-laugh", function(){
+		console.log($(".joke_structures").html())
+		$('.laugh-list').append(makeLaugh("", []))
+		makeFroala()
+		saveJoke()
+	})
+
+	<% if @joke.joke_details.present? && @joke.joke_details["laughs"] %>
+		laughs_json = <%= @joke.joke_details['laughs'].to_json.html_safe %>;
+		$.each(laughs_json, function(index, item){
+			$('.laugh-list').append(makeLaugh(item["header"], item["list"]))
+		})
+	<% end %>
+
+	function makeLaugh(header, list){
+		output = ""
+		$.each(list, function(index, item){
+			output += makeJS(item["title"], item["body"])
+		})
+	
+		return `
+			<li class="laugh">
+				<i class="remove-laugh fa fa-times"></i>
+				<div class="laugh-header">
+					<textarea class="froalize">`+header+`</textarea>
+				</div>
+				<hr>
+				<div class="joke_structures">
+					`+jsList(output)+`
+				</div>
+			</li>`
+	}
+
+	// 
+	function jsList(output){
+		jt_selector = $(".jt_selector").html()
+		return `
+		`+jt_selector+`
+		<i class="fa fa-eye joke-structure-preview"></i>
+		<i class="fa fa-plus add-joke-structure"></i>
+
+		<ul class="joke-structures-list clean-a">
+		`+output+`
+		</ul>`
+	}
+	
+
+	  $("body").on("click", ".add-joke-structure", function(){
+	    box = $(this).closest(".joke_structures")
+	    val = box.find("select").val()
+	    list = box.find(".joke-structures-list")
+	    $.getJSON( "/joke_structures/"+val, function( data ) {
+	      console.log(data)
+	      
+	      list.append(makeJS(data["title"], ""))
+	      makeFroala()
+	      saveJoke()
+
+	    });
+	  })
+
+	  function makeJS(title, body){
+	    return `<li class="js">
+	          <p class='js-title'>`+title+`</p>
+	          <div class="js-body">
+	            <textarea class="froalize">`+body+`</textarea>
+	          </div>
+	          <i class="remove-element fa fa-times"></i>
+	        </li>`
+	  }
+
+
+ 	// 
+	$("body").on("click", ".remove-element", function(){
+		li = $(this).closest("li")
+		var r = confirm("Remove Element?");
+		if (r == true) {
+		  li.remove()
+		  saveJoke()
+		} else {
+			
+		}
+	})
+
+
+	$("body").on("click", ".remove-laugh", function(){
+		var r = confirm("Remove Laugh?");
+		if (r == true) {
+			li = $(this).closest(".laugh")
+		    li.remove()
+		    saveJoke()
+		} else {
+		}
+	})
+
+</script>	

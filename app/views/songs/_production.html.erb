@@ -1,0 +1,64 @@
+    
+
+    <% if m.inspirations.present? %>  
+      <span class="has-inspirations" data-id="<%= m.id %>">
+        <i class="fa fa-lightbulb-o"></i>
+      </span>
+    <% end %>
+
+    <br>
+
+    <% if m.link.present? %>
+    <i class="fa fa-5x fa-play-circle-o text-center play-yt" src="<%= m.link %>"></i>
+    <div class="iframe-container"></div>
+    <hr>
+<% end %>
+
+    <span class="story-artist" artist="<%= m.artist %>">
+      <%= m.artist %>
+    </span>
+    <span class="story-title">
+      <%= m.title %>
+    </span>
+
+    <% if m.message.present?  %>
+      <hr>
+      <div class="story-armature armature">
+        <%= m.message.html_safe %>
+      </div>
+    <% end %>
+
+    <% if m.folder.try(:[], "sections").present?  %>
+      <hr>
+      <ul class="folder clean-list">
+        <i class="fa fa-expand expand-folder">
+        
+        </i>
+        <% m.folder.try(:[], "sections").try(:each) do |t| %>
+          <li 
+            class="touch-lyrics"
+            data-title="<%= t["title"] %>"
+            data-body="<%= t["body"] %>"
+            data-color="<%= t["color"] %>"
+            data-timestamp="<%= t["timestamp"] %>"
+            data-chords="<%= t["chords"] %>"
+            data-section="<%= ERB::Util.url_encode(t.to_json) %>"
+            style="background: <%= t["color"] %>; color: <%= t["font"] %>">
+            <span class="title-final"><%= t["title"] %></span>
+            <% if t["chords"].present? && t["chords"].length > 0 %>
+              <span class="chords"><%= t["chords"] %></span>
+            <% end %>
+          </li>
+        <% end %>        
+      </ul>
+    <% end %>
+
+    <a href="/songs/<%= m.id %>" class="enter-btn">
+      Enter
+    </a>
+
+    <% if m.inspirations.present? %>  
+      <span class="has-inspirations" data-id="<%= m.id %>">
+        <i class="fa fa-lightbulb-o"></i>
+      </span>
+    <% end %>

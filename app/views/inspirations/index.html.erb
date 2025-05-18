@@ -1,0 +1,95 @@
+
+<style>
+  .head {
+    text-align: center;
+    display: block;
+    padding: 70px;
+    font-family: 'sf';
+  }
+
+  .inspirations-list {
+    border-top: 0;
+    box-shadow: 0px 20px 20px 0px #ccc;
+  }
+
+  .inspirations-list > li {
+    padding: 30px;
+    border-bottom: 1px solid #ccc;
+    position: relative;
+    font-size: 20px;
+    background: #fff;
+    /* display: none; */
+  }
+
+  .wrap {
+    max-width: 700px;
+    margin: 0 auto;
+    display: block;
+  }
+
+  .i-title {
+    padding: 4px 10px;
+    background: #f9ffcb;
+    border-radius: 5px;
+    /* color: #fff; */
+    /* border-radius: 10px; */
+    font-family: 'sf';
+  }
+
+  .grey {
+    color: #989898;
+  }
+
+  .tags {
+    margin-top: 20px;
+    display: block;
+  }
+
+  .tags li {
+    display: inline;
+    font-size: 18px;
+    font-weight: 300;
+    padding: 10px;
+    border-radius: 10px;
+    background: #a9fbf8;
+    border: 1px solid #ccc;
+
+  }
+
+  .i-body {
+    font-size: 24px;
+  }
+</style>
+
+<h1 class="head">
+  Inspirations
+</h1>
+
+<div class="wrap">
+  
+  <%= render "inspirations/finder" %>
+
+  <% if params[:type] == "songs" %>
+    <% inspos = Inspiration.where(inspirable_type: "Song") %>
+  <% else %>
+    <% inspos = Inspiration.where(inspirable_type: "Story") %>
+  <% end %>
+
+  <ul class="clean-list inspirations-list">
+    <% inspos.shuffle.each do |i| %>
+      <li>
+        <div class="i-body"><%= i.body  %></div>
+        
+        <div><span class="grey">Like in: </span><span class='i-title'><%= i.inspirable.title %></span>
+        </div>
+
+        <ul class="clean-list tags">
+          <% i.tags.split(", ").each do |t|  %>
+            <li><%= t %></li>
+          <% end %>
+        </ul>
+      </li>
+    <% end %>
+  </ul>
+
+</div>

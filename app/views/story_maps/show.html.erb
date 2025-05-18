@@ -1,0 +1,14 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>String:</strong>
+  <%= @story_map.title %>
+</p>
+
+<p>
+  <strong>Text:</strong>
+  <%= @story_map.body %>
+</p>
+
+<%= link_to 'Edit', edit_story_map_path(@story_map) %> |
+<%= link_to 'Back', story_maps_path %>

@@ -1,0 +1,34 @@
+.stories-list,
+.jokes-list,
+.games-list {
+  list-style: none;
+  padding: none;
+  position: relative;
+  left: 3%;
+}
+
+.stories-list > li,
+.jokes-list > li,
+.games-list > li {
+  position: relative;
+  width: 30%;
+  margin: 1%;
+  padding: 40px;
+  display: inline-block;
+  vertical-align: top;
+
+  box-shadow: 0 0 10px 1px #c8c8c8;
+  border-radius: 20px;
+  text-align: center;
+  background-color: #fff;
+
+  img {
+    max-width: 100%;
+  }
+}
+
+.game-title {
+  font-family: "Do Hyeon", sans-serif !important;
+  text-align: center;
+  font-size: 24px;
+}

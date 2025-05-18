@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Articles</h1>
+
+    <hr>
+    <% @articles.each do |article| %>
+      <article>
+        <h3><%= article.title %></h3>
+        <small>By Nabeel Khan</small><br>
+        <%= link_to 'Show', article %>
+        <%= link_to 'Destroy', article, method: :delete, data: { confirm: 'Are you sure?' } %>
+        <hr>
+      </article>
+    <% end %>
+
+
+<br>
+
+<%= link_to 'New Article', new_article_path %>

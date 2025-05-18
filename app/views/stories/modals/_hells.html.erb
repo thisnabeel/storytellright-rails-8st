@@ -1,0 +1,237 @@
+<style>
+  #hellsModal {
+
+  }
+
+  #hellsModal .modal-content {
+
+  }
+
+  #hellsModal .modal-body {
+
+  }
+
+  #hellsModal .hell-itself {
+    padding-top: 40px;
+    line-height: 35px;
+  }
+
+  .hell-inspi {
+    display: none;
+  }
+
+  
+  .hells-inspo {
+    display: block;
+    padding: 10px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    /* background: #ff4141; */
+    /* color: #fff; */
+    color: #ff4141;
+  }  
+
+  #hellsModal .hi-1 {
+    background: #a70000;
+    color: #fff;
+    padding: 20px;
+    padding-top: 40px;
+  }
+
+  #hellsModal .hi p, {
+    margin: 0 !important;
+  }
+
+  #hellsModal .hi-0 {
+    background: #000;
+    padding: 20px;
+    color: #fff;
+    padding-top: 40px;
+  }
+
+  #hellsModal .hi-2 {
+    border: 4px dashed;
+    color: #a70000;
+    padding: 20px;
+  }
+
+  #hellsModal .hi-pink {
+    background: #FF00A1;
+    padding: 20px;
+    color: #fff;
+  }
+
+  #hellsModal .hi-3 {
+    background: #FFFF55;
+    padding: 20px;
+    font-size: 24px;
+  }
+
+  .hi-blue {
+    /* text-align: center; */
+    /* padding: 80px 20px; */
+    padding: 20px !important;
+    background: #005e84;
+    color: #fff;
+  }
+
+  .hi {
+    position: relative;
+  }
+
+  .hi aside {
+    position: absolute;
+    left: -12px;
+    top: 0px;
+    background: inherit;
+    padding: 4px;
+    border-radius: 2px;
+    font-size: 12px;
+  }
+
+  .tri-tale {
+    display: flex;
+  }
+
+  .tri-tale > span {
+      flex: 1 1 100%;
+      margin: 6px;
+  }
+
+  .modal-armature {
+    font-size: 18px;
+    background: #005E84;
+    padding: 10px;
+    color: #fff;
+  }
+
+  .modal-armature p {
+    margin: 0 !important;
+  }
+
+</style>
+
+<span class="hells-inspo">Classics <span class="fa fa-refresh"></span></span>
+
+<!-- Modal -->
+<div class="modal fade" id="hellsModal" tabindex="-1" role="dialog" aria-labelledby="hellsModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="hellsModalLabel">Classics</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        
+        <select id="hellsFinder"></select>
+        <hr>
+        
+
+        <section class="hells">
+          
+        </section>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function hellsModal(){
+    $("#hellsModal").modal("show")
+  }
+
+  // 
+  function getHells(){
+    $.getJSON( "/get_hells", function( data ) {
+      console.log(data)
+    });
+  }
+
+  $("body").on("click", '.hells-inspo', function(){
+    $.getJSON( "/get_hells", function( data ) {
+      console.log(data)
+      $("#hellsFinder").empty()
+      $(".hells").empty()
+      $.each(data, function(index, item){
+        $("#hellsFinder").append(`<option value="`+item["id"]+`">`+item["title"]+`</option>`)
+        
+        folder = item["story_details"]
+
+        $(".hells").append(`
+
+          
+
+          <div data-id="`+item["id"]+`" class="hellishness hell-inspi clean-list">
+
+          <div class="modal-armature text-center">${folder["armature"]}</div>
+          <div class="tri-tale">
+            <span style="background: #a70000; color:#fff; padding: 10px;">Denial & Effect</span> 
+            <span style="border: 4px dashed; color: #005e84; padding: 10px;">Hell by Denial</span> 
+            <span style="background: #FFFF55; padding: 10px;">Beauty/Horror</span>
+          </div>
+
+          <div class="tri-tale">
+          
+            <span style="background: #a70000; color:#fff; padding: 10px;">
+            <a href="/stories/${item["id"]}" id="hells-finder-link" style="color: #fff;">${folder["whose-hell"]}</a></span> 
+            <span style="border: 4px dashed; color: #005e84; padding: 10px;">${folder["during-2"]}</span> 
+            <span style="background: #FFFF55; padding: 10px;">${folder["climax"]}</span>
+          </div>
+          <hr>
+
+            <li class="hi-1 hi">
+              <aside>You will believe:</aside>
+              `+folder["bonfire-deny-accept-1"]+`
+            </li>
+            <li class="hi-blue hi">
+              <aside>But, in Reality:</aside>
+              <br/>
+              `+folder["armature"]+`
+            </li>
+            <hr>
+            <li class="hi-1 hi" style="background: #a70000;">
+              <aside>Act I:</aside>
+              `+folder["whose-hell"]+`
+            </li>
+            <li class="hi-pink hi">
+              `+folder["plot-curtain"]+`
+            </li>
+            <li class="hi-blue hi">
+              <aside>Act II: </aside>
+              <i class="fa fa-eye-slash"></i>
+              `+folder["during"]+`
+              <i class="fa fa-eye"></i>
+              `+folder["during-2"]+`
+            </li>
+            <li class="hi-pink hi">
+              <aside>Act III:</aside>
+              `+folder["red-3"]+`
+            </li>
+            <div class="hi-3 hi">
+              `+folder["climax"]+`
+            </div>
+          </div>
+        `)
+      })
+
+      getHellsInspi()
+    });
+    hellsModal()
+  })
+
+  $("body").on("change", "#hellsFinder", function(){
+    getHellsInspi()
+  })
+
+
+  function getHellsInspi(){
+    val = $("#hellsFinder").val()
+    $(".hell-inspi").hide()
+    $(".hell-inspi[data-id='"+val+"']").show()
+  }
+
+
+</script>

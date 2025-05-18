@@ -1,0 +1,32 @@
+
+<style>
+	.finder {
+		padding: 30px;
+		font-size: 34px;
+		/*font-family: 'sf';*/
+	}
+</style>
+
+<input type="text" class="form-control finder" placeholder="Type to search...">
+
+<script>
+	$(".finder").on("keyup", function(){
+		console.log($(this).val())
+		val = $(this).val()
+		$(".inspirations-list > li").hide()
+		$(".inspirations-list > li").each(function(){
+			
+			if ($(this).find(".tags").html().toLowerCase().indexOf(val.toLowerCase()) != -1){
+				$(this).show()
+			}
+
+			if ($(this).find(".i-title").html().toLowerCase().indexOf(val.toLowerCase()) != -1){
+				$(this).show()
+			}
+		})
+
+		if (val == "") {
+			$(".inspirations-list > li").show()
+		}
+	})
+</script>

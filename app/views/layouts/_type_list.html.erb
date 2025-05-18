@@ -1,0 +1,121 @@
+<style>
+	ul.clean-list.type-list {
+		font-size: 24px;
+		left: 0;
+		padding: 10px 20px 12px 20px;
+	}
+
+	.type-list li {
+		display: inline-block;
+		padding: 0 6px;
+	}
+
+	.art-medium {
+		background: blue;
+	    border-radius: 4px;
+    	padding: 0 17px !important;
+	}
+
+	.art-medium a {
+		color: #fff;
+
+	}
+
+	.top-nav {
+		display: block;
+		max-width: 300px;
+		background: #fff;
+		border-radius: 0 0 10px 10px;
+		margin: 0 auto;
+		text-align: center !important;
+		position: relative;
+		font-family: 'VT323', monospace;
+		padding: 0;
+	}
+	
+	.go-landing {
+		position: absolute;
+		left: -34px;
+	}
+</style>
+
+
+<h1 class="text-center top-nav">
+
+	<ul class="clean-list type-list">
+		
+		<a class="fa fa-home go-landing clean-a" href="/home"></a>
+		<!-- !!!! -->
+		<!-- FILM -->
+		<!-- !!!! -->
+		<li 
+			class="<%= 'art-medium' if url_has(["/stories", "/original/stories", "/watch"]) %>"
+			<% category = 'stories' if url_has(["/stories", "/original/stories", "/watch"]) %>
+		>
+			<a href="/stories" class="stories">
+				<i class="fa fa-film"></i>
+				</a>
+		</li>
+		
+		<!-- !!!! -->
+		<!-- SONGS -->
+		<!-- !!!! -->
+		<li 
+			class="<%= 'art-medium' if url_has(["/songs", "/original/songs", "/listen"]) %>"
+			<% category = 'songs' if url_has(["/songs", "/original/songs", "/listen"]) %>
+		>
+			<a href="/songs" class="songs">
+				<i class="fa fa-music"></i>
+			</a>
+		</li>
+
+		
+		<!-- !!!! -->
+		<!-- JOKES -->
+		<!-- !!!! -->
+		<li 
+			class="<%= 'art-medium' if url_has(["/jokes", "/original/jokes", "/laugh"]) %>"
+			<% category = 'jokes' if url_has(["/jokes", "/original/jokes", "/laugh"]) %>
+		>
+			<a href="/jokes" class="jokes">
+				<i class="fa fa-smile-o"></i>
+			</a>
+		</li>
+		
+		<!-- !!!! -->
+		<!-- VISUALS -->
+		<!-- !!!! -->
+		<li 
+			class="<%= 'art-medium' if url_has(["/visuals", "/original/visuals", "/marvel"]) %>"
+			<% category = 'visuals' if url_has(["/visuals", "/original/visuals", "/marvel"]) %>
+		>
+			<a href="/visuals" class="visuals">
+				<i class="fa fa-image"></i>
+			</a>
+		</li>
+		
+		<!-- !!!! -->
+		<!-- GAMES -->
+		<!-- !!!! -->
+		<li 
+			class="<%= 'art-medium' if url_has(["/games", "/original/games", "/play"]) %>"
+			<% category = 'games' if url_has(["/games", "/original/games", "/play"]) %>
+		>
+			<a href="/games" class="games">
+				<i class="fa fa-gamepad"></i>
+			</a>
+		</li>
+
+	</ul>
+
+</h1>
+<br><br>
+
+<style>
+<% if !category.present? %>
+	/* .topness {
+		display: none;
+	} */
+<% end %>
+</style>
+

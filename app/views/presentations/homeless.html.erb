@@ -1,0 +1,198 @@
+<style>
+  .nav-toggler li {
+    display: inline-block;
+    padding: 10px;
+    border: 1px solid #ccc;
+    color: #ccc;
+  }
+
+  .presentations li .p-home {
+    background: #bd9468;
+    color: #fff;
+    padding: 10px;
+    line-height: 50px;
+  }
+
+  .presentation {
+    position: relative;
+  }
+
+  .problem input {
+    display: none;
+  }
+
+  .toggle-problem {
+    position: absolute;
+    left: -28px;
+    top: 18px;
+    color: #e7e7e7;
+    width: 30px;
+  }
+
+  .toggle-problem:hover {
+    color: #000;
+  }
+
+  .problem .toggle-problem {
+    color: red;
+  }
+
+  .problem-input {
+    background: transparent;
+  }
+  .problem .problem-input {
+    background: red !important;
+    color: #fff;
+  }
+
+  .nav-toggler .active-nt {
+    border-color: #000;
+    color: #000;
+  }
+
+  .nav-toggler span {
+    padding: 3px 10px;
+    border-radius: 5px;
+    color: inherit;
+    border: inherit;
+  }
+
+  .p-title {
+    font-size: 24px;
+    padding-top: -4px;
+    display: inline-block;
+    position: relative;
+    top: 4px;
+    left: 7px;
+  }
+
+  .done .p-title, .done .edit-p {
+    display: none;
+  }
+</style>
+
+<%= render "searcher/searcher" %>
+
+<h1>Presentations</h1>
+<hr>
+
+
+<ul class="presentations clean-list">
+  <% @presentations.each do |p| %>
+    <li class="presentation" data-id="<%= p.id %>" slides="<%= p.body.kind_of?(Array) ? "#{p.body.length}" : "0"  %>" >
+      <a href="/<%= p.presentable_type.downcase %>s/<%= p.presentable_id %>/admin" class="clean-a" target="_blank">
+        <span class="p-home"><%= p.presentable.body %></span>
+      </a>
+
+      <div class="toggle-problem fa fa-exclamation-triangle"></div>
+      
+      <span class="p-slides">
+        <a href="/presentations/<%= p.id %>/edit" class="edit-p btn btn-warning clean-a" target="_blank">
+          <i class="fa fa-edit"></i> Edit
+        </a>
+        <a href="/presentations/<%= p.id %>" class="clean-a" target="_blank">
+          <i class="fa btn btn-primary fa-book"></i> <span class="p-title"><%= "#{p.body.length} Slides" if p.body.kind_of?(Array) %></span>
+        </a>
+        <a href="/abstractions/<%= p.presentable.id %>/view" class="clean-a" target="_blank">
+          <i class="fa btn btn-outline-primary fa-play-circle"></i>
+        </a>
+      </span>
+      
+
+      <input type="number" class="id-input" data-id="<%= p.presentable.id %>">
+      
+      <hr>
+
+    </li>
+  <% end %>
+</ul>
+
+
+<script>
+  $("body").on("click", ".toggle-problem", function(){
+    $(this).closest(".presentation").find('input').toggle()
+  })
+
+  var problemInputTypeWatchOptions = {
+    callback: function (value) { 
+      li = $(this).closest("li")
+      id = li.attr("data-id")
+
+      $.ajax({
+          type: "PUT",
+          dataType: "json",
+          url: '/presentations/'+id,
+          contentType: 'application/json',
+          data: JSON.stringify({ 
+            problem: value,
+            _method:'post' 
+          }),
+          success: function(res){
+            console.log(res)
+          }
+      })
+
+    },
+    wait: 750,
+    highlight: true,
+    allowSubmit: false,
+    captureLength: 2
+  } 
+
+  $(".problem-input").typeWatch( problemInputTypeWatchOptions );
+
+  function ntToggle(){
+    t = $(".active-nt").attr("nt-toggle")
+    $(".presentation").hide()
+    $(".presentation."+t).show()
+
+    $(".nav-toggler li").each(function(){
+      l = $(".presentation."+$(this).attr("nt-toggle")).length
+      $(this).find(".count").html(l)
+    })
+  }
+
+  // ntToggle()
+
+  $("body").on("click", ".nav-toggler li", function(){
+    $('.active-nt').removeClass("active-nt")
+    $(this).addClass("active-nt")
+    // ntToggle()
+  })
+
+  sortBySlides()
+
+  function sortBySlides(){
+    tinysort('.presentation',{
+      attr:'slides',
+      order:'desc'
+    });
+  }
+
+  // 
+  var idTypeWatchOptions = {
+      callback: function (value) { 
+        id = $(this).attr("data-id")
+        $.ajax({
+            type: "PUT",
+            dataType: "json",
+            url: '/abstractions/'+id,
+            contentType: 'application/json',
+            data: JSON.stringify({ 
+              skill_id: value,
+               _method:'post' 
+            }),
+            success: function(res){
+              console.log(res)
+            }
+        })
+      },
+      wait: 750,
+      highlight: true,
+      allowSubmit: false,
+      captureLength: 1
+  }
+
+  $(".id-input").typeWatch( idTypeWatchOptions );
+
+</script>

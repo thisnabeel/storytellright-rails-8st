@@ -1,0 +1,249 @@
+<style>
+  #signUpModal {
+    font-family: "Oswald", sans-serif;
+    text-align: left;
+  }
+  
+
+  #signUpModal .modal-content {
+    background: #232526;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #414345, #232526);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #414345, #232526); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+    color: #fff;
+  }
+
+  #signUpModal .modal-header {
+    background: #1488CC;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #2B32B2, #1488CC);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #2B32B2, #1488CC); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    display: block;
+    border: 0;
+  }
+
+  #signUpModal .modal-title {
+    text-align: center;
+    font-size: 34px;
+  }
+
+  #signUpModal .modal-body {
+    padding: 20px;
+  }
+
+  #signUpModal label {
+    display: inline-block;
+    margin: 0.5rem 0;
+    font-size: 24px;
+  }
+
+  #signUpModal input {
+    padding: 1rem;
+    font-size: 24px;
+    border-radius: 0;
+    border: 0;
+    background: #252729;
+    color: #fff;
+  }
+
+  #signUpModal input:focus {
+    background: #9d1e4a;
+  }
+
+  #signUpModal .modal-body {
+
+  }
+
+  #signUpModal .submit-user-sign-up {
+
+  }
+
+  /**/
+  #signUpModal .su-modal-navs {
+    text-align: center;
+  }
+  #signUpModal .su-modal-navs > div {
+    display: inline-block;
+    padding: 10px;
+    height: auto;
+    width: 80px;
+    cursor: pointer;
+  }
+
+  #signUpModal .su-modal-navs > div:hover {
+    padding: 7px;
+    border: 3px solid #a13bff;
+  }
+
+  #signUpModal .su-modal-navs img {
+    width: 100%;
+  }
+
+  /**/
+  .sales-creds .error {
+    display: block;
+    font-size: 16px;
+    background: #ea4335;
+    padding: 10px;
+  }
+  
+  .modal-title {
+    position: relative;
+  }
+
+  .instead {
+    position: absolute;
+    right: -101px;
+    /* background: #1487cc; */
+    padding: 10px;
+    color: #ffe085;
+    top: 18px;
+    font-size: 19px;
+    cursor: pointer;
+  }
+
+  .instead:hover {
+    color: #000;
+    background: #ffe085;
+  }
+
+</style>
+
+<!-- Modal -->
+<div class="modal fade" id="signUpModal" tabindex="-1" role="dialog" aria-labelledby="signUpModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title" id="signUpModalLabel">Sign In/Up!</div>
+        <p class="text-center">This Feature is for Signed In Users Only</p>
+      </div>
+      <div class="modal-body">
+  
+        <div class="sales-creds">
+
+          <label title="email">
+            Email:
+          </label>
+          <input type="text" class="form-control required" title="email" helper="Email"  placeholder="Enter Username...">
+
+          <label title="name">
+            Name:
+          </label>
+          <input type="text" class="form-control required" title="name" helper="Name"  placeholder="Enter Name...">
+
+
+          <label title="password">
+            Password:
+          </label>
+          <input type="password" class="form-control required" title="password" helper="Password" placeholder="Enter Password...">
+          
+          
+          <label title="password_confirmation">
+            Confirm Password: <small>(Leave if Just Signing In)</small>
+          </label>
+          <input type="password" class="form-control" title="password_confirmation" helper="Password Confirmation" placeholder="Re-Enter Password...">
+          
+          <br>
+          <div class="btn btn-lg btn-block btn-outline-primary submit-user-sign-up">
+            Sign In/Up
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function credsModal(){
+    $("#signUpModal").modal("show")
+  }
+
+  $("body").on("click", ".submit-user-sign-up", function(){
+    
+    $(".sales-creds .error").remove()
+
+    hash = {}
+    hash["_method"] = "post"
+
+    ready = true
+    $(".sales-creds input.required").each(function(){
+      if ($(this).val().length < 1) {
+        helper = $(this).attr("helper")
+        title = $(this).attr("title")
+        $(".sales-creds label[title='"+title+"']").append(
+              `<span class="error">Fill in this field!</span>`)
+        ready = false
+      } else {
+        hash[$(this).attr("title")] = $(this).val()
+      }
+    })
+
+    hash["password_confirmation"] = $("input[title='password_confirmation']").val()
+
+    console.log(hash)
+
+  if (ready == true) {
+    
+    $.ajax({
+        type: "POST",
+        dataType: "json",
+        url: '/make_user',
+        contentType: 'application/json',
+        data: JSON.stringify(hash),
+        success: function(res){
+         console.log(res)
+         user = res["user"]
+         swal = res["swal"]
+
+         if (user) {
+          $("body").attr("user-id", user["id"])
+          $(".non-users").hide()
+          $(".users-only").show()
+          $("#user span").html(user["email"])
+
+          $("#signUpModal").modal("hide")
+          Swal.fire({
+            icon: 'success',
+            title: swal["title"],
+            text: swal["text"],
+          })
+          window.location = window.location
+            
+
+         } else {
+          $.each(res["error"], function(index, item){
+            msg = ""
+
+            $.each(item, function(index, item){
+              msg += item
+            })
+
+            $(".sales-creds label[title='"+index+"']").append(
+              `<span class="error">`+msg+`</span>`)
+
+          })
+         }
+        },
+        error: function(err){
+            Swal.fire({
+                icon: 'error',
+                text: "User Not Found or Passwords not matching!",
+            })
+        }
+    })
+
+  } else {
+
+  }
+
+
+
+
+
+  })
+
+
+
+
+</script>

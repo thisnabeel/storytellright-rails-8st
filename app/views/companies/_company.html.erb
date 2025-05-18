@@ -1,0 +1,14 @@
+<section class="<%= 'show-projects' if @production.present? && company == @production.company %>" company-id="<%= company.id %>">
+    <li class="team" code="<%= company.code %>">
+        <i class="fa fa-caret-right caret"></i>
+        <i class="fa fa-caret-down caret"></i>
+        <span class="team-title" name="team_title"><%= company.title %></span>
+        <span class="team-extra">
+            <i class="fa fa-ellipsis-h hover-gray team-options"></i>
+            <i class="fa fa-plus hover-gray add-project"></i>
+        </span>
+    </li>
+    <% company.productions.each do |production| %>
+        <%= render "productions/production", production: production %>
+    <% end %>
+</section>

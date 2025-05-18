@@ -1,0 +1,244 @@
+
+<style>
+  .company {
+    font-weight: bold;
+    position: relative;
+  }
+
+  .remove-company {
+    position: absolute;
+    left: -40px;
+    font-size: 30px;
+    top: 0;
+  }
+
+  .company-title {
+    font-size: 34px;
+    padding: 30px;
+    border: 4px solid #000;
+    width: 100%;
+    display: block;
+  }
+
+  .company-tasks {
+    position: absolute;
+    width: 34px;
+    background: brown;
+    height: 100%;
+    top: 0;
+    right: 0;
+    padding: 40px;
+    color: #fff;
+    font-size: 34px;
+  }
+
+  .company-tasks .fa {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    text-align: center;
+    width: 100%;
+    padding-bottom: 10px;
+  }
+
+  .tasks-count {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    left: 0;
+    text-align: center;
+    padding-top: 11px;
+  }
+
+  /*  */
+
+  .company-users li {
+    display: inline-block;
+    padding: 10px;
+    background: aliceblue;
+    margin: 10px;
+    border-radius: 15px;
+  }
+
+  .top-nav .btn-info {
+		padding: 7px;
+		border-radius: 5px;
+	}
+
+</style>
+
+
+
+<hr>
+
+<ul class="companies clean-list">
+  <% @companies.each do |company| %>
+    <li class="company" data-id="<%= company.id %>">
+      <div class="remove-company">
+        <i class="fa fa-times"></i>
+      </div>
+      <span class="company-title" contentEditable key="title" url="/companies/<%= company.id %>">
+        <%= company.title %>
+      </span>
+
+      <ul class="company-users clean-list">
+        <% company.users.each do |c| %>
+          <li data-id="<%= c.id %>">
+            <i class="fa fa-times remove-user"></i>
+            <%= c.email %>
+          </li>
+        <% end %>
+        <li class="add-user"><i class="fa fa-plus"></i></li>
+      </ul>
+<%# 
+      <div class="company-tasks">
+        <div class="tasks-count">4</div>
+        <div class="fa fa-sticky-note-o"></div>
+      </div> %>
+
+    </li>
+  <% end %>
+</ul>
+
+
+<script>
+
+  $("body").on("click", ".remove-company", function(){
+    var r = confirm("Remove Company?");
+    if (r == true) {
+      li = $(this).closest("li")
+      $.ajax({
+          type: "DELETE",
+          dataType: "json",
+          url: '/companies/'+li.attr("data-id"),
+          contentType: 'application/json',
+          data: JSON.stringify({ 
+            _method:'post' 
+          }),
+          success: function(){
+            li.remove()
+          }
+      })
+    } else {
+    }
+  })
+
+  // 
+  $("body").on("click", ".add-company", function(){
+    $.ajax({
+        type: "POST",
+        dataType: "json",
+        url: '/companies',
+        contentType: 'application/json',
+        data: JSON.stringify({ 
+          title: "Untitled",
+          user_id: $("body").attr("user-id"),
+          _method:'post' 
+        }),
+        success: function(res){
+          console.log(res)
+
+          $(".companies").append(makeCompany(res))
+          makeEditor()
+        }
+    })
+  })
+
+  function makeCompany(company) {
+    return `
+    <li class="company" data-id="`+company["id"]+`">
+      <div class="remove-company">
+        <i class="fa fa-times"></i>
+      </div>
+      <span class="company-title" contentEditable key="title" url="/companies/`+company.id+`">
+        `+company["title"]+`
+      </span>
+
+
+    </li>`
+  }
+
+  makeEditor()
+
+  function makeEditor(){
+    $(".company-title").contentEdit()
+  }
+
+  // 
+  $("body").on("click", ".add-user", async function(evt){
+      li = $(this).closest(".company")
+      id = li.attr("data-id")
+      company = li
+      console.log(id)
+
+      const { value: email } = await Swal.fire({
+        input: 'email',
+        inputLabel: 'Email address',
+        inputPlaceholder: "Enter the User's email"
+      })
+
+      if (email) {
+        
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: '/company/users/config',
+            contentType: 'application/json',
+            data: JSON.stringify({ 
+              verb: "add",
+              email: email,
+              company_id: id,
+              _method:'post' 
+            }),
+            success: function(res){
+              console.log(res)
+              Swal.fire(`User Added: ${res["email"]}`)
+              $(`
+                <li data-id="${res["id"]}">
+                  <i class="fa fa-times remove-user"></i>
+                  ${res["email"]}
+                </li>`
+              ).insertBefore(li.find(".company-users .add-user"))
+            },
+            error: function(){
+              Swal.fire(`User not found!`)
+            }
+        })
+
+      }
+  })
+
+  // 
+  $("body").on("click", ".remove-user", function(){
+
+    var r = confirm("Remove User?");
+    if (r == true) {
+  
+      li = $(this).closest("li")
+      company_id = $(this).closest(".company").attr("data-id")
+      $.ajax({
+          type: "POST",
+          dataType: "json",
+          url: '/company/users/config',
+          contentType: 'application/json',
+          data: JSON.stringify({
+            verb: 'remove',
+            user_id: li.attr("data-id"),
+            company_id: company_id,
+            _method:'post' 
+          }),
+          success: function(){
+            li.remove()
+          }
+      })
+
+    } else {
+    }
+
+
+
+  })
+
+
+
+</script>

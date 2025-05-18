@@ -1,0 +1,84 @@
+<style>
+	.inspirations-list li {
+		position: relative;
+		font-size: 34px;
+		padding: 20px;
+		background-color: #fff;
+	}
+
+	.delete-inspiration {
+		position: absolute;
+		left: -40px;
+		top: 10px;
+	}
+
+</style>
+
+<section class="inspirations-container" toggle="inspirations-container">
+	
+	<br>
+	<input type="text" class="form-control inspiration-form" placeholder="Add Inspiration">
+	<div class="btn btn-block btn-outline-primary submit-inspiration">Add Inspiration</div>
+
+	<ul class="inspirations-list">
+		<% @song.inspirations.each do |i| %>
+			<li data-id="<%= i.id %>">
+				<span class='inspiration-body'>
+					<%= i.body %>
+				</span>
+				<i class="fa fa-times fa-2x delete-inspiration"></i>
+			</li>
+		<% end %>
+	</ul>
+
+
+	<script>
+		
+		$("body").on("click", ".submit-inspiration", function(){
+			$.ajax({
+			    type: "POST",
+			    dataType: "json",
+			    url: '/inspirations',
+			    contentType: 'application/json',
+			    data: JSON.stringify({ 
+			      body: $(".inspiration-form").val(),
+			      song_id: "<%= @song.id %>",
+			      _method:'post' 
+			    }),
+			    success: function(res){
+			     console.log(res)
+			     body = res["body"]
+			     $(".inspirations-list").append(`<li data-id=`+res["id"]+`>
+				<span class='inspiration-body'>
+					`+res["body"]+`
+				</span>
+				<i class="fa fa-times fa-2x delete-inspiration"></i>
+				</li>`)
+			     $(".inspiration-form").val("")
+			    }
+			})
+		})
+
+		$("body").on("click", ".delete-inspiration", function(){
+			id = $(this).closest("li").attr("data-id")
+			box = $(this).closest("li")
+			$.ajax({
+			    type: "DELETE",
+			    dataType: "json",
+			    url: '/inspirations/'+id,
+			    contentType: 'application/json',
+			    data: JSON.stringify({ 
+			       _method:'post' 
+			    }),
+			    success: function(){
+					box.remove()
+			    }
+			})
+
+		})
+
+
+
+	</script>
+
+</section>

@@ -1,0 +1,188 @@
+<style>
+  #teamSettingsModal {
+
+  }
+
+  #teamSettingsModal .modal-content {
+
+  }
+
+  #teamSettingsModal label {
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 12px;
+    line-height: 18px;
+    color: var(--color-text-weak);
+    display: inline-block;
+    font-weight: 500;
+    margin-right: 8px;
+  }
+
+  #teamSettingsModal .modal-body {
+
+  }
+
+  /*  */
+  #newMemberInput {
+      position: relative;
+  }
+
+  #newMemberInput .fa {
+    position: absolute;
+    top: 11px;
+    right: 11px;
+    cursor: pointer;
+    display: none;
+  }
+
+  /*  */
+  #team_members li {
+    padding: 10px;
+    background: #f0f7ff;
+    margin: 10px;
+  }
+
+</style>
+
+<!-- Modal -->
+<div class="modal fade" id="teamSettingsModal" tabindex="-1" role="dialog" aria-labelledby="teamSettingsModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="teamSettingsModalLabel">Team Settings</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        
+        <article>
+            <label for="">Team Name:</label>
+            <input type="text" class="form-control team-name" name="title">
+        </article>
+
+        <br>
+        <article>
+            <label for="">Members:</label>
+            <ul id="team_members" class="clean-list">
+            </ul>
+            <hr>
+            <label for="">Invite more members:</label>
+
+            <section id="newMemberInput">
+                <input type="text" class="form-control" placeholder="Add team members by username or email...">
+                <i class="fa fa-plus"></i>
+            </section>
+        </article>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary save-team">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function teamSettingsModal(){
+      
+    $.getJSON( "/companies/"+id, function( data ) {
+        console.log(data)
+        m = $("#teamSettingsModal");
+        m.attr('data-id', id)
+        m.find(".team-name").val(data["title"]);
+
+        members = m.find("#team_members")
+        members.empty()
+        $.each(data["members"], function(index, member){
+            members.append(`<li>`+member["email"]+`</li>`)
+        })
+        hideOptions()
+        $("#teamSettingsModal").modal("show");
+    });
+  }
+
+    $("body").on("click", ".edit-team", function(){
+        id = $(this).closest("#team-options").attr('company-id');
+        section = $("section[company-id="+id+"]");
+        teamSettingsModal(id)
+    })
+
+    $("body").on("click", ".save-team", function(){
+        m = $("#teamSettingsModal");
+        id = $("#teamSettingsModal").attr("data-id");
+        section = $("section[company-id="+id+"]");
+        hash = {}
+        m.find("[name]").each(function(){
+            val = $(this).val()
+            hash[$(this).attr("name")] = val;
+        })
+        hash["_method"] = "post"
+        $.ajax({
+            type: "PUT",
+            dataType: "json",
+            url: '/companies/'+id,
+            contentType: 'application/json',
+            data: JSON.stringify(hash),
+            success: function(res){
+                console.log(res)
+                Object.keys(res)
+                .forEach(function eachKey(key) { 
+                    console.log(key, res[key])
+                    $("section[company-id="+id+"]").find("[name='team_"+key+"']").html(res[key]);
+                });
+                m.modal("hide")
+            }
+        })
+
+    })
+
+    // 
+    var newMemberTypeWatchOptions = {
+        callback: function (value) { 
+            if (value.length > 3) {
+                $('#newMemberInput').find(".fa").show();
+            } else {
+                $('#newMemberInput').find(".fa").hide();
+            }
+        },
+        wait: 100,
+        highlight: true,
+        allowSubmit: false,
+        captureLength: 0
+    }
+
+    $("#newMemberInput input").typeWatch( newMemberTypeWatchOptions );
+
+    $("body").on("click", "#newMemberInput .fa-plus", function(){
+            email = $("#newMemberInput input").val()
+            id = $("#teamSettingsModal").attr("data-id");
+            $.ajax({
+                type: "POST",
+                dataType: "json",
+                url: '/company/users/config',
+                contentType: 'application/json',
+                data: JSON.stringify({ 
+                    verb: "add",
+                    email: email,
+                    company_id: id,
+                    _method:'post' 
+                }),
+                success: function(res){
+                    console.log(res)
+                    Swal.fire(`User Added: ${res["email"]}`)
+                    $("#team_members").append(
+                        `<li>${res["email"]}</li>`
+                    )
+                },
+                error: function(){
+                    Swal.fire(`User not found!`)
+                }
+
+            })
+    })
+
+
+
+</script>
+

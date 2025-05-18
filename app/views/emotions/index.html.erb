@@ -1,0 +1,31 @@
+<style>
+  .card.populated.green {
+    background: #ceffd9;
+  }
+
+  .card.populated.red {
+    background: #d63031;
+    color: #fff;
+  }
+</style>
+
+<p id="notice"><%= notice %></p>
+
+<h1>Listing Emotions</h1>
+
+<% @emotions.all.order("title ASC").each do |e| %>
+<div class="card <%= e.category %>  <%= 'populated' if e.details.present? && e.details["def"].present? %> ">
+  <div class="card-body">
+    <a href="/emotions/<%= e.id %>" class="clean-a">
+      <h3><%= e.title %></h3>
+      <section><%= e.details["def"].html_safe if e.details.present? %></section>
+    </a>
+  </div>
+</div>
+<% end %>
+
+<br>
+
+<% if admin? %>
+  <%= link_to 'New Emotion', new_emotion_path %>
+<% end %>

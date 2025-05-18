@@ -1,0 +1,211 @@
+
+
+<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+<script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+
+
+<style>
+  
+  .skll {
+    text-align: center;
+  }
+
+  .skll {
+    background: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    /*-webkit-box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.08);*/
+    /*-moz-box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.08);*/
+    /*box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.08);*/
+  }
+  
+  .skll-nest li {
+  text-align: left;
+  position: relative;
+  }
+
+  .remove-skll-item {
+    color: #ccc;
+    cursor: pointer;
+    position: absolute;
+    left: -20px;
+  }
+
+  .remove-skll-item:hover {
+    color: #000;
+  }
+
+  /**/
+  .skll-admin-nav {
+    display: inline-block;
+    text-align: center; 
+    font-size: 32px;
+  }
+
+  .skll-admin-nav div[toggle="nested"] {
+  }
+
+  .skll-admin-nav div[toggle="challenges"] {
+  }
+
+  .skll-admin-nav div[toggle="gears"] {
+    text-align: left;
+  }
+
+
+  .skll-admin-nav div {
+    padding: 10px;
+    display: inline;
+  }
+
+  .skll-admin-active-tab {
+    background: #000;
+    color: #fff;
+  }
+
+
+  .skll-admin-view[toggle="challenges"] {
+    display: none;
+    text-align: left;
+  }
+
+  .skll-admin-view[toggle="gears"] {
+    display: none;
+    text-align: left;
+  }
+
+  /**/
+  .skll-title {
+    padding: 40px 0px;
+  }
+
+  .center img {
+    padding: 10px;
+    height: 300px;
+    width: auto;
+  }
+  /**/
+  .slick-arrow {
+    display: none !important;
+  }
+
+  /**/
+  .coming-soon-cta {
+    display: none;
+    background: #c0392b;
+    color: #fff;
+    padding: 30px;
+  }
+
+  /**/
+  .skll {
+    position: relative;
+  }
+
+  .presents {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+  }
+
+  .view-as-admin {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+  }
+
+  .presentations {
+    text-align: left;
+    font-size: 24px;
+    padding: 24px;
+  }
+
+</style>
+
+
+<article class="skll">
+
+  <% if User.is_admin? current_user %>
+    <a href="/<%= @item.class.name.downcase %>s/<%= @item.id %>/admin" class="btn btn-outline-danger view-as-admin">Admin Panel?</a>
+    <a href="/<%= @item.class.name.downcase %>s/<%= @item.id %>" class="btn btn-outline-primary presents">Show</a>
+  <% end %>
+
+  <h1 class="skll-title">
+    <%= @item.title %>
+    <br><small>~[Presentations]~</small>
+  </h1>
+  <hr>
+  <div class="present-skll">
+    <ul class="presentations clean-list">
+      <% @presentations.each do |p| %>
+        <li data-id="<%= p.id %>">
+          <i class="fa fa-times btn btn-outline-danger remove-p"></i> 
+          <a href="/presentations/<%= p.id %>/edit"><i class="fa fa-pencil"></i></a>
+          <a href="/presentations/<%= p.id %>"><i class="fa fa-play-circle"></i></a> <span contentEditable url='/presentations/<%= p.id %>' key='title'><%= p.title || "Untitled" %></span>
+        </li>
+      <% end %>
+    </ul>    
+  </div>
+  <div class="i fa fa-plus btn btn-primary btn-block create-presentation"></div>
+
+</article>
+
+
+<script>
+  $("body").on("click", ".create-presentation", function(){
+    $.ajax({
+        type: "POST",
+        dataType: "json",
+        url: '/presentations',
+        contentType: 'application/json',
+        data: JSON.stringify({ 
+          presentable_id: "<%= @item.id %>",
+          presentable_type: "<%= @item.class.name %>",
+          _method:'post' 
+        }),
+        success: function(res){
+         console.log(res)
+         $(".presentations").append(
+            `<li data-id="`+res["id"]+`">
+              <i class="fa fa-times btn btn-outline-danger remove-p"></i> 
+              <a href="/presentations/`+res["id"]+`/edit"><i class="fa fa-pencil"></i></a>
+              <a href="/presentations/`+res["id"]+`"><i class="fa fa-play-circle"></i></a> <span contentEditable url='/presentations/${res["id"]}' key='title' >Untitled</span>
+            </li>`
+         )
+         makeCE()
+        }
+    })
+
+  })
+
+  $("body").on("click", ".remove-p", function(){
+    li = $(this).closest("li")
+    id = li.attr("data-id")
+    $.ajax({
+        type: "DELETE",
+        dataType: "json",
+        url: '/presentations/'+id,
+        contentType: 'application/json',
+        data: JSON.stringify({ 
+           _method:'post'
+        }),
+        success: function(){
+          li.remove()
+        }
+    })
+
+  })
+
+// 
+  makeCE()
+
+  // 
+  function makeCE(){
+    $('[contentEditable]').contentEdit(function(val, el){
+      console.log(val)
+      $.notify("Saved!", "success");
+    });
+
+  }
+
+</script>

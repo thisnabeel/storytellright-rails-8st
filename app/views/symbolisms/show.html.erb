@@ -1,0 +1,85 @@
+<h1>Editing Symbolism</h1>
+
+<p>Title:</p>
+<input class="title-form form-control" value="<%= @symbolism.title %>">
+
+<br>
+<% deets = {
+		"IN NATURE" => "in-nature",
+		"IN SOCIETY" => "in-society",
+	} %>
+
+<section class="details">
+	<% deets.each do |d| %>
+	<div class="deet" data-title="<%= d[1] %>">
+		<h3><%= d[0].capitalize %>:</h3>
+		<textarea class="form-control froalize">
+			<%= @symbolism.details[d[1]].html_safe if @symbolism.details.present? && @symbolism.details[d[1]].present? %>
+		</textarea>
+		<hr>
+	</div>
+	<% end %>
+	<div class="bq-list">
+		<ul>
+		</ul>
+	</div>
+</section>
+
+
+<p>Paster:</p>
+<textarea class="paster form-control" id="paster"></textarea>
+
+<%= render "symbolisms/paster" %>
+
+<hr>
+<%= link_to 'Show', @symbolism %> |
+<%= link_to 'Back', negative_traits_path %>
+
+<script>
+	$(".froalize").froalaEditor({
+		key: froalaKey,
+		toolbarInline: true,
+		charCounterCount: false,
+		saveInterval: 500,
+		toolbarButtonsMD: ['bold', 'italic', 'underline', 'formatOL', 'formatUL'],
+		toolbarButtonsSM: ['bold', 'italic', 'underline', 'formatOL', 'formatUL']
+	})
+	.on('froalaEditor.save.before', function (e, editor) {
+    // Before save request is made.
+    saveStory()
+	})
+	.on('froalaEditor.save.after', function (e, editor, response) {
+	// After successfully save request.
+	})
+	.on('froalaEditor.save.error', function (e, editor, error) {
+	// Do something here.
+	});
+
+	function saveStory(){
+		details = {}
+
+		$(".deet").each(function(){
+			details[$(this).attr('data-title')] = $(this).find(".fr-view").html()
+		})
+
+		console.log(details)
+		
+
+	   $.ajax({
+	       type: "PUT",
+	       dataType: "json",
+	       url: '/symbolisms/<%= @symbolism.id %>',
+	       contentType: 'application/json',
+	       data: JSON.stringify({ 
+	       	title: $(".title-form").val(),
+	       	details: details,
+	          _method:'post' 
+	       }),
+	       success: function(res){
+	         console.log(res)
+	       }
+	   })	
+	}
+
+</script>
+

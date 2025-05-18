@@ -1,0 +1,425 @@
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+
+<style>
+
+	.scenes {
+		display: none;
+		position: relative;
+	}
+
+	#inspirations {
+		border: 20px solid #dcdcdc;
+    	padding: 20px;
+    	/*display: none;*/
+	}
+
+
+    .scenes .play-timestamp,
+	.scenes  input,
+	.timestamp-input {
+		display: none;
+	}
+
+	.toggle-inspirations {
+		position: absolute;
+		left: -40px;
+		top: 40px;
+		font-size: 30px;
+	}
+
+	.hidden {
+		display: none;
+	}
+
+	.internals {
+		display: flex;
+	}
+
+	.hide-internals {
+		display: none !important; 
+	}
+
+	.internals > .list {
+		flex: 1 1 50%;
+	}
+
+	#part-7 .row > div {
+		padding: 20px;
+	}
+
+	.find .legend {
+		position: absolute;
+		left: -80px;
+		top: 10px;
+	}
+
+	.find .legend.first-legend {
+		left: -90px !important;
+	}
+
+	.find .legend img {
+		max-width: 70px;
+		min-width: 70px;
+	}
+
+	.find {
+		position: relative;
+	}
+
+	#part-7 {
+    	padding-left: 200px !important;
+	}
+
+	/**/
+	.write-scene {
+		position: absolute;
+    	top: 4px;
+    	right: 7px;
+    	color: #ccc;
+	}
+
+	.write-scene:hover,
+	.draw-scene:hover {
+		color: #000;
+	}
+
+	.draw-scene {
+		position: absolute;
+    	top: 5px;
+    	right: 32px;
+    	color: #ccc;
+	}
+
+	/**/
+	.intro-task, .plot-task, .climax-task {
+		font-size: 14px;
+	    background: #f6fbff;
+	    color: #00023f;
+	    padding: 20px;
+	    border-radius: 10px;
+	}
+
+	#part-4 .timestamp,
+	#part-4 .play-timestamp {
+		display: none;
+	}
+
+
+	.scene-dragger {
+		position: absolute;
+    	color: #f4f4f4;
+    	top: 0px;
+    	left: -17px;
+	}
+
+	/*  */
+	.emotion-slider {
+		max-width: 100%;
+		width: 100%;
+	}
+
+	[emotion="2"] {
+		background: red;
+		color: #fff;
+	}
+	[emotion="1"] {
+		background: #d7ffef;
+	}
+
+</style>
+
+
+
+		<article class="part inspirations" id="inspirations">
+			<h3>
+			</i> Inspirations</h3>
+			<div class="dummy hidden"></div>
+			<div class="internals hide-internals">
+				<div class="negative-list list">
+					
+				</div>
+				<div class="positive-list list">
+					
+				</div>
+			</div>
+		</article>
+
+		<article class="part"  id="part-7">
+			<div class="row">
+				<div class="col-lg-12 find" find="belts-for-bomb">
+					<div class="legend">
+						<img src="<%= asset_path('seat-belts.png') %>" alt="" class="bomb" />						
+					</div>
+
+					<div class="enter">
+					</div>
+				</div>
+				<div class="col-lg-12 find" find="bomb-for-vision">
+					<div class="legend">
+						<img src="<%= asset_path('bomb.png') %>" alt="" class="bomb" /> 
+					</div>
+
+					<div class="enter">
+					</div>
+				</div>
+
+				<div class="col-lg-12 find" find="vision-for-heart">
+
+					<div class="legend">
+						<img src="<%= asset_path('vision.png') %>" alt="" class="bomb" /> 
+					</div>
+
+					<div class="enter">
+					</div>
+				</div>
+				<div class="col-lg-12 find" find="showdown-test">
+					<div class="legend">
+						<img src="<%= asset_path('final_showdown.png') %>" alt="" class="bomb" /> 
+					</div>
+
+					<div class="enter">
+						
+					</div>
+				</div>
+				<div class="col-lg-12 find" find="woah-moment">
+					<div class="legend">
+						<img src="<%= asset_path('punchline.png') %>" alt="" class="bomb" /> 
+					</div>
+
+					<div class="enter">
+						
+					</div>
+				</div>
+			</div>
+		</article>
+		
+		<article class="part" key="scenes" id="part-4">
+			<!-- Final -->
+			<div class="row">
+				<div class="col-lg-4">
+					<p>
+						Flawed Belief+Goal
+						<!-- <br>
+						<code>Task: Establish a belief.</code>
+						<br><br> -->
+					</p>
+					<div class="intro-task">
+						<div put="whose-hell"></div>
+						<div put="goal"></div>
+						<div put="plot-curtain"></div>
+					</div>
+
+					<ul class="act-1 scenes-list" key="act-1-scenes">
+						<%= render "stories/scenes/act", act: "1" %>
+					</ul>
+					<img src="<%= asset_path('bomb.png') %>" alt="" class="img-responsive the-end">
+					<input type="text" class="form-control hide-guest timestamp-input">
+					<span class="btn btn-primary btn-block add-to-list hide-guest"><i class="fa fa-plus"></i></span>
+				</div>
+				<div class="col-lg-4">
+					<p>
+						Emotional Lessons
+						<!-- <br> -->
+						<!-- <small>BOMB the <span class="blue">blue</span> belief </small> -->
+						<!-- <code>Task: Show the ramifications of that belief.</code> -->
+					</p>
+					<div class="plot-task">
+						<div put="during"></div>
+						<div put="during-2"></div>
+					</div>
+					<ul class="act-2 scenes-list" key="act-2-scenes">
+						<%= render "stories/scenes/act", act: "2" %>
+					</ul>
+					<input type="text" class="form-control hide-guest timestamp-input">
+					<span class="btn btn-primary btn-block add-to-list hide-guest"><i class="fa fa-plus"></i></span>
+
+				</div>
+				<div class="col-lg-4">
+					<p>
+						Climax
+						<!-- <br>
+						<code>Task: Conclude the Argument For/Against.</code>
+						<br> -->
+					</p>
+					<div class="climax-task">
+						<div put="red-3"></div>
+						<div put="climax"></div>
+					</div>
+					<ul class="act-3 scenes-list" key="act-3-scenes">
+						<%= render "stories/scenes/act", act: "3" %>
+					</ul>
+					<img src="<%= asset_path('the-end.png') %>" alt="" class="img-responsive the-end">
+					<br>
+					<input type="text" class="form-control hide-guest timestamp-input">
+					<span class="btn btn-primary btn-block add-to-list hide-guest"><i class="fa fa-plus"></i></span>
+
+				</div>
+			</div>
+		</article>
+
+
+		
+
+<script>
+	refreshInspirations()
+	function refreshInspirations(){
+		// console.log($(".nt-list").html())
+		
+		// Negative
+
+		nt = $(".nt-list").find("li")
+		nt.each(function(){
+			id = $(this).attr("data-id")
+			// console.log(id)
+
+			$.getJSON( "/negative_traits/"+id, function( data ) {
+    			// console.log(data)
+    			b = data["details"]["assoc-behaviors"]
+    			// console.log(b)
+    			$(".dummy").html(b)
+    			$(".internals .negative-list").append(`<h2>`+data["title"]+`</h2>`)
+    			$(".dummy").find("li").each(function(){
+    				// console.log($(this).html())
+    				val = $(this).html()
+    				$(".internals .negative-list").append(`<li>`+val+`</li>`)
+    			})
+
+			});
+		})
+
+		// Positive
+
+		pt = $(".pt-list").find("li")
+		pt.each(function(){
+			id = $(this).attr("data-id")
+			// console.log(id)
+
+			$.getJSON( "/positive_traits/"+id, function( data ) {
+    			// console.log(data)
+    			b = data["details"]["assoc-behaviors"]
+    			// console.log(b)
+    			$(".dummy").html(b)
+    			$(".internals .positive-list").append(`<h2>`+data["title"]+`</h2>`)
+    			$(".dummy").find("li").each(function(){
+    				// console.log($(this).html())
+    				val = $(this).html()
+    				$(".internals .positive-list").append(`<li>`+val+`</li>`)
+    			})
+
+			});
+		})
+
+	}
+
+	$("body").on("click", ".toggle-internals", function(){
+		$(".internals").toggleClass("hide-internals")
+	})
+
+
+	$("body").on("click", ".write-scene", function(){
+		val = $(this).closest("li").find(".fr-view").html()
+		$("#screenwriteModal .modal-title").html(val)
+		// $("#screenwriter").attr("data-key", $(this).closest("ul").attr("key"))
+		$(".triggered-sw").removeClass("triggered-sw")
+		li = $(this).closest("li")
+		li.addClass("triggered-sw")
+
+		data_str = li.attr("data-script")
+
+		if (data_str != undefined && data_str) {
+    		var my_object = JSON.parse(decodeURIComponent(data_str));
+    		console.log(my_object)
+    
+    		resetTest(my_object)
+		} else {
+			resetTest({})
+		}
+
+
+		screenwriteModal()
+	})
+
+  // 
+  $(".add-to-list").on("click", function(){
+	item = {
+		script: "",
+		body: "",
+		emotion: "1",
+	}
+  	$(this).closest("div").find("ul").append(sceneBox(item))
+	makeScenesSortable()
+	saveStory()
+    save()
+  	makeGlobalFroala()
+  })
+
+  function sceneBox(item){
+	return `
+  		<li data-script="`+item["script"]+`" emotion="1">
+			<span class="remove">
+				<i class="fa fa-times"></i>
+  			</span>
+			<span class="scene-dragger">
+				<i class="fa fa-bars"></i>
+	  		</span>
+  			<span class="write-scene">
+	  			<i class="fa fa-pencil"></i>
+	  		</span>
+  			<span class="play-timestamp">
+				<i class="fa fa-play"></i>
+  			</span>
+			<input type="text" class="form-control timestamp">
+			<article class="body">
+				`+item["body"]+`
+			</article>
+            <input type="range" min="1" max="2" value="1" class="emotion-slider">
+
+  		</li>
+  	`
+  }
+
+  $("#part-4").on("click", ".remove", function(){
+  	$(this).closest("li").remove()
+	saveStory()
+    save()
+  })	
+
+	//
+	makeScenesSortable()
+	function makeScenesSortable(){
+		// $('.scenes-list').sortable({
+		// 	handle: '.scene-dragger',
+		// 	group: 'scenes',
+		// 	onChange: function (/**Event*/) {
+		// 	// same properties as onEnd
+		// 		alert("hi")
+		// 		saveStory()
+    	// 		save()
+		// 	},
+		// })
+		$('.scenes-list').each(function(index, item){
+			new Sortable(item, {
+				handle: '.scene-dragger',
+				group: 'scenes',
+				onChange: function (/**Event*/) {
+					// same properties as onEnd
+					saveStory()
+					save()
+				},
+			})
+		})
+
+
+	}
+
+	// 
+	$("body").on("change", ".emotion-slider", function(){
+		li = $(this).closest("li")
+		li.attr("emotion", $(this).val())
+		saveStory()
+    	save()
+	})
+
+
+</script>
+

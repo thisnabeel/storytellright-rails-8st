@@ -1,0 +1,67 @@
+<style>
+  #jokeTriggerModal {
+
+  }
+
+  #jokeTriggerModal .modal-content {
+
+  }
+
+  #jokeTriggerModal .modal-body {
+
+  }
+
+</style>
+
+<!-- Modal -->
+<div class="modal fade" id="jokeTriggerModal" tabindex="-1" role="dialog" aria-labelledby="jokeTriggerModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="jokeTriggerModalLabel">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function jokeTriggerModal(){
+    $("#jokeTriggerModal").modal("show")
+  }
+
+  $("body").on("click", ".joke-triggers .joke-trigger-preview", function(){
+    val = $(this).closest("article").find("select").val()
+    $.getJSON( "/joke_triggers/"+val, function( data ) {
+      console.log(data)
+      
+      $("#jokeTriggerModal").find(".modal-title").html(data["title"])
+      $("#jokeTriggerModal").find(".modal-body").html(data["description"])
+      $("#jokeTriggerModal").modal("show")
+
+    });
+  })
+  
+  // 
+
+  $("body").on("click", ".joke-triggers .fa-plus", function(){
+    list = $(this).closest("article").find("ul")
+    val = $(this).closest("article").find("select").val()
+    $.getJSON( "/joke_triggers/"+val, function( data ) {
+      console.log(data)
+      
+      list.append(`<li>`+data["title"]+`</li>`)
+
+    });
+  })
+
+</script>

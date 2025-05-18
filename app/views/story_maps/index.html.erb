@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Listing Story Maps</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>String</th>
+      <th>Text</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @story_maps.each do |story_map| %>
+      <tr>
+        <td><%= story_map.string %></td>
+        <td><%= story_map.text %></td>
+        <td><%= link_to 'Show', story_map %></td>
+        <td><%= link_to 'Edit', edit_story_map_path(story_map) %></td>
+        <td><%= link_to 'Destroy', story_map, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Story map', new_story_map_path %>

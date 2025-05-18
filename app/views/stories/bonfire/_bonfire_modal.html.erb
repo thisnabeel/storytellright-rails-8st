@@ -1,0 +1,365 @@
+<style>
+  #bonfireModal {
+    
+  }
+
+  #bonfireModal .modal-content {
+
+  }
+
+  #bonfireModal .ref-sentence p {
+    font-family: 'VT323', monospace !important;
+    font-size: 24px;
+  }
+
+  /**/
+  .ref-list .ref-list {
+    padding: 0 35px;
+    border-left: 1px solid #eaeaea;
+  }
+
+  /**/
+  .ref-pages .ref-page {
+    display: none;
+  }
+
+  .ref-pages .ref-page[data-index='1'] {
+    display: block;
+  }
+
+  .ref-title {
+    list-style: none;
+    padding: 10px;
+    position: relative;
+  }
+
+  .remove-ref {
+    position: absolute;
+    left: -10px;
+    color: #ccc
+  }
+
+  .remove-ref:hover {
+    color: red;
+  }
+
+
+  #bonfireModal .modal-dialog ul {
+    margin: 0;
+  }
+
+  /**/
+
+  .ref-adder {
+    display: block;
+    padding-left: 14px;
+    border-left: 1px solid #007bfe;
+  }
+
+  /**/
+
+  .submit-ref-info {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    position: relative;
+  }
+
+  .submit-ref-info .fa {
+    position: relative;
+    top: 10px;
+    display: block;
+    margin: 0 auto;
+  }
+
+
+</style>
+
+<!-- Modal -->
+<div class="modal fade" id="bonfireModal" tabindex="-1" role="dialog" aria-labelledby="bonfireModalLabel" aria-hidden="true">
+
+  <!-- Modal Dialog -->
+  <div class="modal-dialog" role="document">
+
+    <!-- Modal Content -->
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h5 class="modal-title" id="bonfireModalLabel">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <!-- Body -->
+      <div class="modal-body">
+        <div class="ref-sentence">
+        </div>
+
+        <hr>
+        <small>Abstractions:</small>
+        <br><br>
+
+        <div class="ref-list" data-index="0">
+            <ul class="ref-ul clean-list">
+              
+            </ul>
+
+            <div class="ref-adder" data-index="0">
+              
+              <div class="row">
+                <div class="col-lg-10">
+                  <input type="text" class="form-control">
+                </div>
+                <div class="col-lg-2">
+                  <div class="btn btn-outline-primary btn-block submit-ref-info">
+                    <i class="fa fa-plus"></i>
+                  </div>
+                </div>
+              </div>
+            </div>      
+        </div>
+        
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  function bonfireModal(){
+    $("#bonfireModal").modal("show")
+  }
+
+  $("body").on("click", ".abstractify", function(){
+    
+    box = $(this).closest("section")
+    val = box.find('.fr-view').html()
+    $(".ref-sentence").html(val)
+
+    view = $(this).closest(".bonfire-view")
+    count = view.find(".fr-view").length
+
+    id = $(".bonfire-view").index(view)
+
+    tab_id = view.find("> section").index(box)
+
+    slug = $(this).closest(".bonfire-view").attr("toggle")+"-folder"
+
+    $("#bonfireModal").attr("data-count", count)
+    $("#bonfireModal").attr("data-id", id)
+    $("#bonfireModal").attr("data-tab-id", tab_id)
+    $("#bonfireModal").attr("slug", slug)
+
+    $("#bonfireModal").find(".modal-title").html(view.attr("title"))
+
+    populateBonfire(slug, tab_id)
+
+  })
+
+  $("body").on("click", ".submit-ref-info", function(){
+    box = $(this).closest(".ref-list")
+    li = $(this).closest(".row")
+    val = li.find('input').val()
+
+    head = `<span class="r-title">`+val+`</span>`
+
+    index = parseInt($("#bonfireModal").attr("data-tab-id"))
+
+    box.find("> .ref-ul").append(
+      makeRefList((index + 1), val, null)
+    )
+
+    li.find("input").val("")
+
+    renderPage(index)
+
+    saveRefList()
+  })
+
+  function makeRefList(index, title, subs) {
+    
+    nested = ""
+
+    $.each(subs, function(index, item){
+      nested += makeRefList(item["Id"], item["Title"], item["Subs"])
+    })
+
+    remover = `<span class="remove-ref"><i class="fa fa-times"></i></span>`
+    title = `<span class="ref-title-text">`+title+`</span>`
+    return `<div class="ref-list" data-index="`+index+`">
+            <li class="ref-title">`+remover+title+`</li>
+            <ul class="ref-ul clean-list">
+              `+nested+`
+            </ul>
+
+            <div class="ref-adder" data-index="`+index+`">
+              
+              <div class="row">
+                <div class="col-lg-10">
+                  <input type="text" class="form-control">
+                </div>
+                <div class="col-lg-2">
+                  <div class="btn btn-outline-primary btn-block submit-ref-info">
+                    <i class="fa fa-plus"></i>
+                  </div>
+                </div>
+              </div>
+            </div>      
+        </div>`
+  }
+
+  // 
+  function renderPage(tab_id){
+    console.log(tab_id)
+    
+    // tab_id = parseInt(tab_id)
+    // array = []
+    // x = tab_id
+    // while (x > -1) {
+    //   array.push(x)
+    //   x -= 1
+    // }
+
+    // console.log(array)
+    // $.each(x, function(index, item){
+    //   $('.ref-adder').show()
+    //   $('.ref-list[data-index="'+item+'"] .ref-adder').show()
+    // })
+
+    // tab_id
+
+    $('.ref-adder').hide()
+    $('.ref-adder[data-index="'+tab_id+'"]').show()
+
+    bonfireModal()
+  }
+
+  $("body").on("click", ".remove-ref", function(){
+    $(this).closest('.ref-list').remove()
+    saveRefList()
+  })
+
+  function saveRefList(){
+    // hash = {}
+    // // $('.modal-body > .ref-list > .ref-ul > .ref-list').each(function(index, item){
+      
+    // //   // Make the initial box and title it
+    // //   hash[index] = {
+    // //     title: $(this).find('> .ref-title .ref-title-text').text()
+    // //   }
+
+
+    // // })
+    // $('.ref-title-text').each(function(){
+      
+    //   index = "data-" + $(this).closest('.ref-list').attr("data-index")
+
+    //   hash[index] = hash[index] || []
+    //   hash[index] = $(this).text()
+    // })
+  
+    // console.log(hash)
+    newSaveCategories()
+  }
+
+    function newSaveCategories() {
+        var nestableSections = $(".modal-body > .ref-list > .ref-ul > .ref-list");
+        var categories = newBuildCategories(nestableSections);
+        var json = JSON.stringify(categories, null, 2);
+        slug = $("#bonfireModal").attr("slug")
+
+        folder = {}
+
+        $.getJSON( "/stories/<%= @story.id %>", function( data ) {
+          folder = data["story_details"]
+
+          folder[slug] = categories;
+
+          $.ajax({
+              type: "PUT",
+              dataType: "json",
+              url: '/stories/<%= @story.id %>',
+              contentType: 'application/json',
+              data: JSON.stringify({ 
+                story_details: folder,
+                _method:'post' 
+              }),
+              success: function(res){
+                console.log(res["story_details"])
+              }
+          })
+        });
+
+
+        // $.ajax({
+        //     type: "PUT",
+        //     dataType: "json",
+        //     url: 'placeholder',
+        //     contentType: 'application/json',
+        //     data: JSON.stringify({ 
+        //       console.log(data)
+        //       _method:'post' 
+        //     }),
+        //     success: function(res){
+        //       console.log(res)
+        //     }
+        // })
+
+
+        // console.log(slug)
+        // console.log(json)
+        // alert(json);
+    }
+
+    function newBuildCategories(categoriesRead) {
+        var categories = [];
+
+        categoriesRead.each(function(index, item) {
+            var category = {};
+            category.Id = $(this).attr('data-index');
+            category.Title = $(this).find(".ref-title-text").first().text().trim();
+            category.Subs = newBuildCategories($(this).find('> .ref-ul > .ref-list'));
+            categories.push(category);
+        });      
+        return categories;
+    }
+
+    // 
+
+  function populateBonfire(slug, tab_id){
+
+    $(".ref-list[data-index='0'] > .ref-ul").empty()
+
+    $.getJSON( "/stories/<%= @story.id %>", function( data ) {
+
+      folder = data["story_details"][slug]
+
+      console.log(folder)
+
+      $.each(folder, function(index, item){
+        $(".ref-list[data-index='0'] > .ref-ul").append(
+          makeRefList(item["Id"], item["Title"], item["Subs"])
+        )
+      })
+
+      $(".ref-title .fa-lock").remove()
+      if (tab_id < 1) {
+      } else {
+        // $(".ref-title").prepend(`<span class="fa fa-lock"></span> `)
+      }
+    
+      $(".ref-list[data-index='"+(tab_id + 1)+"'] .ref-list").hide()
+      $(".remove-ref").hide()
+      $(".ref-list[data-index='"+(tab_id)+"'] .ref-list > .ref-title .remove-ref ").show()
+      
+      renderPage(tab_id)
+
+    });
+
+
+
+  }
+
+</script>

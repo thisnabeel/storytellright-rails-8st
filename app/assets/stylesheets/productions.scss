@@ -1,0 +1,403 @@
+// Place all the styles related to the productions controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+.production[production-type="Story"] {
+  .stories-list {
+    list-style: none;
+    padding: none;
+  }
+
+  .stories-list > li {
+    position: relative;
+    width: 30%;
+    margin: 1%;
+    padding: 40px;
+    display: inline-block;
+    vertical-align: top;
+
+    box-shadow: 0 0 10px 1px #c8c8c8;
+    border-radius: 20px;
+    text-align: center;
+    background-color: #fff;
+  }
+
+  .story-title {
+    font-family: "sf";
+    text-align: center;
+    font-size: 24px;
+  }
+
+  .enter-btn {
+    display: block;
+    width: 100%;
+    margin-top: 30px;
+    padding: 15px 10px;
+
+    border: 4px solid #ccc;
+    border-radius: 80px;
+
+    font-size: 0.9em;
+    font-weight: bold;
+    line-height: 1em;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .enter-btn,
+  .delete-story {
+    color: #ccc;
+    cursor: pointer;
+  }
+
+  .enter-btn:hover,
+  .delete-story:hover {
+    color: #000;
+    border: 4px solid #000;
+  }
+
+  .delete-story:hover {
+    border: 0;
+  }
+
+  .delete-story {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    border: 0;
+  }
+
+  .add-story {
+    border: none;
+    background: #c8c8c8 !important;
+    color: white;
+    font-size: 45px;
+  }
+
+  .stories-list > li.original {
+    box-shadow: 0 0 10px 1px #f1d60e;
+    padding: 36px;
+    border: 4px solid #f6edb7;
+  }
+
+  .year {
+    position: absolute;
+    top: 18px;
+    left: 0%;
+    right: 0%;
+    padding: 3px 5px;
+    border-radius: 7px;
+    font-weight: 200;
+  }
+
+  .fa-play-circle {
+    position: absolute;
+    bottom: 4px;
+    right: 0;
+    right: 8px;
+    font-size: 30px;
+    color: #cddfff;
+  }
+
+  .series-title {
+    display: block;
+    background: #fff8dd;
+    color: #7e3dba;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+  }
+
+  /**/
+  .cover-image img {
+    max-width: 100%;
+    max-height: 260px;
+  }
+
+  /**/
+  /**/
+  .story-armature {
+    text-align: left;
+    background: #fff9fe;
+    color: #841175;
+    padding: 18px;
+    border-radius: 4px;
+  }
+  .story-armature p {
+    margin: 0;
+    padding: 0;
+  }
+
+  /**/
+
+  .stories-list > li:hover .make-template {
+    display: block;
+  }
+
+  .make-template {
+    left: 13px;
+    position: absolute;
+    top: -11px;
+    font-size: 24px;
+    display: none;
+    padding: 13px;
+    line-height: 0;
+    background: #fff;
+  }
+
+  .has-inspirations {
+    position: absolute;
+    left: 0px;
+    bottom: 0px;
+    font-size: 29px;
+    color: #797912;
+    background: #ffff55;
+    width: 50px;
+    border-radius: 0px 20px 0px 20px;
+  }
+
+  .has-inspirations:hover {
+    color: #b984c6;
+  }
+
+  li.fix-this {
+    background: #a50000;
+    color: #fff;
+  }
+}
+
+// SONGS
+
+.production[production-type="Song"] {
+  border: 2px solid #ff760042;
+}
+
+.production[production-type="Song"],
+#viewSectionModal {
+  .story-title {
+    font-family: "sf";
+    text-align: center;
+    font-size: 24px;
+  }
+
+  .enter-btn {
+    display: block;
+    width: 100%;
+    margin-top: 30px;
+    padding: 15px 10px;
+
+    border: 4px solid #ccc;
+    border-radius: 80px;
+
+    font-size: 0.9em;
+    font-weight: bold;
+    line-height: 1em;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .enter-btn,
+  .delete-story {
+    color: #ccc;
+    cursor: pointer;
+  }
+
+  .enter-btn:hover,
+  .delete-story:hover {
+    color: #000;
+    border: 4px solid #000;
+  }
+
+  .delete-story:hover {
+    border: 0;
+  }
+
+  .delete-story {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    border: 0;
+  }
+
+  .add-story {
+    border: none;
+    background: #c8c8c8 !important;
+    color: white;
+    font-size: 45px;
+  }
+
+  .stories-list > li.original {
+    box-shadow: 0 0 10px 1px #f1d60e;
+    background: #f6edb7;
+  }
+
+  .year {
+    position: absolute;
+    top: -12px;
+    left: -20px;
+    background: #000;
+    color: #fff;
+    padding: 3px 5px;
+    border-radius: 7px;
+    font-family: "VT323", monospace;
+  }
+
+  .top-nav .btn-info {
+    padding: 7px;
+    border-radius: 5px;
+  }
+
+  .fa-play-circle {
+    position: absolute;
+    bottom: 4px;
+    right: 0;
+    right: 8px;
+    font-size: 30px;
+    color: #cddfff;
+  }
+
+  .series-title {
+    display: block;
+    background: #7e3dba;
+    color: #fff;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+  }
+
+  /**/
+  .cover-image img {
+    max-width: 200px;
+    max-height: 260px;
+  }
+
+  /**/
+  .story-artist {
+    display: block;
+    padding: 10px;
+    background: #fff8dd;
+    border-radius: 10px;
+    margin-bottom: 20px;
+  }
+
+  .has-inspirations {
+    position: absolute;
+    left: 0px;
+    bottom: 0px;
+    font-size: 29px;
+    color: #797912;
+    background: #ffff55;
+    width: 50px;
+    border-radius: 0px 20px 0px 20px;
+  }
+
+  .has-inspirations:hover {
+    color: #b984c6;
+  }
+
+  /**/
+  .story-armature {
+    text-align: left;
+    background: #fff9fe;
+    color: #841175;
+    padding: 18px;
+    border-radius: 4px;
+  }
+  .story-armature p {
+    margin: 0;
+    padding: 0;
+  }
+
+  .stories-list .folder {
+    display: block;
+    position: relative;
+  }
+
+  .folder {
+    position: relative;
+  }
+
+  .folder li {
+    padding: 10px;
+    display: none;
+  }
+
+  .folder .title-final {
+    font-weight: 700;
+    display: block;
+    font-size: 20px;
+    padding: 10px;
+  }
+
+  .folder .chords {
+    font-weight: 300;
+    border: 1px solid;
+    padding: 5px 24px;
+    display: inline-block;
+    border-radius: 20px;
+  }
+
+  .expand-folder {
+    position: absolute;
+    top: -25px;
+    font-size: 17px;
+  }
+
+  [artist=""] {
+    display: none;
+  }
+}
+
+//
+
+[production-type="Game"] {
+  border: 2px solid #0000ff42;
+}
+
+//
+[production-type=""] {
+  display: none;
+  background: #edff60;
+  .story-title {
+    font-family: "sf";
+    text-align: center;
+    font-size: 24px;
+  }
+}
+
+[production-type] {
+  .armature {
+    text-align: left;
+    background: #fff9fe;
+    color: #841175;
+    padding: 18px;
+    border-radius: 4px;
+    p {
+      margin: 0;
+      padding: 0;
+    }
+  }
+}
+
+[production-type="Joke"] .joke-title {
+  font-family: "VT323", monospace;
+  text-align: center;
+  font-size: 24px;
+}
+
+[production-type] {
+  position: relative;
+  /* width: 27%; */
+  /* width: 27.54517%; */
+  width: 30%;
+  margin: 1%;
+  padding: 40px;
+  display: inline-block;
+  vertical-align: top;
+  box-shadow: 0 0 10px 1px #c8c8c8;
+  border-radius: 20px;
+  text-align: center;
+  background-color: #fff;
+}
+
+// li.joke

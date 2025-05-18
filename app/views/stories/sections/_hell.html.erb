@@ -1,0 +1,561 @@
+<style>
+
+	.hell_main {
+		border: 20px solid #ff3838;
+    	padding: 20px;
+    	position: relative;
+	}
+
+	.build-make {
+		position: absolute;
+	    left: -20px;
+	    color: #d2c628;
+	    top: 28px;
+	    font-size: 24px;
+	}
+
+	.build-make:hover, .build-change:hover {
+		color: #000;
+	}
+
+	.build-make.waiting, .build-change.waiting {
+		color: red;
+		left: -31px;
+		top: 15px;
+		font-size: 49px;
+	}
+
+	.build-make.waiting:hover, .build-change.waiting:hover {
+		color: red;
+	}
+
+	.highlight-red {
+		background: #ff3838;
+		padding: 20px;
+    	color: #fff;
+	}
+
+
+	.pp-changer {
+		padding: 8px;
+    	background: #ce0dbe;
+    	color: #fff;
+	}
+
+	.pp-character {
+		padding: 6px;
+	    border: 2px solid #409b12;
+	    color: #000;
+	    background: transparent;
+	}
+
+	.pp-villian {
+		padding: 8px;
+    	background: #ff1e1e;
+    	color: #fff;
+	}
+
+	.pp-object {
+		padding: 8px;
+    	background: #a8deff;
+    	color: #000;
+	}
+
+	.pp-location {
+		padding: 8px;
+    	color: #000;
+    	background: #ffed00;;
+	}
+
+	/**/
+
+	.built {
+		padding: 20px;
+    	border: 1px solid #ccc;
+    	margin: 10px;
+    	position: relative;
+    	list-style: none;
+	}
+
+	.built:hover .remove-hell-built {
+		display: block;
+	}
+
+	.build-change {
+		position: absolute;
+	    left: -20px;
+	    color: #d2c628;
+	    top: 28px;
+	    font-size: 24px;
+	}
+
+	.remove-hell-built {
+		position: absolute;
+	    left: -43px;
+	    color: #d2c628;
+	    top: 28px;
+	    font-size: 24px;
+	    display: none;
+	    height: 40px;
+	    width: 25px;
+	}
+	
+	.remove-hell-built:hover {
+		color: #000;
+	}
+
+
+
+	.built header {
+		display: inline-block;
+	}
+
+	/**/
+
+	.charge {
+		position: relative;
+		padding: 20px;
+	}
+
+	.charge input {
+		background: transparent;
+    	border: 0;
+    	border-bottom: 1px solid #ccc;
+	}
+
+	.charge .remove-hell-charge {
+		position: absolute;
+	    left: 4px;
+	    top: 12px;
+	    top: 30px;
+	    display: none;
+	}
+
+	.charge:hover .remove-hell-charge {
+		display: block;
+	}
+
+	/**/
+	
+	.piece {
+		position: relative;
+	}
+	
+	.piece .build {
+	    position: absolute;
+	    left: -10px;
+	    background: none;
+	    color: #000;
+	    display: none;
+	}
+
+	.piece:hover .build {
+		display: block;
+	}
+
+
+	.hellishness {
+		/*padding: 40px 0;*/
+    	margin: 0 auto;
+    	border: 0;
+	}
+
+	.hellishness li {
+		display: inline-block;
+	    padding: 8px;
+	}
+
+	.hellish-3 {
+		background: #ffec00;
+    	color: #000;
+	}
+
+	.for-proofs {
+		background-color: #1C84BB;
+		color: #fff;
+		padding: 20px;
+		border-top: 12px dashed #fe3839;
+		text-align: center;
+	}
+
+	.adventure_main {
+		border: 1px solid #f39c12;
+		border-bottom: 10px solid #f39c12;
+    	margin: 10px 100px;
+    	padding: 20px;
+    	position: relative;
+    	border-radius: 20px;
+	}
+
+	.midpoint {
+		border: 1px solid #a26b12;
+	    border-bottom: 10px solid #a26b12;
+	    margin: 10px 100px;
+	    padding: 20px;
+	    position: relative;
+	    border-radius: 20px;
+	}
+
+	.through-this {
+		position: absolute;
+	    bottom: -44px;
+	    z-index: 99;
+	    background: #fe3839;
+	    display: block;
+	    width: fit-content;
+	    padding: 7px 40px;
+	    color: #fff;
+	    position: absolute;
+	    margin-left: auto;
+	    margin-right: auto;
+	    left: 0;
+	    right: 0;
+	    text-align: center;
+	    border-radius: 10px;
+	    font-size: 30px;
+	}
+
+
+	[toggler="hell-more"] {
+	    margin: 0;
+	    padding: 20px;
+	}
+
+	[toggled="hell-more"] {
+		display: none;
+	}
+
+	.hellishness > li {
+		display: block;
+	}
+
+	.for-red-3 {
+		background: #a70001;
+    	padding: 20px;
+    	color: #fff;
+	}
+
+	.hell {
+		max-width: 80%;
+		margin:  0 auto;
+		display: block;
+	}
+
+	.plot-curtain {
+		/* padding: 40px; */
+		position: relative;
+		padding: 20px;
+	    background: #ff00a1;
+	}
+
+	.plot-curtain .fr-view p, .plot-curtain {
+		/* font-size: 34px; */
+		color: #fff;
+		/* text-align: center; */
+		font-family: 'VT323', monospace !important;
+
+	}
+
+	.hdr {
+		/* color: #c68383; */
+		/* color: #fff900; */
+    	font-size: 19px;
+    	/* text-decoration: underline; */
+		position: relative;
+	}
+
+	.hdr .uhoh {
+		max-width: 90px;
+		top: -30px;
+		right: -40px;
+		position: absolute;
+		transform: rotate(20deg);
+	}
+
+	.hell-hammock {
+		max-width: 90px;
+		top: -20px;
+		left: -100px;
+		position: absolute;
+	}
+
+	.froalize.whose-hell {
+		position: relative;
+		background: #a70001;
+		padding: 20px;
+	}
+
+	.froalize.whose-hell .fr-view {
+		color: #fff;
+	}
+
+	.froalize.goal {
+		position: relative;
+		background: #ff0002;
+		padding: 20px;
+	}
+
+	.froalize.goal .fr-view {
+		color: #fff;
+	}
+</style>
+
+<article class="hell" key="hell">
+
+	<h4 style="padding: 20px; margin: 0;" class="text-center">Act I <br>(Flawed Belief):</h4>
+
+
+	<div class="hellishness clean-list">
+
+		<li class="hellish-2" put="hellish-2">
+			
+		</li> 
+		<!-- !
+		<li class="hellish-3" put="hellish-3">
+			
+		</li> -->
+		<br>
+		<p><u><i class="fa fa-arrow-down"></i> Insert Relevant Character Abstraction of Flawed Belief: </u></p>
+		<li class="message-form froalize save-this whose-hell" fetch="whose-hell" data-save-code="whose-hell">
+			<img src="<%= asset_path('hammock.png') %>" class="hell-hammock" alt="">
+			<textarea>
+				<%= @story.story_details.try(:[], "whose-hell").try(:html_safe) if @story.story_details.present?  %>
+			</textarea>
+		</li>
+
+	</div>
+	
+<%
+=begin %>
+	<div class="message-form froalize save-this plot-curtain" fetch="plot-curtain" data-save-code="plot-curtain">
+		
+		<small class='hdr'><i class="fa fa-arrow-down"></i> Insert Hell/Utopia Start Here: <img src="<%= asset_path('uhoh.png') %>" alt="" class="uhoh"></small>
+		<textarea>
+			<%= @story.story_details.try(:[], "plot-curtain").try(:html_safe) if @story.story_details.present?  %>
+		</textarea>
+	</div>
+	<!-- <hr toggler="hell-more"> -->
+<%
+=end %>
+
+	<ul class="hell_building_material building_material clean-list">
+	</ul>
+
+	<hr>
+	<h4 style="padding: 20px; margin: 0;" class="text-center">Act III <br>(Climax):</h4>
+	
+	<p><u><i class="fa fa-arrow-down"></i> Insert Beauty of Truth or Horror of Falsehood: </u></p>
+	<div class="message-form froalize save-this climax_main" style="
+    margin: 0 auto;" fetch="climax" data-save-code="climax">
+		<textarea>
+			<%= @story.story_details.try(:[], "climax").try(:html_safe) if @story.story_details.present?  %>
+		</textarea>
+		<i class="fa fa-bullseye fa-3x build-make hide-guest"></i>
+	</div>
+
+
+
+</article>
+
+<script>
+
+	$("body").on("click", "[toggler]", function(){
+		$("[toggled='"+$(this).attr("toggler")+"']").toggle()
+	})
+
+
+	function makeMagic(){
+		list = $("#characters-list").find("ul")
+		$(".piece-box").remove()
+		
+		array = ["pp-changer", "pp-character", "pp-villian", "pp-object", "pp-location"]
+		
+		$.each(array, function(index, item){
+
+			$(".story-wrapper ."+item).each(function(){
+				title = $(this).text()
+				console.log(title)
+
+				if (title == " " || title == "&nbsp;"){
+					return
+				}
+
+				becoz = ""
+
+				// console.log("HSTOTONG:", title)
+
+				list.append(
+					`<li class="piece-box">
+						<span class='piece `+item+`' type='`+item+`'>`+title+`</span>
+						<div class='becoz-box'>
+						<i>because:</i>
+						<span class='because'>`+becoz+`</span>
+						</div>
+					</li>`)
+
+				// 
+
+			})
+
+		})
+
+	}
+
+
+	$("body").on("click", ".add-charge", function(){
+		li = $(this).closest("li")
+		li.append(
+			// `
+			// <article class="charge">
+			// 	<span class="fa fa-times remove-hell-charge"></span>
+			// 	<input type="text" placeholder="Type..." class="form-control" />
+			// </article>`
+			`
+			<article class="charge magic_land">
+				<span class="fa fa-times remove-hell-charge"></span>
+				<textarea class="froalize"></textarea>
+			</article>
+			`
+		)
+
+		makeFroala()
+		
+		$(".built input").typeWatch( options );
+
+		saveStory()
+
+		// $("#places-list input").typeWatch( options );
+	})	
+
+	$("body").on("click", ".build-make", function(){
+		$(this).toggleClass('waiting')
+
+		saveStory()
+	})
+
+	$("body").on("click", ".build-change", function(){
+		$(this).toggleClass('waiting')
+
+		saveStory()
+	})
+
+
+	$("body").on("click", 
+		'.fr-view .pp-changer,.fr-view .pp-villian,.fr-view .pp-character,.fr-view .pp-object,.fr-view .pp-location', function(){
+
+			bm = $(this).closest("[key]").find(".build-make")
+		
+		if (bm.hasClass('waiting')){
+			makePiece($(this))
+			bm.removeClass('waiting')
+		} else {
+		}
+			
+		if ($(".build-change").hasClass('waiting')){
+			li = $(".build-change.waiting").closest("li")
+			li.find("header").html($(this).text())
+			$(".build-change").removeClass('waiting')
+			
+			saveStory()
+		} else {
+		}
+	})
+
+	function makePiece(el){
+		list = el.closest("[key]").find(".building_material")
+		title = el.text()
+
+		
+		if (list.find(`[title="`+title+`"]`).length) {
+		} else {
+			console.log(title)
+			list.append(`
+			<li class='built'>
+				<i class="fa fa-bullseye fa-3x build-change"></i>
+				<i class="fa fa-times fa-3x remove-hell-built"></i>
+				<header title="`+title+`" class='`+el.attr("class")+`'>`+title+`</header>
+				<span class="fa fa-plus btn btn-outline-primary add-charge"></span>
+			</li>`
+			)
+		}
+
+		makeFroala()
+
+		saveStory()
+	}
+
+	$("body").on("click", ".remove-hell-charge", function(){
+		li = $(this).closest(".charge")
+		li.remove()
+		saveStory()
+	})
+
+	$("body").on("click", ".remove-hell-built", function(){
+		li = $(this).closest(".built")
+		li.remove()
+		saveStory()
+	})
+
+
+	function saveHellBuild(){
+		hell_build = []
+		$(".hell_building_material .built").each(function(){
+			header = $(this).find("header").text()
+			type = $(this).find("header").attr("class")
+			
+			charges = []
+			
+			$(this).find(".charge .fr-view").each(function(){
+				charges.push($(this).html())
+			})
+
+			hash = {
+				header: header,
+				type: type,
+				charges: charges
+			}
+
+			hell_build.push(hash)
+		})
+		console.log(hell_build)
+		return hell_build
+	}
+		
+
+	<% if @story.story_details.try(:[], "hell_build").present? %>
+		
+		hell_build = <%= @story.story_details["hell_build"].to_json.html_safe %>;
+		console.log(hell_build)
+		$.each(hell_build, function(index, item){
+			title = item["header"]
+			type = item["type"]
+			charges = ""
+
+			$.each(item["charges"], function(index, charge){
+				charges += `
+				<article class="charge magic_land">
+					<span class="fa fa-times remove-hell-charge"></span>
+					<textarea class="froalize">`+charge+`</textarea>
+				</article>`
+			})
+
+
+
+			$(".hell_building_material").append(
+				`<li class='built'>
+					<i class="fa fa-bullseye fa-3x build-change"></i>
+					<i class="fa fa-times fa-3x remove-hell-built"></i>
+					<header title="`+title+`" class='`+type+`'>`+title+`</header>
+					<span class="fa fa-plus btn btn-outline-primary add-charge"></span>
+					`+charges+`
+				</li>`)
+		})
+
+		makeFroala()
+		$(".built input").typeWatch( options );
+
+	<% end %>
+	
+
+
+</script>

@@ -1,0 +1,39 @@
+<style>
+	.books-wrapper {
+		max-width: 350px;
+		margin: 0 auto;
+	}
+
+	.clean-list li {
+		padding: 10px 0;
+    	border-bottom: 1px solid #2b1846;
+    	position: relative;
+	}
+
+	.clean-list .test-book {
+		position: absolute;
+	    left: -35px;
+	    top: 35%;
+	    color: #ffc3f7;
+	    font-size: 22px;
+	}
+
+	.empty {
+		color: #8c8794;
+	}
+</style>
+
+
+<div class="books-wrapper">
+	<h1>Guides:</h1>	
+	<ul class="clean-list">
+		<% @books.each do |b| %>
+            <% if b.chapters.count > 0 %>
+                <li class="<%= 'empty'  %>">
+                    <a class="clean-a" href="/chapters/<%= b.chapters.order("position ASC").first.id %>"><%= b.title %></a>
+                </li>
+            <% end %>
+		<% end %>
+	</ul>
+</div>
+

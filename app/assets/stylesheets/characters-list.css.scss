@@ -1,0 +1,113 @@
+.characters-list {
+  display: inline-block;
+  padding: 20px 0;
+  .button {
+    text-align: center;
+    text-transform: uppercase;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 100;
+    letter-spacing: 1px;
+    float: left;
+    margin: 10px !important;
+  }
+  .button:before {
+    // border-radius: 100px;
+    // border: 2px solid #468cdc;
+    // box-shadow: 0 0 15px rgba(0, 255, 204, 0.15), 0 0 15px rgba(0, 255, 204, 0.15) inset;
+    // content: "";
+    // display: block;
+    // position: absolute;
+    // left: 50%;
+    // top: 50%;
+    // height: 110px;
+    // width: 110px;
+    // margin-left: -57px;
+    // margin-top: -57px;
+    // opacity: 1;
+    // transform: scale(1);
+    // transition: all 300ms;
+  }
+  .button:before .button {
+    text-align: center;
+    text-transform: uppercase;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 100;
+    letter-spacing: 1px;
+    float: left;
+    padding: 10px;
+    margin: 10px !important;
+  }
+  .button:before .button:before {
+    border-radius: 100px;
+    border: 2px solid #468cdc;
+    box-shadow: 0 0 15px rgba(0, 255, 204, 0.15), 0 0 15px rgba(0, 255, 204, 0.15) inset;
+    content: "";
+    display: block;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    height: 110px;
+    width: 110px;
+    margin-left: -57px;
+    margin-top: -57px;
+    opacity: 1;
+    transform: scale(1);
+    transition: all 300ms;
+  }
+  .button:before .button:hover:before {
+    transform: scale(1.05);
+  }
+  .button:before .button.circle {
+    background: #23466e;
+    border: none;
+    /* border-radius: 900px; */
+    color: #e4ecfa;
+    cursor: pointer;
+    display: block;
+    /* width: 100px; */
+    padding: 0 30px;
+    height: 100px;
+    line-height: 100px;
+    position: relative;
+    margin: auto;
+    margin-top: 25px;
+    transition: 0.5s;
+  }
+  .button:before .button.circle:hover {
+    background: #3e70aa;
+    padding: -2px;
+  }
+  .button:hover:before {
+    transform: scale(1.05);
+  }
+  .button.circle {
+    background: #23466e;
+    border: none;
+    /* border-radius: 900px; */
+    color: #e4ecfa;
+    cursor: pointer;
+    display: block;
+    min-width: 100px;
+    padding: 0 30px;
+    height: 100px;
+    line-height: 100px;
+    position: relative;
+    margin: auto;
+    margin-top: 25px;
+    transition: 0.5s;
+  }
+  .button.circle:hover {
+    background: #3e70aa;
+    padding: -2px;
+  }
+
+  .add-character {
+    background-color: #ccc !important;
+  }
+
+  .add-character:hover {
+    background-color: #e4b120 !important;
+  }
+}

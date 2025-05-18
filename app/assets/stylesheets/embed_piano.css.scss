@@ -1,0 +1,49 @@
+#embed-piano {
+
+  .key {
+    float: left;
+    position: relative;
+    cursor: pointer;
+  }
+
+  .key:hover {
+  	background-color: #55efc4 !important;
+  	cursor: pointer;
+  }
+
+  .key.black:hover {
+    background-color: #55efc4 !important;
+    cursor: pointer;
+    border: 1px dashed #5657a4;
+    border-top: 0;
+  }
+
+  .white {
+    height: 14.4vw;
+    width: 3.8095238095vw;
+    z-index: 1;
+    border-top: 0.17vw solid #d1f0d4;
+    border-bottom: 0.17vw solid #c1edc4;
+    border-left: 0.17vw solid #dbdcff;
+    background-color: #fff;
+  }
+
+  .black {
+    height: 7.92vw;
+    width: 2.0952380952vw;
+    z-index: 2;
+    // border: 0.12vw solid #000000;
+    background-color: #5658a4;
+    border-radius: 0 0 4px 4px;
+  }
+
+  .a, .b, .d, .e, .g, .black {
+    margin: 0 0 0 -1.1676190476vw;
+  }
+
+  #keyboard > .note:last-child {
+    border-right: 0.12vw solid #AAAAAA;
+  }
+
+
+}

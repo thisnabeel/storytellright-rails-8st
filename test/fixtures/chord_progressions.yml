@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  title: MyString
+  progression: MyString
+  tags: MyString
+  scale: MyString
+
+two:
+  title: MyString
+  progression: MyString
+  tags: MyString
+  scale: MyString

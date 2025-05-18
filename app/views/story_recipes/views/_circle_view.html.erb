@@ -1,0 +1,287 @@
+<style>
+	.question-box {
+		background-color: #fff;
+		margin: 50px 0 ;
+		border-radius: 25px;
+	}
+
+	.question-box .fr-view, .question-box input, .question-box .fr-view p {
+		font-family: 'VT323', monospace !important;
+		font-size: 24px;
+	}
+
+
+	.Wallop {
+		display: none;
+		padding: 25px 75px;
+		background: #fff;
+		-webkit-box-shadow: 10px 10px 0px 0px rgba(0,0,0,0.75);
+		-moz-box-shadow: 10px 10px 0px 0px rgba(0,0,0,0.75);
+		box-shadow: 10px 10px 0px 0px rgba(0,0,0,0.75);
+	}
+	.info {
+		display: none;
+	}
+</style>
+
+
+<% slices = @recipe.details %>
+<% if @story_recipe.details.present? %>
+	<% slices = @story_recipe.details %>
+<% end %>
+
+<!-- How much slice space we need totalt if its 2 width each -->
+
+<% marks = slices.count * 2 %>
+<!-- How much blank space we need if we consider the marks space -->
+<% has_gaps = false %>
+<% slices.each do |slice| %>
+	<% if slice["mark_gap"].present? %>
+		<% has_gaps = true %>
+	<% end %>
+<% end %>
+<% if has_gaps == true %>
+	<% blank_space = (100 - 16).to_f / 8.to_f %>
+<% else %>
+	<% blank_space = (100 - marks).to_f / slices.count.to_f %>
+<% end %>
+
+
+<div class="circle">
+	<div id="qtpie">
+	  <div>
+	    <svg viewbox="0 0 200 200">
+	    	<% slices.each_with_index do |slice, index| %>
+				<path class="slice" data-pie="2" data-desc="<%= slice["title"] %>" data-color="<%= slice["mark_color"] %>" style="fill: <%= slice["mark_color"] %>" data-semi-circle="<%= 'life' if [0,1,2,6,7].include? index %>" />
+				<% if slice["mark_gap"].present? %>
+					<% blank_space = 4 * slices.count %>
+					<path class="blank" data-pie="<%= blank_space.to_i * slice["mark_gap"].to_i %>"/>
+				<% else %>
+					<path class="blank" data-pie="<%= blank_space.to_i %>"/>
+				<% end %>
+	    	<% end %>
+	      <!-- <path class="blank" data-pie="2"/> -->
+	      <circle transform="translate(100, 100)">
+	        </svg>
+	      </div>
+	  </div>
+</div>
+
+ <div class="Wallop beats Wallop--slide">
+	<div class="Wallop-list">
+	<% slices.each_with_index do |slice, index| %>
+	  <div class="Wallop-item" data-position="<%= index %>">
+	  		<div class="info" data-position=" <%= slice["position"] %> " data-title="<%= slice["title"] %>" data-mark-color="<%= slice["mark_color"] %>" data-mark-gap="<%= slice["mark_gap"] || 0 %>" data-mark-short="<%= slice["mark_short"] %>"></div>
+
+	  	<div class="question-box">
+	      <h1>#<%= index + 1 %>: <%= slice["title"] %></h1>
+	      <p><%= slice["mark_short"] %></p>
+	      <hr>
+	      <section class="user-answer">
+		  	<textarea><%= slice["user_answer"] %></textarea>
+		  </section>
+		<hr>
+		</div>
+		
+	  </div>
+	<% end %>
+	</div>
+  </div>
+
+<script>
+	
+	var slider = document.querySelector('.Wallop');
+	var Wallop = new Wallop(slider);
+
+	function activateWallop(){
+		$(".Wallop").show()
+		$(".Wallop").addClass("wallop-activated")
+	}
+	
+	$("path").on("click", function(){
+		color = $(this).attr("data-color")
+		title = $(this).attr("data-desc")
+		id = $(".slice").index(this)
+
+		if (!$(".Wallop").hasClass("wallop-activated")) {
+			activateWallop()
+		}
+
+		Wallop.goTo(id);
+
+		// $("body")
+		// 	.css({"background":color})
+		$(".Wallop").css({
+			"-webkit-box-shadow": "10px 10px 0px 0px " + color,
+			"-moz-box-shadow": "10px 10px 0px 0px " + color,
+			"box-shadow": "10px 10px 0px 0px " + color,
+		})
+
+		$(".qtpieInside")
+			.css('color',color)
+			.html(title)
+			.fadeIn(200);
+
+		$(this)
+			.siblings().removeClass("active-slice")
+		$(this)
+			.addClass("active-slice")
+
+		$(this)
+			.siblings().css({
+				"stroke": "none",
+	    		"stroke-width": "none"
+			})
+
+		if ($(this).attr("data-semi-circle") == "life" ){
+			$("body").css({
+				"background": "#ece9e6",
+    			"background": "-webkit-linear-gradient(to right, #ece9e6, #ffffff)",
+    			"background": "linear-gradient(to right, #ece9e6, #ffffff)"
+			})
+			$(this)
+				.css({
+					"stroke": "#000",
+		    		"stroke-width": "2px"
+				})
+
+		} else {
+			$("body").css({
+				"background": "#200122",
+    			"background": "-webkit-linear-gradient(to right, rgb(32, 1, 34), rgb(0, 0, 0))",
+    			"background": "linear-gradient(to right, rgb(32, 1, 34), rgb(0, 0, 0))"
+			})
+			$(this)
+				.css({
+					"stroke": "#fff",
+		    		"stroke-width": "2px"
+				})
+		}
+	})
+
+	$("textarea").froalaEditor({
+		key: froalaKey,
+		toolbarInline: true,
+  		charCounterCount: false,
+  		toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'color', 'emoticons', '-', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'indent', 'outdent', '-', 'insertImage', 'insertLink', 'insertFile', 'insertVideo', 'undo', 'redo']
+
+	})
+
+	$('textarea').on('froalaEditor.focus', function (e, editor) {
+	  // Do something here.
+	  // console.log("hi")
+	  if (!$(".Wallop").hasClass("input-focused")){
+	  	$(".Wallop").addClass("input-focused")
+	  }
+	});
+
+	$(document).click(function(e){
+
+	    // Check if click was triggered on or within #menu_content
+	    // console.log($(e.target).closest(".fr-view").length)
+	    if( $(e.target).closest(".fr-view").length < 1 ) {
+	        $(".Wallop").removeClass("input-focused")
+	    }
+
+	    // Otherwise
+	    // trigger your click function
+	});
+
+	$(document).keydown(function(e) {
+
+		if ( $(".Wallop").hasClass("input-focused") == false ) {
+			
+			// count = $(".slice").length
+			// quarter = count / 4
+			// half = quarter + quarter
+			// third = half + quarter
+
+			// $(".slice").eq(third).trigger("click")
+
+		    switch(e.which) {
+		        case 37: // left
+			        slice = $(".slice").index($(".active-slice"))
+			        last = $(".slice").length
+			        next = slice - 1
+			        // alert(slice)
+			        if ( next == last ){
+						$(".slice").first().trigger("click")
+			        } else {
+						$(".slice").eq( next ).trigger("click")
+			        }
+		        break;
+
+		        case 38: // up
+					// count = $(".slice").length
+					// $(".slice").first().trigger("click")
+		        break;
+
+		        case 39: // right
+			        slice = $(".slice").index($(".active-slice"))
+			        last = $(".slice").length
+			        next = slice + 1
+			        // alert(slice)
+			        if ( next == last ){
+						$(".slice").first().trigger("click")
+			        } else {
+						$(".slice").eq( next ).trigger("click")
+			        }
+		        break;
+
+		        case 40: // down
+		        break;
+
+		        default: return; // exit this handler for other keys
+		    }
+		    e.preventDefault(); // prevent the default action (scroll / move caret)
+		}
+	});
+
+    function save(){
+    	list = []
+	   	$(".Wallop-item").each(function(){
+	   		info = $(this).find(".info")
+			question = {
+				position: info.attr("data-position"),
+				title: info.attr("data-title"),
+				mark_color: info.attr("data-mark-color"),
+				mark_short: info.attr("data-mark-short"),
+				mark_description: $(this).find(".mark_description").html(),
+				user_answer: $(this).find(".user-answer").find(".fr-view").html()
+			}
+			
+
+			if (parseInt(info.attr("data-mark-short")) > 0 ){
+				question["mark_gap"] = parseInt(info.attr("data-mark-short"))
+			}
+
+			list.push(question)
+	   	})
+		sendUp(list)
+	}
+
+	$( ".user_answer" ).keyup(function() {
+	  save();
+	});
+
+	$( ".fr-view" ).keyup(function() {
+	  save();
+	});
+
+	function sendUp(list){
+		console.log(list)
+		$.ajax({
+	       type: "PUT",
+	       dataType: "json",
+	       url: '/story_recipes/<%= @story_recipe.id.to_s %>',
+	       contentType: 'application/json',
+	       data: JSON.stringify({ 
+			  details: list,
+	          _method:'post' 
+	       }),
+	       success: function(res){
+	         console.log(res)
+	       }
+	    })
+	}
+</script>

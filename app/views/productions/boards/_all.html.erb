@@ -1,0 +1,148 @@
+<section toggle="all" style="display:none;">
+
+<div class="productions clean-list">
+
+    <% @production.productions.each do |p| %>
+    <% if !p.productionable_type.present? %>
+        <li class="production" 
+            production-type="" 
+            title="<%= p.title %>"
+            data-id="<%= p.id %>"
+        >
+        <i class="fa <%= p.icon %> picon"></i>
+        <i class="fa fa-sticky-note-o add-task" count="<%= p.tasks.count %>"></i>
+            <span class="story-title">
+                    <%= p.title %>
+                </span>
+        </li>
+    <% else %>
+        <li class="production" 
+        production-type="<%= p.productionable_type %>" 
+        title="<%= p.productionable.title %>"
+        data-id="<%= p.id %>"
+        >
+        <i class="fa <%= p.icon %> picon"></i>
+        <i class="fa fa-sticky-note-o add-task" count="<%= p.tasks.count %>"></i>
+            <%= render "#{p.productionable_type.underscore.pluralize}/production", m: p.productionable %>
+        </li>
+    <% end %>
+    <% end %>
+
+    </div>
+
+    <script>
+    $(".production-title").contentEdit()
+
+    $("body").on("click", ".make-slug", async function(){
+
+        id = $(this).attr("data-id")
+        console.log(id)
+
+        const { value: slug } = await Swal.fire({
+            input: 'text',
+            inputLabel: 'Enter Unique Page @ID',
+            inputPlaceholder: "Example: @billy_wilder"
+        })
+
+        if (slug) {
+            $.ajax({
+                type: "PUT",
+                dataType: "json",
+                url: '/companies/'+id,
+                contentType: 'application/json',
+                data: JSON.stringify({ 
+                slug: slug,
+                _method:'post' 
+                }),
+                success: function(res){
+                Swal.fire(`Done! Your New Link : storytellright.com/${res["slug"]}`)
+                console.log(res)
+                }
+            })
+        }
+
+    })
+
+    $("body").on("click", ".close-tasks", function(){
+        $(".tasks").toggle()
+    })
+
+    // Users
+    // 
+    $("body").on("click", ".add-user", async function(evt){
+        id = $(".production-title").attr("data-id")
+
+        console.log(id)
+
+        const { value: email } = await Swal.fire({
+            input: 'email',
+            inputLabel: 'Email address',
+            inputPlaceholder: "Enter the User's email"
+        })
+
+        if (email) {
+            
+            $.ajax({
+                type: "POST",
+                dataType: "json",
+                url: '/production/users/config',
+                contentType: 'application/json',
+                data: JSON.stringify({ 
+                verb: "add",
+                email: email,
+                production_id: id,
+                _method:'post' 
+                }),
+                success: function(res){
+                console.log(res)
+                Swal.fire(`User Added: ${res["email"]}`)
+                $(`
+                    <li data-id="${res["id"]}">
+                    <i class="fa fa-times remove-user"></i>
+                    ${res["email"]}
+                    </li>`
+                ).insertBefore($(".production-users .add-user"))
+                },
+                error: function(){
+                Swal.fire(`User not found!`)
+                }
+            })
+
+        }
+    })
+
+    // 
+    $("body").on("click", ".remove-user", function(){
+
+        var r = confirm("Remove User?");
+        if (r == true) {
+    
+        li = $(this).closest("li")
+        production_id = $(".production-title").attr("data-id")
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: '/production/users/config',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                verb: 'remove',
+                user_id: li.attr("data-id"),
+                production_id: production_id,
+                _method:'post' 
+            }),
+            success: function(){
+                li.remove()
+            }
+        })
+
+        } else {
+        }
+
+
+
+    })
+
+
+    </script>
+
+</section>

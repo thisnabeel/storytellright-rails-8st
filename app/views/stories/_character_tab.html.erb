@@ -1,0 +1,337 @@
+<style>
+
+    .popupModal {
+        display: none;
+        background: #2c3e50 !important;
+        /*background: #fff !important;*/
+    }
+
+    .popupModal-body {
+        font-family: 'Merriweather', serif;
+        font-size: 21px;
+        font-weight: 300;
+        line-height: 1.58em;
+        margin: 0 auto;
+        padding: 100px;
+        max-width: 740px;
+        color: #fffbf3;
+    }
+
+	#newCharacterModal {
+		background: #2c3e50 !important;
+	}
+
+
+    .popupModal-body input {
+        font-family: 'VT323', monospace;
+        text-align: center;
+        padding: 20px;
+        border-radius: 0;
+        background-color: transparent;
+        border: 0;
+        color: #F8EC23 !important;
+        outline: none; 
+        font-size: 30px;
+    }
+
+    .popupModal-body input:focus {
+        background-color: transparent;
+        color: #F8EC23 !important;
+        border: 0;
+        outline: none; 
+    }
+
+    .close-newCharacterModal {
+        position: fixed;
+        background: #e6ac38;
+        color: #fff;
+        padding: 10px;
+    }
+
+    .btn {
+        font-family: 'VT323', monospace;
+    }
+
+    .characters-list div {
+        display: inline-block;
+        position: relative;
+        /*float: right;*/
+    }
+
+    .move-character {
+/*    position: absolute !important;
+*/    /*bottom: -20px;*/
+    /*right: 45%;*/
+    }
+
+    .traits-list li {
+        margin: 10px;
+        padding: 5px;
+        display: inline-block;
+    }
+
+    .n-traits-list li {
+      background-color: #dc3445;
+    }
+
+    .p-traits-list li {
+      background-color: #0c945c;
+    }
+    
+</style>
+
+<div class="container">
+	<h3>Characters:</h3>
+	<section class="characters-list">
+    <% if @story.characters.present? %>
+  	  <% @story.characters.each do |c| %>
+  	  	<a class="button circle" href="#" data-description='<%= c[1]["description"] %>'><%= c[0] %></a>
+  	  <% end %>
+    <% end %>
+	     <a class="button circle add-character" href="#">+</a>
+	</section>
+</div>
+
+<div id="character-options" class="hidden">
+	<a href="#"><i class="fa fa-cog"></i></a>
+</div>
+
+    <!--  ROOM -->
+    <!--Call your modal-->
+    <a id="newCharacter" style="display:none;" href="#newCharacterModal">DEMO02</a>
+
+    <!--DEMO01-->
+    <div id="newCharacterModal">
+        <!--THIS IS IMPORTANT! to close the modal, the class name has to match the name given on the ID  class="close-animatedModal" -->
+        <div class="close-newCharacterModal"> 
+        	X
+        </div>
+        
+        <div class="newCharacter-body popupModal-body">
+
+            <h2 class="text-center">Add A New Character</h2>   
+            <p>Character Name:</p>
+            <input type="text" class="form-control new-character-title-input" placeholder="What is this Character's Name?">
+            <span class="btn btn-info save-new-character btn-block text-center">Save</span>
+
+        </div>
+
+    </div>
+
+    <!--  ROOM -->
+    <!--Call your modal-->
+    <a id="showCharacter" style="display:none;" href="#showCharacterModal">DEMO02</a>
+
+    <!--DEMO01-->
+    <div id="showCharacterModal" class="popupModal">
+        <!--THIS IS IMPORTANT! to close the modal, the class name has to match the name given on the ID  class="close-animatedModal" -->
+        <div class="close-showCharacterModal"> 
+        	X
+        </div>
+        
+        <div class="showCharacter-body popupModal-body">
+            <div class="character-icon text-center">
+                <i class="fa fa-home fa-3x"></i>
+            </div>
+            <p class="text-center">Character Name:</p>
+            <input type="text" class="form-control show-character-title-input" placeholder="What is this Character's Name?">
+            <section>
+              <p>
+                Negative Traits:
+                <select style="color: #000">
+                  <option value="">Select:</option>
+                  <% NegativeTrait.all.order("title ASC").each do |nt| %>
+                    <option value="<%= nt.id %>"><%= nt.title %></option>
+                  <% end %>
+                </select>
+                <i class="fa fa-plus add-trait"></i>
+              </p>
+              <ul class="n-traits-list traits-list">
+                  
+              </ul>
+            </section>
+            <br>
+            <section>
+              <p>
+                Positive Traits:
+                <select style="color: #000">
+                  <option value="">Select:</option>
+                  <% PositiveTrait.all.order("title ASC").each do |nt| %>
+                    <option value="<%= nt.id %>"><%= nt.title %></option>
+                  <% end %>
+                </select>
+                <i class="fa fa-plus add-trait"></i>
+              </p>
+              <ul class="p-traits-list traits-list">
+                  
+              </ul>
+            </section>
+            <hr>
+            <div class="character-description">
+                <textarea></textarea>
+            </div>
+            <span class="btn btn-info btn-block text-center" onClick="updateCharacter()">Save</span>
+            <span class="btn btn-danger delete-character btn-block text-center" onClick="deleteCharacter()">Delete</span>
+
+
+        </div>
+
+    </div>
+
+
+<script>
+    $("#newCharacter").animatedModal({
+        animatedIn: "bounceInUp",
+        animatedOut: "bounceOutDown",
+        modalTarget:'newCharacterModal'
+    });
+
+    $("#showCharacter").animatedModal({
+        animatedIn: "bounceInUp",
+        animatedOut: "bounceOutDown",
+        modalTarget:'showCharacterModal'
+    });
+    
+    function makeBox(title, id){
+        character_box = `
+        <li>
+            <span class="delete-character" data-id="`+id+`">X</span>
+            <span class="character-title">
+                `+title+`
+            </span>
+            <span class="enter-btn" data-id="`+id+`">
+                Enter
+            </span>
+        </li>`
+        return character_box
+    }
+
+
+    $(".save-new-character").on("click", function(){
+        name = $(".new-character-title-input").val()
+        saveCharacter(name)
+    })
+
+    function saveCharacter(name){
+	   $.ajax({
+	       type: "POST",
+	       dataType: "json",
+	       url: '/edit_characters',
+	       contentType: 'application/json',
+	       data: JSON.stringify({ 
+	       	  id: '<%= @story.id %>',
+	          name: name,
+	          _method:'post' 
+	       }),
+	       success: function(res){
+	         console.log(res)
+	         $(".characters-list").prepend('<a class="button circle" href="#">'+name+'</a>')
+	         $(".new-character-title-input").val("")
+	         $(".close-newCharacterModal").trigger("click")
+	       }
+	   })
+    }
+
+    function updateCharacter(){
+        prev = $("#showCharacterModal").find(".show-character-title-input").attr("data-prev")
+        name = $(".show-character-title-input").val()
+        description = $(".character-description .fr-view").html()
+
+       $.ajax({
+           type: "POST",
+           dataType: "json",
+           url: '/edit_characters',
+           contentType: 'application/json',
+           data: JSON.stringify({ 
+              id: '<%= @story.id %>',
+              prev: prev,
+              name: name,
+              description: description,
+              _method:'post' 
+           }),
+           success: function(res){
+            console.log(res)
+            $(".characters-list a:contains('"+prev+"')").attr("data-description", description)
+            $(".characters-list a:contains('"+prev+"')").html(name)
+            $(".close-showCharacterModal").trigger("click")
+            $(".character-description .fr-view").html("")
+           }
+       })
+    }
+
+    function deleteCharacter(){
+        prev = $("#showCharacterModal").find(".show-character-title-input").attr("data-prev")
+        name = $(".show-character-title-input").val()
+       $.ajax({
+           type: "POST",
+           dataType: "json",
+           url: '/delete_character',
+           contentType: 'application/json',
+           data: JSON.stringify({ 
+              id: '<%= @story.id %>',
+              prev: prev,
+              _method:'post' 
+           }),
+           success: function(res){
+            console.log(res)
+            $(".characters-list a:contains('"+prev+"')").remove()
+            $(".close-showCharacterModal").trigger("click")
+           }
+       })
+    }
+
+    $("body").on("click", ".add-character", function(){
+        $("#newCharacterModal").show()
+        $("#newCharacter").trigger("click")
+    })
+	
+	makeCharactersToolbar()
+  	function makeCharactersToolbar(){
+	    $(".characters-list a").toolbar({
+	      content: '#character-options',
+	      position: 'top',
+	      adjustment: -65,
+	      style: 'primary',
+	      event: 'click',
+	      hideOnClick: true
+	    });
+
+    
+	    $('.characters-list a').on('toolbarItemClick',
+	       function( event ) {
+	          // this: the element the toolbar is attached to
+	          pressed = $(".pressed").html()
+	          $(".show-character-title-input").val(pressed)
+              $(".show-character-title-input").attr("data-prev", pressed)
+              description = $(".pressed").attr("data-description")
+              console.log(description)
+              $(".character-description").html("<textarea>"+description+"</textarea>")
+              $(".character-description textarea").froalaEditor({
+                key: froalaKey,
+                toolbarInline: true,
+                charCounterCount: false,
+                toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'color', 'emoticons', '-', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'indent', 'outdent', '-', 'insertImage', 'insertLink', 'insertFile', 'insertVideo', 'undo', 'redo']
+
+              })
+	          $("#showCharacterModal").show()
+	          $("#showCharacter").trigger("click")
+	       }
+	    );
+  	}
+
+    $(".character-description textarea").froalaEditor({
+        key: froalaKey,
+        toolbarInline: true,
+        charCounterCount: false,
+        toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'color', 'emoticons', '-', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'indent', 'outdent', '-', 'insertImage', 'insertLink', 'insertFile', 'insertVideo', 'undo', 'redo']
+
+    })
+
+    $("body").on("click", ".add-trait", function(){
+      section = $(this).closest("section")
+      ul = section.find("ul")
+      option = section.find("select")
+      ul.append("<li data-id='"+option.val()+"'>"+option.find("option:selected").html()+"</li>")
+    })
+
+</script>

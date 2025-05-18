@@ -1,0 +1,54 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Presentation:</strong>
+  <%= @slide.presentation_id %>
+</p>
+
+<p>
+  <strong>Body:</strong>
+  <%= @slide.body %>
+</p>
+
+<p>
+  <strong>Media url:</strong>
+  <%= @slide.media_url %>
+</p>
+
+<p>
+  <strong>Body font size desktop:</strong>
+  <%= @slide.body_font_size_desktop %>
+</p>
+
+<p>
+  <strong>Body font size mobile:</strong>
+  <%= @slide.body_font_size_mobile %>
+</p>
+
+<p>
+  <strong>Media size desktop:</strong>
+  <%= @slide.media_size_desktop %>
+</p>
+
+<p>
+  <strong>Media size mobile:</strong>
+  <%= @slide.media_size_mobile %>
+</p>
+
+<p>
+  <strong>Title font size desktop:</strong>
+  <%= @slide.title_font_size_desktop %>
+</p>
+
+<p>
+  <strong>Title font size mobile:</strong>
+  <%= @slide.title_font_size_mobile %>
+</p>
+
+<p>
+  <strong>Position:</strong>
+  <%= @slide.position %>
+</p>
+
+<%= link_to 'Edit', edit_slide_path(@slide) %> |
+<%= link_to 'Back', slides_path %>

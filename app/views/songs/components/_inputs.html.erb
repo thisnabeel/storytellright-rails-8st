@@ -1,0 +1,53 @@
+<style>
+	.inputs {
+		position: relative;
+		max-width: 210px;
+		margin: 20px auto;
+
+	}
+
+	.toggle-extra {
+		position: absolute;
+		right: -20px;
+		top: 10px;
+		font-size: 22px;
+	}
+
+	.extra-details {
+		display: none;
+	}
+
+	.artist-input {
+		background: #fffbec;
+	}
+
+</style>
+
+<div class="inputs">
+	
+	<input type="text" class="form-control artist-input mini-input" value="<%= @song.artist %>" placeholder="Artist...">
+
+	<i class="fa fa-plus toggle-extra"></i>
+	<div class="extra-details">
+		<input type="text" class="form-control year-input mini-input" value="<%= @song.year %>" placeholder="Year...">
+		<input type="text" class="form-control link-input mini-input" value="<%= @song.link %>" placeholder="Source Link...">
+	</div>
+</div>
+
+<script>
+	$(".toggle-extra").on('click', function(){
+		$(".extra-details").toggle()
+	})
+
+	var mini_inputTypeWatchOptions = {
+	    callback: function (value) { 
+	    	saveSong()
+	    },
+	    wait: 750,
+	    highlight: true,
+	    allowSubmit: false,
+	    captureLength: 2
+	}
+
+	$(".mini-input").typeWatch( mini_inputTypeWatchOptions );
+</script>

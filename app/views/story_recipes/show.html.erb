@@ -1,0 +1,7 @@
+<% if @recipe.recipe_type == "circle" %>
+	<%= render "story_recipes/views/circle_view" %>
+<% elsif @recipe.recipe_type == "timeline" %>
+	<%= render "story_recipes/views/timeline_view" %>
+<% else %>
+	<%= render "story_recipes/views/regular_view" %>
+<% end %>

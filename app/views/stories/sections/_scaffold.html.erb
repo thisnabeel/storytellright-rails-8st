@@ -1,0 +1,68 @@
+<article class="part" id="part-1" key="scaffold">
+	
+	<div class="hidden">
+
+		<hr>
+
+		<p>2a. What does <img src="<%= asset_path('denial.png') %>" alt="" class="armature"> this Truth look like? <i class="fa fa-question-circle"></i> </p>
+			<div class="nt-list">
+				<select name="" id="">
+					<option value="">Select...</option>
+					<% NegativeTrait.order("title ASC").each do |nt| %>
+						<option value="<%= nt.id %>"><%= nt.title %></option>
+					<% end %>
+				</select>
+				<span class="add-t">
+					<i class="fa fa-plus"></i>
+				</span>
+				<span class="view-t">
+					<i class="fa fa-book"></i>
+				</span>
+				<ul class="selected" data-trigger="ntModal" data-link="negative_traits">
+					<% if @story.story_details.present?  && @story.story_details["negative_traits"].present?  %>
+						<% @story.story_details["negative_traits"].each do |nt| %>
+						<li data-id='<%= nt %>'><i class='fa fa-times remove-item'></i><%= NegativeTrait.find(nt).title %></li>
+						<% end %>
+					<% end %>
+				</ul>
+			</div>
+
+		<br>
+		<p>2b. What does <img src="<%= asset_path('handshake.png') %>" alt="" class="armature"> this Truth look like? <i class="fa fa-question-circle"></i> </p>
+			<div class="pt-list">
+				<select name="" id="">
+					<option value="">Select...</option>
+					<% PositiveTrait.order("title ASC").each do |nt| %>
+						<option value="<%= nt.id %>"><%= nt.title %></option>
+					<% end %>
+				</select>
+				<span class="add-t">
+					<i class="fa fa-plus"></i>
+				</span>
+				<span class="view-t">
+					<i class="fa fa-book"></i>
+				</span>
+				<ul class="selected" data-trigger="ptModal" data-link="positive_traits">
+					<% if @story.story_details.present?  && @story.story_details["positive_traits"].present?  %>
+						<% @story.story_details["positive_traits"].each do |nt| %>
+						<li data-id='<%= nt %>'><i class='fa fa-times remove-item'></i><%= PositiveTrait.find(nt).title %></li>
+						<% end %>
+					<% end %>
+				</ul>
+			</div>
+
+	</div>
+
+	<div class="hidden">
+	<hr>
+	<p>How would you pitch this story?</p>
+	<div class="message-form froalize save-this pitch">
+		<textarea>
+			<%= @story.pitch.html_safe if @story.pitch.present?  %>
+		</textarea>
+	</div>
+	
+	
+
+
+</article>

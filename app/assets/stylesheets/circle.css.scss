@@ -1,0 +1,108 @@
+/* INIT
+--------------------------------------------------------------------------- */
+.circle {
+
+	svg {
+		display: inline-block;
+		height: 100%;
+		width: 100%;
+	}
+
+	.qtpieInside {
+		border-radius: 100%;
+		position: absolute;
+		left: 20%;
+		width: 60%;
+		top: 50%;
+		margin-top: -20px;
+		font-size: 30px;
+		line-height: 40px;
+		overflow: hidden;
+		text-align: center;
+		color: #ecf0f1;
+
+	}
+
+	#qtpie {
+		position: relative;
+		display: block;
+		display: none;
+		margin: 30px auto;
+		width: 250px;
+		height: 250px;
+	}
+
+	/* COLORS */
+
+	.Photoshop {
+		fill: #2980b9;
+	}
+
+	.Photoshop:hover {
+		fill: #3498db;
+	}
+
+	.Illustrator {
+		fill: #f39c12;
+	}
+
+	.Illustrator:hover {
+		fill: #f1c40f;
+	}
+
+	.InDesign {
+		fill: #8e44ad;
+	}
+
+	.InDesign:hover {
+		fill: #9b59b6;
+	}
+
+	.HTML5 {
+		fill: #c0392b;
+	}
+
+	.HTML5:hover {
+		fill: #e74c3c;
+	}
+
+	.CSS3 {
+		fill: #27ae60;
+	}
+
+	.CSS3:hover {
+		fill: #2ecc71;
+	}
+
+	.blank {
+		fill: none !important;
+	}
+
+	.blank:hover {
+	  fill: none !important;
+	}
+
+	circle {
+		fill: #fff;
+	}
+
+	.qtpieInside {
+		font-family: 'VT323', monospace;
+	}
+
+
+
+	path:hover {
+		stroke: #000;
+    	stroke-width: 2px;
+    	cursor: pointer;
+	}
+
+
+	@media screen and (max-width: 1000px) {
+	  
+	  .fixed {display: none;}
+	  /* Hidden on codepen preview */
+	  
+	}
+}

@@ -1,0 +1,175 @@
+<style>
+
+	#places-list {
+		/*display: none;*/
+	    position: fixed;
+	    z-index: 9999;
+	    right: 0;
+	    top: 0;
+	    height: 100%;
+	    padding: 30px;
+		background: #FEFDFD;
+	    min-width: 225px;
+   		max-width: 225px;
+		-webkit-box-shadow: -10px 10px 17px -16px rgba(0,0,0,0.38);
+		-moz-box-shadow: -10px 10px 17px -16px rgba(0,0,0,0.38);
+		box-shadow: -10px 10px 17px -16px rgba(0,0,0,0.38);
+	}
+	/**/
+
+	#places-list input {
+		background: transparent;
+    	border: 0;
+    	border-bottom: 1px solid #ccc;
+	}
+
+	#places-list header {
+		background: #000;
+		color: #fff;
+		padding: 10px;
+	}
+
+	#places-list input {
+		font-family: 'VT323', monospace !important;
+		font-size: 18px;
+	}
+
+	#places-list article {
+		position: relative;
+	}
+
+	.remove-place-item {
+		position: absolute;
+    	right: -17px;
+    	top: 10px;
+	}
+
+	.close-places {
+
+    	position: absolute;
+    	right: 5px;
+    	top: 5px;
+    	font-size: 20px;
+    	color: #a8a8a8;
+	}
+
+	.show-places {
+		position: absolute;
+	    right: 10px;
+	    font-size: 20px;
+	    top: 10px;
+	    display: none;
+	}
+
+	.remix-img {
+		max-width: 100%;
+	}
+
+	.open-remix {
+		position: fixed;
+		right: 20px;
+	}
+</style>
+
+<!-- Characters List Opener -->
+<span class="close-places open-remix">
+	Remix <i class="fa fa-bars"></i>
+</span>
+
+<div id="places-list">
+
+	<i class="fa fa-times close-places"></i>	
+	<div id="places-list-opener" class="places-list-opener">
+	</div>
+	
+	<h4>
+		Remix: <span class="btn btn-primary fa fa-plus add-place hide-guest"></span>
+	</h4>
+	<hr>
+
+	<ul>
+		<% if @story.story_details.present? && @story.story_details["places"].present? %>
+			<% @story.story_details["places"].each_with_index do |p, index| %>
+				<article>
+					<span class="fa fa-times remove-place-item"></span>
+					<input type="text" placeholder="Type..." class="form-control" value="<%= p["title"] %>" />
+				</article>
+			<% end %>
+		<% end %>
+	</ul>
+
+</div>
+
+<script>
+
+	var placesOptions = {
+		callback: function (value) { 
+			saveStory()
+    		save()
+			makeRemixImg()
+			
+		},
+		wait: 500,
+		highlight: true,
+		allowSubmit: false,
+		captureLength: 0
+	}
+
+	makeRemixImg()
+
+	$("body").on("click", "#places-list .add-place", function(){
+		li = $(this).closest("div")
+		li.find("ul").append(
+			`
+			<article>
+				<span class="fa fa-times remove-place-item"></span>
+				<input type="text" placeholder="Type..." class="form-control" />
+			</article>`
+		)
+		
+		$("#places-list input").typeWatch( placesOptions );
+	})	
+
+
+	function makeRemixImg(){
+		$(".remove-place-item").each(function(){
+			li = $(this).closest("article")
+			val = li.find("input").val()
+			li.find("img").remove()
+			li.append(`<img src="${val}" class="remix-img" />`)
+		})
+	}
+
+
+
+	$("body").on("click", ".remove-place-item", function(){
+		li = $(this).closest("article")
+		li.remove()
+
+		saveStory()
+    	save()
+	})
+
+	$(".close-places, .show-places").on("click", function(){
+		$("#places-list").toggle("slide");
+	})
+
+
+	function getPlaces(){
+		array = []
+		$("#places-list").find("ul article").each(function(){
+			array.push({
+				title: $(this).find("input").val()
+			})
+		})
+		return array
+	}
+
+	// 
+
+	// setTimeout(function(){ 
+ //    	$(".show-places").show()
+ //    	$(".show-puzzle").show()
+ //  	}, 3000);
+
+</script>

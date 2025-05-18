@@ -1,0 +1,107 @@
+<style>
+
+.blog-box {
+    display: flex;
+    overflow-x: scroll;
+    max-width: max-content;
+    margin: 0 auto;
+    max-height: 370px;
+}
+
+.blog-box .blog-post {
+
+    width: 207px;
+    margin: 20px;
+    display: inline-block;
+}
+
+.blog-post a {
+    width: 100%;
+}
+
+
+.blog-post a:hover img {
+    transform: scale(1.1);
+    transition: transform 0.9s ease-out;
+} 
+
+
+.blog-post-img-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-size: 0px;
+    border-radius: 6px;
+}
+
+
+.blog-post img {
+    max-height: 370px;
+    display: block;
+    transform: scale(1);
+    transition: transform 0.9s ease-out;
+}
+
+/*  */
+
+.blog-card-bottom {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    font-size: 16px;
+    padding: 12px;
+}
+
+/*  */
+
+.blog-post-title {
+    position: relative;
+    font-size: 1.15em;
+    font-weight: 900;
+    margin: 0;
+    color: #ffffff;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow-y: hidden;
+    text-overflow: ellipsis;
+}
+
+.blog-post-title-cover {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #990000;
+    opacity: 0.75;
+    -webkit-transition: opacity 0.25s ease-in;
+    transition: opacity 0.25s ease-in;
+}
+</style>
+
+<div class="blog-box">
+    <% Chapter.where(visibility: true).order("created_at ASC").first(3).each do |chapter| %>
+    <article class="blog-post">
+        <% if User.is_admin? current_user %>
+            <a href="/chapters/<%= chapter.id %>">
+        <% else %>
+            <a href="/chapters/<%= chapter.slug %>">
+        <% end %>
+            <div class="blog-post-img-container">
+                <img src="<%= chapter.cover %>" alt="" role="presentation" class="jsx-2920405963 progressive-image image jsx-2126225085 expand" pinger-seen="true">
+                <div class="blog-card-bottom">
+                    <div class="blog-post-title-cover">
+                    </div>
+                    <div class="blog-post-title">
+                        <%= chapter.title %>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </article>
+    <% end %>
+</div>

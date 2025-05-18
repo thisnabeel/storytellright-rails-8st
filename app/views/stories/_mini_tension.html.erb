@@ -1,0 +1,123 @@
+<style>
+	.red-bg {
+		background: #e74c3c;
+    	color: #fff;
+	}
+	/**/
+	.green-bg {
+		background: #55efc4;
+	}
+</style>
+
+<div class="mini-tensions">
+	<h4>Mini Tensions: <i class="fa fa-plus add-mt btn btn-primary"></i></h4>
+
+	<table class="table">
+	  <thead>
+	    <tr>
+	      <th scope="col"></th>
+	      <th class="red-bg" scope="col">Tension</th>
+	      <th class="green-bg" scope="col">Relief</th>
+	      <th scope="col">Relevancy To Intro</th>
+	      <th scope="col">Emotions For Climax</th>
+	      <th class="red-bg" scope="col">Aftermath</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	  </tbody>
+	</table>
+</div>
+
+<script>
+	$("body").on("click", ".add-mt", function(){
+		table = $(".mini-tensions tbody")	
+
+		table.append(mt_output())
+		makeFroala()
+
+	})
+
+	function fetchMT(){
+		// array = JSON.parse(array);
+		$.getJSON( "/stories/<%= @story.id %>", function( data ) {
+    		// console.log(data)
+    		array = data["story_details"]["mini-tensions"]
+			$.each(array, function(index, item){
+				table = $(".mini-tensions tbody")
+				table.append(mt_output(item))
+			})
+
+			// 
+			fetchCP(data["story_details"]["cp"])
+
+			makeFroala()
+			makeMagic()
+
+		});
+	}
+
+	fetchMT()
+
+
+	function mt_output(arg){
+		items = ""
+		if (arg == null) {
+		  items += `<td title='tension'><textarea class="froalize"></textarea>
+	      </td>
+	      <td title='relief'><textarea class="froalize"></textarea>
+	      </td>
+	      <td title='ri'><textarea class="froalize"></textarea>
+	      </td>
+	      <td title='ec'><textarea class="froalize"></textarea>
+	      </td>
+	      <td title='aftermath'><textarea class="froalize"></textarea>
+	      </td>`
+	      console.log("YESS")
+        } else {
+			$.each(arg, function(index, item){
+				items += `<td title='`+item["title"]+`'><textarea class="froalize">`+item["body"]+`</textarea>
+	      		</td>`
+			})
+        }
+
+
+        output = `
+		<tr class='mt'>
+	      <td>
+	      	<i class="fa fa-trash btn btn-danger remove-mt"></i>
+	      </td>
+	      `+items+`
+	    </tr>`
+		
+        return output
+	}
+
+	$("body").on("click", ".remove-mt", function(){
+		li = $(this).closest(".mt")
+		li.remove()
+		saveStory()
+    	save()
+	})
+
+	// 
+	function saveMiniTensions(){
+		table = $(".mini-tensions table")
+		array = []
+		table.find(".mt").each(function(){
+			hash = []
+			$(this).find('td').each(function(){
+				if ($(this).attr("title") == undefined){
+					return
+				}
+				hash.push({
+					title: $(this).attr("title"),
+					body: $(this).find(".fr-view").html()
+				})
+			})
+			array.push(hash)
+		})
+		console.log(array)
+		return array
+	}
+
+</script>

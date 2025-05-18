@@ -1,0 +1,34 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Location:</strong>
+  <%= @inspiration.location %>
+</p>
+
+<p>
+  <strong>Body:</strong>
+  <%= @inspiration.body %>
+</p>
+
+<p>
+  <strong>Inspirable type:</strong>
+  <%= @inspiration.inspirable_type %>
+</p>
+
+<p>
+  <strong>Inspirable:</strong>
+  <%= @inspiration.inspirable_id %>
+</p>
+
+<p>
+  <strong>Tags:</strong>
+  <%= @inspiration.tags %>
+</p>
+
+<p>
+  <strong>Position:</strong>
+  <%= @inspiration.position %>
+</p>
+
+<%= link_to 'Edit', edit_inspiration_path(@inspiration) %> |
+<%= link_to 'Back', inspirations_path %>

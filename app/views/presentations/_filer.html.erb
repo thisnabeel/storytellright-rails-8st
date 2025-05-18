@@ -1,0 +1,121 @@
+<script>
+
+  $("body").on("click", ".filer", function(){
+    $("#slideFile").trigger("click")
+  })
+
+  $("body").on("change", "#slideFile", function(){
+    
+    file = $(this)[0]
+
+
+    created = false;
+
+
+      var bucket = new AWS.S3({params: {Bucket: 'storytellright'}});
+        var file = file.files[0];
+
+        var timestamp = new Date().getUTCMilliseconds();
+
+        console.log(file.name)
+        key_name = timestamp+'.'+file.name.split(".").pop()
+
+        if (file) {
+          console.log(file.name)
+            var params = {
+              Key: 'presentations/<%= @presentation.id %>/'+key_name, 
+              ContentType: file.type, 
+              Body: file,
+              ACL:'public-read'
+            };
+
+        Swal.fire({
+          title: 'Uploading...',
+          text: "0%",
+          allowOutsideClick: false,
+          showCancelButton: false,
+          showConfirmButton: false,
+        })
+
+            bucket.upload(params).on('httpUploadProgress', function(evt) {
+                console.log("Uploaded :: " + parseInt((evt.loaded * 100) / evt.total)+'%');
+          
+          digit = parseInt((evt.loaded * 100) / evt.total)
+                percent = parseInt((evt.loaded * 100) / evt.total)+'%'
+
+
+          Swal.update({ 
+            text: percent,
+          })  
+
+                // $(".progress-bar").css({"width":percent}).attr("aria-valuenow", digit).html(percent)
+
+                // $(".hide-while-uploading").hide()
+                // $(".show-while-uploading").show()
+
+            }).send(function(err, data) {
+                console.log(data)
+
+          // hash["proof"]["source"] = data["Location"]
+
+            if (created == false) {
+              
+              box_src = $(".active-slide").attr("data-file") || ""
+
+              deleteS3File(box_src, function(){
+
+				        $(".filer").attr("value", data["Location"])
+                if (whatMedia(data["Location"]) == "image"){
+                  $(".slide-maker [key='data-media']").val(data["Location"])
+                }
+	              saveMaker()
+	              Swal.close()
+
+              })
+            }
+
+            created = true;
+
+            });
+        }
+
+
+  });
+
+function deleteS3File(src, callback){
+
+  if (src) {
+
+    var bucket = new AWS.S3({params: {Bucket: 'storytellright'}});
+
+    fileName = src.split(".com/")[1]
+    
+    var params = {
+      Key: fileName
+      /* 
+         where value for 'Key' equals 'pathName1/pathName2/.../pathNameN/fileName.ext'
+         - full path name to your file without '/' at the beginning
+      */
+    };
+
+    bucket.deleteObject(params, function(err, data) {
+      if (err) {
+        console.log(err, err.stack); // an error occurred
+      }
+      else {
+        console.log(data); // successful response
+        callback()
+        return data
+      }
+    });
+
+  } else {
+    
+    callback()
+
+  }
+
+}
+
+
+</script>

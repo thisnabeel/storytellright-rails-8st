@@ -1,0 +1,7 @@
+<% if @recipe.recipe_type == "circle" %>
+	<%= render "recipes/editor/circle_editor" %>
+<% elsif @recipe.recipe_type == "timeline" %>
+	<%= render "recipes/editor/timeline_editor" %>
+<% else %>
+	<%= render "recipes/editor/regular_editor" %>
+<% end %>

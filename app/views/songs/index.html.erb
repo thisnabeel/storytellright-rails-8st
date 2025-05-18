@@ -1,0 +1,234 @@
+<style>
+  
+  .stories-list {
+    list-style: none;
+    padding: none;
+  }
+
+
+  .story-title {
+    font-family: 'sf';
+        text-align: center;
+        font-size: 24px;
+  }
+
+  .enter-btn {
+      display: block;
+    width: 100%;
+    margin-top: 30px;
+    padding: 15px 10px;
+    
+    border: 4px solid #ccc;
+    border-radius: 80px;
+    
+    font-size: .9em;
+    font-weight: bold;
+    line-height: 1em;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+  }
+
+  .enter-btn, .delete-story {
+    color: #ccc;
+    cursor: pointer;
+  }
+
+  .enter-btn:hover, .delete-story:hover {
+    color: #000;
+    border: 4px solid #000;
+  }
+
+  .delete-story:hover {
+    border: 0;
+  }
+
+  .delete-story {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    border: 0;
+  }
+
+  .add-story {
+    border: none;
+      background: #c8c8c8 !important;
+      color: white;
+      font-size: 45px;
+  }
+
+  .stories-list > li.original {
+    box-shadow: 0 0 10px 1px #f1d60e;
+    background: #f6edb7;
+  }
+
+  .year {
+    position: absolute;
+      top: -12px;
+      left: -20px;
+      background: #000;
+      color: #fff;
+      padding: 3px 5px;
+      border-radius: 7px;
+    font-family: 'VT323', monospace;
+  }
+
+
+  .top-nav .btn-info {
+    padding: 7px;
+    border-radius: 5px;
+  }
+
+  .fa-play-circle {
+      position: absolute;
+      bottom: 4px;
+      right: 0;
+      right: 8px;
+      font-size: 30px;
+      color: #cddfff;
+  }
+
+  .series-title {
+    display: block;
+    background: #7e3dba;
+    color: #fff;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+  }
+
+  /**/
+  .cover-image img {
+    max-width: 200px;
+      max-height: 260px;
+  }
+
+  /**/
+  .story-artist {
+    display: block;
+    padding: 10px;
+    background: #FFF8DD;
+    border-radius: 10px;
+    margin-bottom: 20px;
+  }
+
+  .has-inspirations {
+    position: absolute;
+    left: 0px;
+    bottom: 0px;
+    font-size: 29px;
+    color: #797912;
+    background: #ffff55;
+    width: 50px;
+    border-radius: 0px 20px 0px 20px;
+  }
+
+  .has-inspirations:hover {
+    color: #b984c6;
+  }
+
+  /**/
+  .story-armature {
+    text-align: left;
+    background: #fff9fe;
+    color: #841175;
+    padding: 18px;
+    border-radius: 4px;
+  }
+  .story-armature p {
+    margin: 0;
+    padding: 0;
+  }
+
+
+  .stories-list .folder {
+    display: block;
+    position: relative;
+  }
+
+  .folder li {
+    padding: 10px;
+    display: none;
+  }
+
+  .folder .title-final {
+    font-weight: 700;
+    display: block;
+    font-size: 20px;
+    padding: 10px;
+  }
+
+  .folder .chords {
+    font-weight: 300;
+    border: 1px solid;
+    padding: 5px 24px;
+    display: inline-block;
+    border-radius: 20px;
+  }
+
+  .expand-folder {
+    position: absolute;
+    top: -25px;
+    font-size: 17px;
+  }
+</style>
+
+
+
+<h1>Study: <small><%= @songs.count %> songs</small></h1>
+<%= render "songs/finder" %>
+
+
+<ul class="stories-list">
+  <% @songs.each do |m| %>
+  <li class="song" production-type="Song" data-link="<%= m.clean_link %>">
+    
+    <span class="delete-story" data-id="<%= m.id %>">X</span>
+    <%= render "songs/production", m:m %>
+
+  <% end %>
+  <li class="add-song">
+    +
+  </li>
+</ul>
+
+
+
+<%= render "songs/new_song" %>
+
+<script>
+  $("body").on("click", ".delete-story", function(){
+    id = $(this).attr('data-id')
+    $(this).closest("li").remove()
+    deleteStory(id, $(this))
+  })
+
+    function deleteStory(id, li){
+
+      $.ajax({
+          type: "DELETE",
+          dataType: "json",
+          url: '/songs/'+id,
+          contentType: 'application/json',
+          data: JSON.stringify({ 
+             _method:'post' 
+          }),
+          success: function(){
+            li.remove()
+          }
+      })
+
+    }
+
+    $("body").on("click", ".expand-folder", function(){
+      li = $(this).closest("ul").find('li')
+      li.toggle()
+    })
+
+</script>
+
+<%= render "songs/keys" %>
+<%= render "songs/touch/lyrics" %>
+
+
+<% @inspirable_type = "Song" %>
+<%= render "inspirations/modal" %>

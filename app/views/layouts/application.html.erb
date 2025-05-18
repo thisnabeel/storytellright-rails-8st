@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>StoryTellRight</title>
+  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+  <%= csrf_meta_tags %>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+  <script>
+  	var froalaKey = "CA4A4A3B1C2A2tA6B4B3A1C7D1D1E1G4B3ocbaE2kmuieiD-17slskdlqD7dgd=="
+  </script>
+
+</head>
+
+<style>
+  #flexbox {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+
+  #main {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 100%;
+    flex: 1;
+  }
+
+</style>
+
+<body user-id="<%= current_user.id if user_signed_in? %>">
+  
+
+<div id="flexbox">
+  <% if user_signed_in? %>
+    <% unless @story.present? || @song.present? %>
+      <%= render "companies/side" %>
+      <%= render "tasks/side" %>
+    <% end %>
+  <% end %>
+  <div class="container" id="main">
+    <%= yield %>
+  </div>
+</div>
+
+<%= render "modals/embedded_video" %>
+<%= render "presentations/modal" %>
+
+<script>
+  $("body").on("click", ".play-yt", function(){
+    src = $(this).attr("src").split("watch?v=")[1]
+    li = $(this).closest("li")
+    li.find(".iframe-container").html(`<iframe frameborder="0" scrolling="no" marginheight="0" width="100%" marginwidth="0" type="text/html" 
+    src="https://www.youtube.com/embed/${src}?autoplay=0&fs=1&iv_load_policy=3&showinfo=0&rel=0&cc_load_policy=0&start=0&end=0&origin=http://storytellright.com"
+    ></iframe>`)
+    li.find(".play-yt").remove()
+  })
+
+
+</script>
+
+  <script src="https://sdk.amazonaws.com/js/aws-sdk-2.1.24.min.js"></script>
+
+</body>
+</html>

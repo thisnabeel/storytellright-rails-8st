@@ -1,0 +1,450 @@
+<style>
+
+  .train {
+    top: 53px;
+    left: 0%;
+    right: 0%;
+    text-align: center;
+    font-size: 34px;
+    position: absolute;
+    padding: 0;
+    margin: 0;
+    display: none;
+  }
+
+  .folder > li:hover .train {
+    display: block;
+  }
+
+
+
+  .folder-head {
+    font-size: 24px;
+    border-left: 1px dashed #ccc;
+    padding-left: 10px;
+    font-weight: bold;
+  }
+</style>
+
+<section class="folder-container" toggle="folder-container">
+  <i class="fa fa-plus add-to-folder btn btn-block btn-outline-primary btn-lg"></i>
+  <br><br>
+  <ul class="folder">
+    <% @song.folder.try(:[], "sections").try(:each) do |t| %>
+      <li 
+        data-title="<%= t["title"] %>"
+        data-body="<%= t["body"] %>"
+        data-color="<%= t["color"] %>"
+        data-timestamp="<%= t["timestamp"] %>"
+        data-chords="<%= t["chords"] %>"
+        data-lyrics="<%= ERB::Util.url_encode(t["lyrics"]) %>"
+        data-font="<%= t["font"] %>"
+
+        data-key="<%= t["key"] %>"
+        data-scale="<%= t["scale"] %>"
+        
+        data-demos="<%= ERB::Util.url_encode(t["demos"].to_json) %>"
+
+        style="background: <%= t["color"] %>; color: <%= t["font"] %>">
+        <span class='remove'><i class="fa fa-times"></i></span>
+        <span class="title-final" contentEditable><%= t["title"] %></span>
+        <section class="train">
+          <div class="fa fa-arrow-left"></div>
+          <div class="fa fa-arrow-right"></div>
+        </section>
+      </li>
+    <% end %>
+  </ul>
+
+  <div class="folder-show folder-content">
+    <ul class="colors">
+      <li class="color" style="background: #fc5c65" data-color="#fc5c65" data-font="#fff"></li>
+      <li class="color" style="background: #eb3b5a" data-color="#eb3b5a" data-font="#fff"></li>
+
+      <li class="color" style="background: #fd9644" data-color="#fd9644" data-font="#fff"></li>
+      <li class="color" style="background: #fa8231" data-color="#fa8231" data-font="#fff"></li>
+
+      <li class="color" style="background: #fed330" data-color="#fed330" data-font="#000"></li>
+      <li class="color" style="background: #f7b731" data-color="#f7b731" data-font="#fff"></li>
+
+      <li class="color" style="background: #26de81" data-color="#26de81" data-font="#000"></li>
+      <li class="color" style="background: #20bf6b" data-color="#20bf6b" data-font="#fff"></li>
+
+      <li class="color" style="background: #a55eea" data-color="#a55eea" data-font="#fff"></li>
+      <li class="color" style="background: #8854d0" data-color="#8854d0" data-font="#fff"></li>
+    </ul>
+    <p  class="folder-head">Title: <small class="btn btn-outline-primary duplicate">Duplicate</small></p>
+    <input type="text" class="form-control tab-title save-this" data-code="title">
+    <input type="text" class="form-control tab-timestamp save-this <%= 'hidden' if !@song.link.present? %>" data-code="timestamp" placeholder="Enter Timestamp">
+    <br>
+    
+    <p class="folder-head">Notes:</p>
+    <textarea class="form-control tab-body save-this" data-code="body">
+    </textarea>
+    
+    <br>
+
+    <%= render "songs/folder/chords_box" %>
+    
+    <br>
+    
+    <%= render "songs/folder/lyrics" %>
+    
+    <br>
+    
+    <%= render "songs/folder/demos" %>
+
+    <br>
+  </div>
+</section>
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/TypeWatch/3.0.1/jquery.typewatch.min.js"></script>
+
+<script>
+  // Load the IFrame Player API code asynchronously.
+  var tag = document.createElement('script');
+  tag.src = "https://www.youtube.com/player_api";
+  var firstScriptTag = document.getElementsByTagName('script')[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+  // Replace the 'ytplayer' element with an <iframe> and
+  // YouTube player after the API code downloads.
+  var player;
+  function onYouTubePlayerAPIReady() {
+    player = new YT.Player('ytplayer', {
+      height: '360',
+      width: '100%',
+      videoId: '<%= @song.clean_link %>'
+    });
+  }
+</script>
+
+<script>
+  $(".add-to-folder").on("click", function(){
+    
+    title = `Tab `+$(".folder li").length
+
+    $(".folder").append(`
+      <li>
+        <span class='remove'><i class="fa fa-times"></i></span>
+        <span class='title-final' contentEditable>`+title+`</span>
+        <section class="train">
+          <div class="fa fa-arrow-left"></div>
+          <div class="fa fa-arrow-right"></div>
+        </section>
+    </li>`)
+    $(".folder li:last").addClass("active-tab").siblings().removeClass("active-tab")
+    select_tab($(".active-tab"))
+
+    $('.folder-show').show()
+    $(".tab-title").val(title)
+    saveInputs()
+
+    saveSong()
+  })
+
+  $(".folder").on("click", "li", function(){
+    $('.folder-show').show()
+    $(this).addClass("active-tab").siblings().removeClass("active-tab")
+    select_tab($(this))
+  })
+
+  function select_tab(tab){
+    val = tab.find(".title-final").html()
+
+
+    timestamp = tab.attr("data-timestamp")
+
+     $(".save-this").each(function(){
+      code = $(this).attr("data-code")
+
+      $(".folder-show .tab-"+code).val(tab.attr("data-"+code))
+
+     })
+    
+    if (tab.attr("data-lyrics")) {
+
+      lyrics = tab.attr("data-lyrics");
+      lyrics = decodeURIComponent(lyrics)
+
+      $(".tab-lyrics .fr-view").html(lyrics)
+      // $(".tab-lyrics .show-placeholder").hide()
+    } else {
+      $(".tab-lyrics .fr-view").html("")
+      // $(".tab-lyrics .show-placeholder").show()
+    }
+
+    if (tab.attr("data-demos")) {
+      demos = JSON.parse(decodeURIComponent(tab.attr("data-demos")))
+      console.log(demos)
+      populateElements(demos)
+    } else {
+      populateElements([])
+    }
+
+    if (tab.attr("data-key")) {
+      $(".chords-box-key").val(tab.attr("data-key"))
+      $(".chords-box-mode").val(tab.attr("data-scale"))
+    }
+    
+    console.log(timestamp)
+    
+    if (timestamp) {
+      seekTo(timestamp)
+    } 
+    buildChordBox()
+
+  }
+
+  $(".folder").on("click", ".remove", function(e){
+    e.stopPropagation();
+    li = $(this).closest("li")
+    tab = li
+    if (!$(".folder > li").length) {
+      $(".folder-show").hide();
+    } else {
+      index = $(".folder > li").index(li)
+      console.log(index)
+      $(".folder > li").eq(index + 1).addClass("active-tab")
+      select_tab($(".folder > li").eq(index + 1))
+    }
+
+
+   if (tab.attr("data-demos")) {
+      demos = JSON.parse(decodeURIComponent(tab.attr("data-demos")))
+      // console.log(demos)
+      $.each(demos, function(index, demo){
+        deleteS3Demo(demo["source"], function(){
+          
+        })
+      })
+    }
+
+    li.remove()
+    saveSong()
+
+    $(".folder li:last").addClass("active-tab").siblings().removeClass("active-tab")
+    if ($(".folder > li").length){
+      select_tab($(".folder li:last"))
+    } else {
+      $(".folder-show").hide()
+    }
+
+  })
+
+  $("body").on("click", ".color", function(){
+    tab = $(".active-tab")
+    color = $(this).attr("data-color")
+    font = $(this).attr("data-font")
+    tab.css({"background":color})
+    tab.css({"color":font})
+
+    tab.attr("data-color", color)
+    tab.attr("data-font", font)
+
+    saveSong()
+  })
+
+
+var options = {
+    callback: function (value) { 
+       
+       saveInputs()
+      
+      buildChordBox()
+      saveSong()
+    },
+    wait: 750,
+    highlight: true,
+    allowSubmit: false,
+    captureLength: 2
+}
+
+function saveInputs(){
+      tab = $(".active-tab")
+
+      $(".save-this").each(function(){
+        code = $(this).attr("data-code")
+
+        tab.attr("data-"+code, $(".folder-show .tab-"+code).val())
+      })
+
+      title = $(".folder-show .tab-title").val()
+
+      tab.find(".title-final").html(title)
+}
+
+$(".save-this").typeWatch( options );
+
+   $(".froalize textarea, textarea.froalize").froalaEditor({
+    key: froalaKey,
+    toolbarInline: true,
+    charCounterCount: false,
+    pastePlain: true,
+    placeholderText: 'Click here to type...',
+    toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'color', 'emoticons', '-', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'indent', 'outdent', '-', 'insertImage', 'insertLink', 'insertFile', 'insertVideo', 'undo', 'redo', 'insertChord'],
+    saveInterval: 500,
+    })
+    .on('froalaEditor.save.before', function (e, editor) {
+      // Before save request is made.
+      lyrics = $(".tab-lyrics .fr-view").html()
+      $(".active-tab").attr("data-lyrics", encodeURIComponent(lyrics));
+
+      buildChordBox()
+      saveSong()
+    })
+    .on('froalaEditor.paste.after', function (e, editor) {
+      // Before save request is made.
+      lyrics = $(".tab-lyrics .fr-view").html()
+      $(".active-tab").attr("data-lyrics", encodeURIComponent(lyrics));
+
+      buildChordBox()
+      saveSong()
+    })
+    .on('froalaEditor.save.after', function (e, editor, response) {
+      // After successfully save request.
+    })
+    .on('froalaEditor.save.error', function (e, editor, error) {
+      // Do something here.
+    });
+
+function saveSections(){
+
+    array = []
+    $(".folder li").each(function(){
+      hash = {}
+      li = $(this)
+      $(".save-this").each(function(){
+        code = $(this).attr("data-code")
+        hash[code] = li.attr("data-"+code)
+      })
+      hash["color"] = li.attr("data-color")
+      hash["font"] = li.attr("data-font")
+
+      if (li.attr("data-lyrics")) {
+        hash["lyrics"] = decodeURIComponent(li.attr("data-lyrics")); 
+      } else {
+        hash["lyrics"] = ""
+      }
+
+      // 
+      if (li.attr("data-demos")) {
+        hash["demos"] = JSON.parse(decodeURIComponent(li.attr("data-demos")));
+      } else {
+        hash["demos"] = []
+      }
+
+      hash["key"] = li.attr("data-key") || ""
+      hash["scale"] = li.attr("data-scale") || ""
+
+      console.log(hash)
+      array.push(hash)
+    })
+    return array
+}
+
+
+  function hmsToSecondsOnly(str) {
+      var p = str.split(':'),
+          s = 0, m = 1;
+
+      while (p.length > 0) {
+          s += m * parseInt(p.pop(), 10);
+          m *= 60;
+      }
+
+      return s;
+  }
+
+    function seekTo(seconds)
+    {
+      seconds = hmsToSecondsOnly(seconds)
+      if (player.getPlayerState() == 1) {
+        player.seekTo(seconds);
+      }
+      else {
+        ytSeconds = seconds;
+        player.playVideo();
+      }
+    }
+
+    // 
+    $("body").on("click", ".train .fa-arrow-left", function(){
+      li = $(this).closest("li")
+      index = $(".folder > li").index(li)
+      console.log(index)
+      li.insertBefore($(".folder > li").eq(index-1))
+
+      saveSong()
+    })
+
+    $("body").on("click", ".train .fa-arrow-right", function(){
+      li = $(this).closest("li")
+      index = $(".folder > li").index(li)
+      console.log(index)
+      li.insertAfter($(".folder > li").eq(index+1))
+
+      saveSong()
+    })
+
+    // 
+    $("body").on("click", ".lyric-chord", function(){
+      
+      hl = $(this)
+
+      var chord = prompt("Enter Chord");
+
+      if (chord != null) {
+        hl.attr("data-chord", chord)
+      }
+    })
+
+    // 
+    function getLyricsChords(){
+
+    }
+
+  $('body').on('focus', '.title-final[contenteditable]', function() {
+      $this = $(this);
+      $this.data('before', $this.html());
+  }).on('blur keyup paste input', '.title-final[contenteditable]', function() {
+      $this = $(this);
+      if ($this.data('before') !== $this.html()) {
+          $this.data('before', $this.html());
+          // $this.trigger('change');
+          $this.closest("li").attr("data-title", $this.text())
+          $(".tab-title").val($this.text())
+          buildChordBox()
+          saveSong()
+      }
+  });
+
+  // 
+  $("body").on("click", ".clear-tab-lyrics", function(){
+    $(".tab-lyrics .fr-view").html("")
+    lyrics = $(".tab-lyrics .fr-view").html()
+    $(".active-tab").attr("data-lyrics", encodeURIComponent(lyrics));
+
+    buildChordBox()
+    saveSong()
+  })
+
+  // 
+  $("body").on("click", ".duplicate", function(){
+    active = $(".active-tab")[0]
+    // Get the element
+    var elem = active;
+
+    // Create a copy of it
+    var clone = elem.cloneNode(true);
+
+    // Update the ID and add a class
+
+    // Inject it into the DOM
+    $(".folder").append(clone);
+  })
+
+
+</script>

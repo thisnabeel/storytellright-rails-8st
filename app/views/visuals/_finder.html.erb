@@ -1,0 +1,31 @@
+
+<style>
+	.finder {
+		padding: 30px;
+		font-size: 34px;
+	}
+</style>
+
+<input type="text" class="form-control finder" placeholder="Type to search...">
+
+<script>
+	$(".finder").on("keyup", function(){
+		console.log($(this).val())
+		val = $(this).val()
+		$(".games-list > li").hide()
+		$(".games-list > li").each(function(){
+			
+			if ($(this).find(".series-title").text().toLowerCase().indexOf(val.toLowerCase()) != -1){
+				$(this).show()
+			}
+
+			if ($(this).find(".game-title").text().toLowerCase().indexOf(val.toLowerCase()) != -1){
+				$(this).show()
+			}
+		})
+
+		if (val == "") {
+			$(".games-list > li").show()
+		}
+	})
+</script>

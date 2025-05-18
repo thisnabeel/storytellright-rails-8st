@@ -1,0 +1,31 @@
+
+<style>
+	.finder {
+		padding: 30px;
+		font-size: 34px;
+	}
+</style>
+
+<input type="text" class="form-control finder" placeholder="Type to search...">
+
+<script>
+	$(".finder").on("keyup", function(){
+		console.log($(this).val())
+		val = $(this).val()
+		$(".stories-list > li").hide()
+		$(".stories-list > li").each(function(){
+			
+			if ($(this).find(".story-artist").html().toLowerCase().indexOf(val.toLowerCase()) != -1){
+				$(this).show()
+			}
+
+			if ($(this).find(".story-title").html().toLowerCase().indexOf(val.toLowerCase()) != -1){
+				$(this).show()
+			}
+		})
+
+		if (val == "") {
+			$(".stories-list > li").show()
+		}
+	})
+</script>

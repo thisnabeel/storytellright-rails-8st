@@ -1,0 +1,73 @@
+<style>
+	.play-timestamp {
+		position: absolute;
+	    right: 30px;
+	    top: 26px;
+	    font-size: 16px;
+	    color: #7074ac;
+	}
+
+	#part-4 article {
+		margin-top: 26px;
+	}
+
+	#part-4 span.remove {
+	    position: absolute;
+	    color: #f4f4f4;
+	    top: 0px;
+	    left: 4px;
+	}
+
+	#part-4 span.remove:hover {
+	    color: #ccc;
+	}	
+
+</style>
+
+<div>
+	
+</div>
+
+
+<script>
+
+	$(".time-skip span").on("click", function(){
+		vid = $("video")[0];
+		time = hmsToSecondsOnly($(this).html())
+		skipTime(vid, time)
+	})
+
+	$("#part-4").on("click", ".play-timestamp", function(){
+		val = $(this).closest("li").find(".timestamp").val()
+		vid = $("video")[0];
+		time = hmsToSecondsOnly(val)
+		skipTime(vid, time)
+	})
+
+  function skipTime(vid, time) {
+     vid.play();
+     vid.pause();
+     vid.currentTime = time;
+     vid.play();
+  };
+
+  function hmsToSecondsOnly(str) {
+      var p = str.split(':'),
+          s = 0, m = 1;
+
+      while (p.length > 0) {
+          s += m * parseInt(p.pop(), 10);
+          m *= 60;
+      }
+
+      return s;
+  }
+
+	$(".play-time").on("click", function(){
+		val = $(this).parent().find(".timestamp").val()
+				console.log(val)
+		vid = $("video")[0];
+		time = hmsToSecondsOnly(val)
+		skipTime(vid, time)
+	})
+</script>

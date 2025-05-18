@@ -1,0 +1,231 @@
+<style>
+
+	.elements-container {
+		/* padding: 60px 30px; */
+	}
+
+	.elements-list li {
+		position: relative;
+		font-size: 34px;
+		padding: 20px;
+		background-color: #fff;
+		margin: 30px;
+	}
+
+	.delete-elements {
+		position: absolute;
+		left: -40px;
+		top: 10px;
+		color: #dad8d6;
+	}
+
+	.delete-elements:hover {
+		color: #000;
+	}
+	
+	.elements-body {
+		font-size: 34px;
+	}
+
+
+	.audio-box {
+		display: inline;
+    	padding: 10px;
+    	top: 10px;
+    	position: relative;
+	}
+
+	audio[src="null"]{
+		display: none;
+	}
+
+	.change-file-demo {
+		position: relative;
+		top: -13px;
+		width: 127px;
+	}
+</style>
+
+<section class="elements-container" toggle="elements-container">
+	<div class="folder-head">Demos:</div>
+	<br>
+	<input type="text" class="form-control elements-form" placeholder="Add Element Title">
+	<div class="btn btn-block btn-outline-primary submit-elements">Add Element</div>
+
+	<ul class="elements-list clean-list">
+	</ul>
+
+	<script>
+
+
+		$("body").on("click", ".submit-elements", function(){
+			
+			$(".elements-list").append(makeElement(null, $(".elements-form").val(), null))
+
+			$(".elements-form").val("")
+			saveElements()
+			$(".element-title").typeWatch( elementTypeWatchOptions );
+		})
+
+		function populateElements(elements){
+			$(".elements-form").val("")
+
+			$(".elements-list").empty()
+			$.each(elements, function(index, demo){
+				$(".elements-list").append(makeElement(demo, demo["title"], index))
+			})
+
+			$(".element-title").typeWatch( elementTypeWatchOptions )
+		}
+		
+		function makeElement(demo, title, index){
+			if (!demo) {
+				demo = {
+					title: title,
+					index: ($(".elements-list > li").length || 0),
+					source: null
+				}
+			}
+
+
+			audio = `<audio controls src="`+demo["source"]+`">
+				<source id='audio-`+index+`' type="audio/mp3" src="`+demo["source"]+`"></source>
+				Your browser does not support this audio player.
+			</audio>`
+
+
+			return `
+			<li class='' ondrop="dropHandler(event);" ondragover="dragOverHandler(event);">
+				<input type="text" class="form-control element-title" value="`+demo["title"]+`">
+				<hr>
+
+				<div class="row">
+					<div class="col-lg-12">
+						<div class="recorder-box">
+							<div class="recorder"><img class="record" src="https://bassets.github.io/record.svg"/><img class="arrow" src="https://bassets.github.io/arrow.svg"/></div>
+						</div>
+						<input type="file" onchange="demoInputFileHandler(event)" class="btn btn-outline-primary change-file-demo filer" accept=".mp3,.wav" />
+					</div>
+					<div class="col-lg-12">
+						<div class="audio-box" value="`+demo["source"]+`">
+							`+audio+`
+						</div>	
+					</div>
+				</div>
+				<i class="fa fa-times fa-2x delete-elements"></i>
+			</li>`
+		}
+
+// 
+function dropHandler(ev) {
+  console.log('File(s) dropped');
+
+  // Prevent default behavior (Prevent file from being opened)
+  ev.preventDefault();
+
+  if (ev.dataTransfer.items) {
+    // Use DataTransferItemList interface to access the file(s)
+    for (var i = 0; i < ev.dataTransfer.items.length; i++) {
+      // If dropped items aren't files, reject them
+      if (ev.dataTransfer.items[i].kind === 'file') {
+        var file = ev.dataTransfer.items[i].getAsFile();
+		console.log('... file[' + i + '].name = ' + file.name);
+		
+		console.log("FILE FILE FILE")
+		box = $(ev.currentTarget).find(".audio-box")
+		
+		filer(file, box)
+
+      }
+    }
+  } else {
+    // Use DataTransfer interface to access the file(s)
+    for (var i = 0; i < ev.dataTransfer.files.length; i++) {
+	  console.log('... file[' + i + '].name = ' + ev.dataTransfer.files[i].name);
+	}
+	
+
+	// filer(file[0], id, box)
+  }
+}
+
+function dragOverHandler(ev) {
+  console.log('File(s) in drop zone'); 
+
+  // Prevent default behavior (Prevent file from being opened)
+  ev.preventDefault();
+}
+
+// 
+
+function demoInputFileHandler(ev) {
+	console.log('File(s) in drop zone'); 
+
+	file = ev.currentTarget.files[0]
+	box = $(ev.currentTarget).closest("li").find(".audio-box")
+		
+	filer(file, box)
+
+  // Prevent default behavior (Prevent file from being opened)
+  ev.preventDefault();
+}
+
+// 
+
+		$("body").on("click", ".delete-elements", function(){
+			id = $(this).closest("li").attr("data-id")
+			box = $(this).closest("li")
+			src = box.find(".audio-box").attr("value")
+
+			var r = confirm("Delete Element?");
+			if (r == true) {
+
+				deleteS3Demo(src, function(){
+					box.remove()
+					saveElements()
+    			})
+			} else {
+			}
+
+		})
+
+
+		$("body").on("click", ".show-element", function(){
+		})
+
+		function saveElements(){
+			array = []
+			$(".elements-list > li").each(function(index, item){
+				element = {
+					title: $(this).find(".element-title").val(),
+					source: $(this).find("audio").attr("src")
+				}
+
+				array.push(element)
+			})
+
+			console.log(array)
+			
+			// return array
+			var data_str = encodeURIComponent(JSON.stringify(array));
+			$(".active-tab").attr("data-demos", data_str);
+			saveSong()
+		}
+
+		var elementTypeWatchOptions = {
+			callback: function (value) { 
+				saveElements()
+			},
+			wait: 750,
+			highlight: true,
+			allowSubmit: false,
+			captureLength: 2
+		}
+
+		$(".element-title").typeWatch( elementTypeWatchOptions );
+
+	</script>
+
+	<%= render 'songs/sections/recorder' %>
+
+</section>

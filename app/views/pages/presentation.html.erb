@@ -1,0 +1,234 @@
+
+    <div class="part">
+    	<%= Page.find_by_slug("essay-story-intro").body.html_safe %>
+
+      <hr>
+
+      <h3>
+        The Thesis or Message of the <%= @story.year %> film <%= @story.title %> is:
+      </h3>
+      <div class="fragment blue-back">
+        <%= @story.story_details["armature"].html_safe %>
+      </div>
+      
+      <hr>
+
+      <video src="<%= @story.link %>" width="100%" height="350px" controls>
+      </video>
+      <div class="row">
+
+        <div class="col-lg-6 act-1-highlight">
+          <h1>Act I</h1>
+
+          <div class="btn btn-info btn-block play-time" data-time="<%= @story.story_details["act-1-highlight"]["timestamp"]%>">
+            <i class="fa fa-play" data-time="<%= @story.story_details["act-1-highlight"]["timestamp"]%>"></i>
+          </div>
+
+          <br>
+          <p class="description">
+            <%= @story.story_details["act-1-highlight"]["description"]%>
+          </p>
+        </div> 
+
+        <div class="col-lg-6 act-3-highlight">
+          <h1>Act III</h1>
+
+          <div class="btn btn-info btn-block play-time" data-time="<%= @story.story_details["act-3-highlight"]["timestamp"]%>">
+            <i class="fa fa-play" data-time="<%= @story.story_details["act-3-highlight"]["timestamp"]%>"></i>
+          </div>
+
+          <br>
+          <p class="description">
+            <%= @story.story_details["act-3-highlight"]["description"]%>
+          </p>
+        </div> 
+
+      </div>
+
+
+      <hr>
+      <%= Page.find_by_slug("essay-story-act-II").body.html_safe %>
+      <hr>
+        <h2>In our case:</h2>
+        <h3><%= @story.story_details["catalyst"].html_safe %></h3>
+      <hr>
+    	<%= Page.find_by_slug("essay-story-conclusion").body.html_safe %>
+      <hr>
+        <img src="<%= asset_path("tnst_logo.png") %>" alt="">
+      <hr>
+        <img src="<%= asset_path("123.png") %>" alt="">
+    </div>
+
+<div class="actual-presentation">
+    <style>
+
+    @import url('https://fonts.googleapis.com/css?family=Merriweather:300,400');
+    /* font-family: 'Merriweather', serif !important; */
+    @import url('https://fonts.googleapis.com/css?family=Calistoga&display=swap');
+    /* font-family: 'Calistoga', cursive; !important;*/
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Calistoga', cursive;
+     }
+
+     body {
+        position: relative;
+        line-height: 1;
+
+        background-color: #fff;
+        color: #000;
+    }
+
+    section img {
+      min-height: 65vh !important;
+      max-height: 80vh !important;
+      margin: 0 auto;
+    }
+
+    section h3 {
+      direction: ltr !important;
+      /*font-family: 'Merriweather', serif !important;*/
+      line-height: 1.58em !important;
+    }
+
+    .summary {
+      max-height: 70vh !important;
+      overflow-y: scroll;
+    }
+
+    h1 {
+    	font-size: 6em !important;
+    	text-align: left;
+    }
+    h2 {
+    	font-size: 4em !important;
+      text-align: left;
+    }
+    h3 {
+    	font-size: 2em !important;
+      text-align: left;
+    }
+
+    p {
+    	font-size: 1.5em !important;
+      display: block;
+      max-width: 50vw;
+      margin: 0 auto;
+      text-align: left;
+     font-family: 'Merriweather', serif !important; 
+    }
+
+    ul {
+    	/*list-style: none;*/
+    	padding: 0;
+    	text-align: left;
+    	font-size: 34px !important;
+    	display: block;
+    	max-width: 50vw;
+    	margin: 0 auto;
+    }
+
+    ul li {
+    	padding-bottom: 10px;
+    	line-height: 1
+    }
+
+    .blue-back {
+      border-radius: 5px;
+      font-size: 34px;
+      background: blue;
+      color: #fff;
+      text-align: center;
+      padding: 40px;
+    }
+
+    p + ul, p + ol {
+      padding-top: 10px !important;
+    }
+
+    </style>
+
+    <div class="reveal">
+        <div class="slides">
+          
+        </div>
+    </div>
+</div>
+
+<script>
+
+    $(".part").each(function(){
+      newhtml = $(this).html()
+      // newhtml = newhtml.replace("#{(.*?)}", "<span>$&</span>");
+      newhtml = newhtml.replace(/#{(.*?)}/gi, '<span class="$1"></span>');
+
+      // newhtml = newhtml.findAndReplace("armature", "BOO!");
+      console.log(newhtml)
+      $(this).html(newhtml)
+    })
+
+    $(".armature").html("<%= @story.story_details['armature'].html_safe %>")
+    $(".st-year").html("<%= @story.year %>")
+    $(".st-title").html("<%= @story.title %>")
+
+
+	formula = $(".part").html().split("<hr>")
+	$.each(formula, function(index, item){
+		$(".slides").append(`<section>`+item+`</section>`)
+	})
+
+	$("li").addClass("fragment")
+
+  reveal = $(".actual-presentation").html()
+  $("body").empty()
+  $("body").append(reveal)
+  // Full list of configuration options available at:
+  // https://github.com/hakimel/reveal.js#configuration
+  Reveal.initialize({
+  });
+
+  $(".time-skip span").on("click", function(){
+    vid = $("video")[0];
+    time = hmsToSecondsOnly($(this).html())
+    skipTime(vid, time)
+  })
+
+  $("body").on("click", ".play-timestamp", function(){
+    val = $(this).closest("li").find(".timestamp").val()
+    vid = $("video")[0];
+    time = hmsToSecondsOnly(val)
+    skipTime(vid, time)
+  })
+
+  function skipTime(vid, time) {
+     vid.play();
+     vid.pause();
+     vid.currentTime = time;
+     vid.play();
+  };
+
+  function hmsToSecondsOnly(str) {
+      var p = str.split(':'),
+          s = 0, m = 1;
+
+      while (p.length > 0) {
+          s += m * parseInt(p.pop(), 10);
+          m *= 60;
+      }
+
+      return s;
+  }
+
+  $(".play-time").on("click", function(){
+    val = $(this).attr("data-time")
+        console.log(val)
+    vid = $("video")[0];
+    time = hmsToSecondsOnly(val)
+    skipTime(vid, time)
+  })
+
+</script>

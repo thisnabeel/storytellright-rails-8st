@@ -1,0 +1,164 @@
+<style>
+	#fabler {
+		font-family: 'goudyBookletter', Georgia, Times New Roman, Times, serif;
+	    border: solid #ccc 1px;
+	    position: relative;
+	    width: 85%;
+	    height: auto;
+	    min-height: 600px;
+	    background-color: #fff;
+	    margin: 24px auto 0;
+	    padding: 60px 48px 48px;
+	    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.27), 0 0 60px rgba(0, 0, 0, 0.1) inset;
+	}
+
+	#header {
+	    text-align: center;
+	    width: 100%;
+	    height: 120px;
+	    margin: 0;
+	    padding: 0;
+	}
+
+	#page {
+		width: auto;
+	    height: auto;
+	    margin: 0 100px;
+	    padding: 0;
+	    background-color: transparent;
+	    overflow: auto;
+	}
+
+	#story-title {
+		font-family: 'goudyBookletter', Georgia, Times New Roman, Times, serif;
+	    font-size: 36px;
+	    font-weight: normal;
+	    color: #666;
+	    padding: 0;
+	    line-height: 36pt;
+	    text-align: center;
+	    margin-bottom: 1em;
+	}
+
+	#story p {
+		font-family: 'goudyBookletter', Georgia, Times New Roman, Times, serif;
+	    font-size: 24px;
+	    color: #666;
+	    line-height: 24pt;
+	    text-align: left;
+	    text-indent: 50px;
+	    letter-spacing: 2px;
+	    margin-bottom: 20px;
+	}
+
+	.pic_left {
+	  float: left !important;
+	  overflow: auto !important;
+	  padding: 20px !important;
+	}
+
+	.pic_right {
+	  float: right !important;
+	  overflow: auto !important;
+	  padding: 20px !important;
+	}
+
+
+	.nav {
+	    width: 100%;
+	    margin: 0;
+	    padding: 0;
+	    display: block;
+	    list-style: none;
+	    font-size: 23px;
+	    letter-spacing: 1px;
+	}
+
+	.bookTitleHeader {
+	    font-size: 33px;
+	    color: #ccc;
+	    line-height: 33pt;
+	    text-align: center;
+	    letter-spacing: 3px;
+	}
+
+	.bookTitleHeader a:visited {
+    	color: #ccc;
+	}
+	.bookTitleHeader a:link {
+	    text-decoration: none;
+	    color: #ccc;
+	    padding: 0;
+	}
+	.bookTitleHeader a {
+	    margin: 0;
+	    padding: 0;
+	    font-size: 100%;
+	    vertical-align: baseline;
+	    background: transparent;
+	}
+</style>
+
+<div id="fabler">
+	<div id="header">
+	    <ul class="nav">
+	      <li class="bookTitleHeader">
+	      	<a href="http://www.storytellright.com">ThisNabeelStorytells.com</a>
+	      </li>
+	    </ul>
+  	</div>
+
+	<div id="page">
+		<h1 id="story-title"><%= @story.title %></h1>
+
+		<div id="story">
+			<%= @story.fable.try(:html_safe) %>
+		</div>
+	</div>
+</div>
+
+<% if user_signed_in? && current_user == @story.user %>
+<script>
+	$("#story").froalaEditor({
+	 	key: froalaKey,
+		toolbarInline: true,
+		charCounterCount: false,
+		toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'color', 'emoticons', '-', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'indent', 'outdent', '-', 'insertImage', 'insertLink', 'insertFile', 'insertVideo', 'undo', 'redo'],
+	    saveInterval: 500,
+	    imageUploadRemoteUrls: false,
+	    imageStyles: {
+		    pic_left: 'Pic Left',
+		    pic_right: 'Pic Right'
+		},
+	  })
+	  .on('froalaEditor.save.before', function (e, editor) {
+	    // Before save request is made.
+	    save()
+	  })
+	  .on('froalaEditor.save.after', function (e, editor, response) {
+	    // After successfully save request.
+	  })
+	  .on('froalaEditor.save.error', function (e, editor, error) {
+	    // Do something here.
+	  });
+
+	  function save(){
+	  	$.ajax({
+		    type: "PUT",
+		    dataType: "json",
+		    url: '/stories/<%= @story.id %>',
+		    contentType: 'application/json',
+		    data: JSON.stringify({ 
+		       fable: $(".fr-view").html(),
+		       _method:'post' 
+		    }),
+		    success: function(res){
+		      console.log(res)
+		    }
+		})
+
+	  }
+</script>
+
+<%= render "stories/fable/side" %>
+<% end %>

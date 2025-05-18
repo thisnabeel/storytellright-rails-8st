@@ -1,0 +1,34 @@
+<%= form_for(@chord_progression) do |f| %>
+  <% if @chord_progression.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@chord_progression.errors.count, "error") %> prohibited this chord_progression from being saved:</h2>
+
+      <ul>
+      <% @chord_progression.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :title %><br>
+    <%= f.text_field :title %>
+  </div>
+  <div class="field">
+    <%= f.label :progression %><br>
+    <%= f.text_field :progression %>
+  </div>
+  <div class="field">
+    <%= f.label :tags %><br>
+    <%= f.text_field :tags %>
+  </div>
+  <div class="field">
+    <%= f.label :scale %><br>
+    <%= f.text_field :scale %>
+  </div>
+  
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

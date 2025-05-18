@@ -1,0 +1,39 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Body:</strong>
+  <%= @element.body %>
+</p>
+
+<p>
+  <strong>Source:</strong>
+  <%= @element.source %>
+</p>
+
+<p>
+  <strong>Position:</strong>
+  <%= @element.position %>
+</p>
+
+<p>
+  <strong>Tags:</strong>
+  <%= @element.tags %>
+</p>
+
+<p>
+  <strong>Location:</strong>
+  <%= @element.location %>
+</p>
+
+<p>
+  <strong>Elementable:</strong>
+  <%= @element.elementable_id %>
+</p>
+
+<p>
+  <strong>Elementable type:</strong>
+  <%= @element.elementable_type %>
+</p>
+
+<%= link_to 'Edit', edit_element_path(@element) %> |
+<%= link_to 'Back', elements_path %>

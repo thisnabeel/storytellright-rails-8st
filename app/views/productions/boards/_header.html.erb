@@ -1,0 +1,34 @@
+<style>
+    #pro-head {
+        max-width: 350px;
+        margin: 0 auto;
+        background: #fff;
+        margin-bottom: 20px;
+    }
+
+    #pro-head li {
+        padding: 20px;
+    }
+
+    #pro-head .active {
+        background: #30336b;
+        color: #fff;
+        box-shadow: 0 0 10px 4px #c8c8c8;
+    }
+
+</style>
+
+<ul id="pro-head" class="flex-head">
+    <li toggle="stories-progress" class="active">Stories</li>
+    <li toggle="songs-progress">Songs</li>
+</ul>
+
+<script>
+
+$(".boards > section[toggle='"+$("#pro-head li.active").attr("toggle")+"']").show()
+
+$("body").on("click", "#pro-head li", function(){
+    $(this).addClass("active").siblings().removeClass("active")
+    $("section[toggle='"+$(this).attr("toggle")+"']").show().siblings("[toggle]").hide()
+})
+</script>

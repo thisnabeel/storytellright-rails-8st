@@ -1,0 +1,38 @@
+
+<style>
+	.finder {
+		padding: 30px;
+		font-size: 34px;
+	}
+</style>
+
+<input type="text" class="form-control finder" placeholder="Type to search...">
+
+<script>
+
+
+
+	$(".finder").on("keyup", function(){
+		console.log($(this).val())
+		val = $(this).val()
+		$(".stories-list > li").hide()
+		$(".stories-list > li").removeClass("story")
+		$(".stories-list > li").each(function(){
+			
+			if ($(this).find(".series-title").text().toLowerCase().indexOf(val.toLowerCase()) != -1){
+				$(this).show().addClass("story")
+			}
+
+			if ($(this).find(".story-title").text().toLowerCase().indexOf(val.toLowerCase()) != -1){
+				$(this).show().addClass("story")
+			}
+		})
+
+		if (val == "") {
+			$(".stories-list > li").show()
+			$(".stories-list > li").addClass("story")
+		}
+
+
+	})
+</script>

@@ -1,0 +1,25 @@
+<%= form_for(@story_map) do |f| %>
+  <% if @story_map.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@story_map.errors.count, "error") %> prohibited this story_map from being saved:</h2>
+
+      <ul>
+      <% @story_map.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :title %><br>
+    <%= f.text_field :title %>
+  </div>
+  <div class="field">
+    <%= f.label :body %><br>
+    <%= f.text_area :body %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

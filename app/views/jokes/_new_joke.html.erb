@@ -1,0 +1,136 @@
+<style>
+
+    #newJokeModal {
+        display: none;
+        background: #2c3e50 !important;
+        /*background: #fff !important;*/
+    }
+
+    .newJoke-body {
+        font-family: 'Merriweather', serif;
+        font-size: 21px;
+        font-weight: 300;
+        line-height: 1.58em;
+        margin: 0 auto;
+        padding: 100px;
+        max-width: 740px;
+        color: #fffbf3;
+    }
+
+
+
+    .newJoke-body input {
+        font-family: 'VT323', monospace;
+        text-align: center;
+        padding: 20px;
+        border-radius: 0;
+        background-color: transparent;
+        border: 0;
+        color: #F8EC23 !important;
+        outline: none; 
+        font-size: 24px;
+    }
+
+    .newJoke-body input:focus {
+        background-color: transparent;
+        color: #F8EC23 !important;
+        border: 0;
+        outline: none; 
+    }
+
+    .close-newJokeModal {
+        position: fixed;
+        background: #e6ac38;
+        color: #fff;
+        padding: 10px;
+    }
+
+    .btn {
+        font-family: 'VT323', monospace;
+    }
+    
+</style>
+
+    <!--  ROOM -->
+    <!--Call your modal-->
+    <a id="newJoke" style="display:none;" href="#newJokeModal">DEMO02</a>
+
+    <!--DEMO01-->
+    <div id="newJokeModal">
+        <!--THIS IS IMPORTANT! to close the modal, the class name has to match the name given on the ID  class="close-animatedModal" -->
+        <div class="close-newJokeModal"> 
+        	X
+        </div>
+        
+        <div class="newJoke-body">
+
+            <h2 class="text-center">Let's Start a New Joke</h2>   
+            <input type="text" class="form-control new-joke-title-input" placeholder="Give it a name... anything works for now">
+            <span class="btn btn-info save-new-joke btn-block text-center">Save</span>
+
+        </div>
+
+    </div>
+
+<script>
+    $("#newJoke").animatedModal({
+        animatedIn: "bounceInUp",
+        animatedOut: "bounceOutDown",
+        modalTarget:'newJokeModal'
+    });
+    
+    function makeBox(title, id){
+        joke_box = `
+        <li>
+            <span class="delete-joke" data-id="`+id+`">X</span>
+            <span class="joke-title">
+                `+title+`
+            </span>
+            <span class="enter-btn" data-id="`+id+`">
+                Enter
+            </span>
+        </li>`
+        return joke_box
+    }
+
+
+    $(".save-new-joke").on("click", function(){
+        title = $(".new-joke-title-input").val()
+        saveJoke(title)
+    })
+
+    function saveJoke(title){
+
+        original = <%= @original %>
+
+        // alert(original)
+
+        
+
+        hash = { 
+              user_id: <%= current_user.id %>,
+              original: original,
+              title: title,
+              _method:'post' 
+        }
+
+       $.ajax({
+           type: "POST",
+           dataType: "json",
+           url: '/create_joke',
+           contentType: 'application/json',
+           data: JSON.stringify(hash),
+           success: function(res){
+             console.log(res["id"])
+             $(".stories-list li:last").before(makeBox(title, res["id"]))
+             $(".close-newJokeModal").trigger("click")
+           }
+       })
+    }
+
+    $("body").on("click", ".add-joke", function(){
+        $("#newJokeModal").show()
+        $("#newJoke").trigger("click")
+    })
+
+</script>

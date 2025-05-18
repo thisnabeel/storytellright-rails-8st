@@ -1,0 +1,36 @@
+<article data-id="<%= question.id %>" position="<%= question.position %>">
+
+    <header class="question-head froalize" data-id="<%= question.id %>"><%= question.body.try(:html_safe) %></header>
+    <div class="card">
+        <% if @admin %>
+            <i class="fa fa-trash remove-question"></i>
+            <i class="fa fa-bars handle"></i>
+        <% end %>
+        <div class="card-header">
+            <ul class="nav nav-tabs card-header-tabs">
+                <li class="nav-item show-answer" user-id="<%= current_user.id %>">
+                    <span class="nav-link active" href="#" user-id="<%= current_user.id %>"><%= current_user.name %></span>
+                </li>
+                <% question.answers.where.not(user_id: current_user).each do |answer| %>
+                    <li class="nav-item show-answer" user-id="<%= answer.user_id %>">
+                        <span class="nav-link" href="#" user-id="<%= answer.user_id %>"><%= answer.user.name %></span>
+                    </li>
+                <% end %>
+                
+            </ul>
+        </div>
+        <section class="answers">
+                <div class="card-body froalize answer" user-id="<%= current_user.id %>" data-id="<%= question.id %>">
+
+                    <%= question.answers.where(user_id: current_user.id).first.try(:body).try(:html_safe) %>
+                    
+                </div>
+
+                <% question.answers.where.not(user_id: current_user).each do |answer| %>
+                    <div class="card-body answer" user-id="<%= answer.user_id %>" data-id="<%= question.id %>">
+                        <%= answer.try(:body).try(:html_safe) %>
+                    </div>
+                <% end %>
+        </section>
+    </div>
+</article>

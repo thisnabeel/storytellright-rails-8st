@@ -1,0 +1,199 @@
+<style>
+
+  .jumbotron {
+    margin: 0;
+  }
+
+  #embed-piano {
+    display: block;
+    margin: 0 auto;
+    /* text-align: center; */
+    width: max-content;
+  }
+  #make-piano {
+
+  }
+
+  #make-piano ul {
+    position: relative;
+    list-style: none;
+
+  }
+
+  #piano-list li {
+    height: 134px;
+    width: 44px;
+    background-color: #fff;
+    border: 1px solid #000;
+    display: inline-block;
+    margin: -3px;
+  }
+
+  #piano-list .black-key {
+    background-color: #000;
+      height: 94px;
+      width: 20px;
+      position: absolute;
+      /*margin-left: -10px;*/
+  }
+
+  #embed-piano .active {
+    background-color: #55efc4 !important;
+    border: 2px solid #c9dd30;
+  }
+
+  #embed-piano .active.black {
+    border: 1px dashed #5657a4;
+    border-top: 0;
+  }
+
+  #embed-piano [data-octave="2"] {
+    display: none;
+  }
+
+
+  [data-global-key="49"] {
+    border-right: 0.17vw solid #dbdcff;
+  }
+
+  #embed-piano .active.root-note {
+    /* padding-bottom: 0px !important; */
+    background-color: #2ea685 !important;
+  }
+
+  .note-ref {
+    display: none;
+    position: absolute;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+    top: -28px;
+    color: #ff7979;
+    font-weight: 900;
+    text-align: center;
+  }
+  
+  .key.active .note-ref {
+    display: block;
+  }
+
+</style>
+
+<section id="embed-piano"> 
+    <% i = 1 %>
+    <% glo = 1 %>
+    <% 4.times do |set| %>
+      <% i = i + 1 %>   
+        <div class="key white c" 
+          data-note="C"
+          data-global-key="<%= glo = glo + 1 %>" 
+          data-octave="<%= i %>"
+        >
+          <span class="scale-degree"></span>
+          <span class="note-ref">C</span>
+        </div>
+        <div class="key black c_sharp" 
+          data-note="C#"
+          data-global-key="<%= glo = glo + 1 %>" 
+          data-octave="<%= i %>"
+        >
+          <span class="scale-degree"></span>
+          <span class="note-ref">C#</span>
+        </div>
+        <div class="key white d" 
+          data-note="D"
+          data-global-key="<%= glo = glo + 1 %>" 
+          data-octave="<%= i %>"
+        >
+          <span class="scale-degree"></span>
+          <span class="note-ref">D</span>
+        </div>
+        <div class="key black d_sharp" 
+          data-note="D#"
+          data-global-key="<%= glo = glo + 1 %>" 
+          data-octave="<%= i %>"
+        >
+          <span class="scale-degree"></span>
+          <span class="note-ref">D#</span>
+        </div>
+        <div class="key white e" 
+          data-note="E"
+          data-global-key="<%= glo = glo + 1 %>" 
+          data-octave="<%= i %>"
+        >
+          <span class="scale-degree"></span>
+          <span class="note-ref">E</span>
+        </div>
+        <div class="key white f" 
+          data-note="F"
+          data-global-key="<%= glo = glo + 1 %>" 
+          data-octave="<%= i %>"
+        >
+          <span class="scale-degree"></span>
+          <span class="note-ref">F</span>
+        </div>
+        <div class="key black f_sharp" 
+          data-note="F#"
+          data-global-key="<%= glo = glo + 1 %>" 
+          data-octave="<%= i %>"
+        >
+          <span class="scale-degree"></span>
+          <span class="note-ref">F#</span>
+        </div>
+        <div class="key white g" 
+          data-note="G"
+          data-global-key="<%= glo = glo + 1 %>" 
+          data-octave="<%= i %>"
+        >
+          <span class="scale-degree"></span>
+          <span class="note-ref">G</span>
+        </div>
+        <div class="key black g_sharp" 
+          data-note="G#"
+          data-global-key="<%= glo = glo + 1 %>" 
+          data-octave="<%= i %>"
+        >
+          <span class="scale-degree"></span>
+          <span class="note-ref">G#</span>
+        </div>
+        <div class="key white a" 
+          data-note="A"
+          data-global-key="<%= glo = glo + 1 %>" 
+          data-octave="<%= i %>"
+        >
+          <span class="scale-degree"></span>
+          <span class="note-ref">A</span>
+        </div>
+        <div class="key black a_sharp" 
+          data-note="A#"
+          data-global-key="<%= glo = glo + 1 %>" 
+          data-octave="<%= i %>"
+        >
+          <span class="scale-degree"></span>
+          <span class="note-ref">A#</span>
+        </div>
+        <div class="key white b final-note" 
+          data-note="B"
+          data-global-key="<%= glo = glo + 1 %>" 
+          data-octave="<%= i %>"
+        >
+          <span class="scale-degree"></span>
+          <span class="note-ref">B</span>
+        </div>
+    <% end %>
+</section>
+
+<script>
+  $(".black-key").each(function(){
+    par = $(this).parent().offset().left + 5
+    off = $(this).offset().left - par
+    $(this).css({"left": off + "px"})
+  })
+
+  $(".key").on("click", function(){
+    console.log($(this).attr("data-note"))
+    piano.play($(this).attr("data-note"), $(this).attr("data-octave"), 4); 
+    // checkTest($(this).attr("data-note"))
+  })
+</script>

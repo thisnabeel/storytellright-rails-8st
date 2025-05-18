@@ -1,0 +1,323 @@
+<style>
+
+	#characters-list-opener, .characters-list-opener {
+	    position: fixed;
+	    left: 0;
+	    top: 0;
+	    height: 100%;
+	    background: #fdfcfc;
+	    padding: 10px;
+	    min-width: 10px;
+	    
+	    -webkit-box-shadow: 10px 10px 70px -16px rgba(0,0,0,0.56);
+		-moz-box-shadow: 10px 10px 70px -16px rgba(0,0,0,0.56);
+		box-shadow: 10px 10px 70px -16px rgba(0,0,0,0.56);
+	}
+
+	/**/
+
+	#characters-list input {
+		background: transparent;
+    	border: 0;
+    	border-bottom: 1px solid #ccc;
+	}
+
+	#characters-list header {
+		background: #000;
+		color: #fff;
+		padding: 10px;
+	}
+
+	#characters-list input {
+		font-family: 'VT323', monospace !important;
+		font-size: 18px;
+	}
+
+	#characters-list article {
+		position: relative;
+	}
+
+	.remove-puzzle-item {
+		position: absolute;
+    	right: -17px;
+    	top: 10px;
+	}
+
+	.close-characters {
+		position: absolute;
+    	left: 5px;
+    	top: 5px;
+    	font-size: 20px;
+    	color: #a8a8a8;
+	}
+
+	#characters-list .punchline {
+		margin: 0 auto;
+    	display: block;
+	}
+
+	.show-puzzle {
+		position: absolute;
+	    left: 10px;
+	    font-size: 20px;
+	    top: 10px;
+	    max-width: 40px;
+	    display: none;
+	}
+
+	.pp-list {
+		list-style: none;
+		padding: 0;
+	}
+
+	.pp-list .fr-view {
+		text-align: left;
+		color: #000;
+	}
+
+	.pp-list li {
+		color: #000;
+	}
+
+	.open-pieces {
+		position: fixed;
+		left: 20px;
+	}
+</style>
+
+<!-- Characters List Opener -->
+
+<span class="close-characters open-pieces">
+	<i class="fa fa-bars"></i> Pieces
+</span>
+
+<div id="characters-list">
+	
+	<i class="fa fa-times close-characters"></i>	
+
+	<p><img src="<%= asset_path('puzzle.png') %>" alt="" class="punchline"></p>
+	<div class="hellish-2" put="whose-hell" style="padding: 10px;"></div>
+	
+	<div class="blue-point" put="during-2" style="padding: 10px;"></div>
+
+	<div class="for-climax" put="climax" style="padding: 10px;"></div>
+	<hr>
+
+	<section>
+		<ul></ul>
+	</section>
+
+<!-- 	<section>
+		<header>
+			<i class="fa fa-plus"></i>
+			Characters:</header>
+		<ul>
+		</ul>
+	</section>
+
+	<section>
+		<header>
+			<i class="fa fa-plus"></i>
+			Places:</header>
+		<ul>
+		</ul>
+	</section>
+
+	<section>
+		<header>
+			<i class="fa fa-plus"></i>
+			Motifs:</header>
+		<ul>
+		</ul>
+	</section> -->
+</div>
+
+<script>
+
+	$("body").on("click", "#characters-list header", function(){
+		li = $(this).closest("section")
+		li.find("ul").append(
+			`
+			<article>
+				<span class="fa fa-times remove-puzzle-item"></span>
+				<input type="text" placeholder="Type..." class="form-control" />
+			</article>`
+		)
+	})	
+
+	$("body").on("click", ".remove-puzzle-item", function(){
+		li = $(this).closest("article")
+		li.remove()
+	})
+
+	$(".close-characters").on("click", function(){
+		$("#characters-list").toggle("slide");
+	})
+
+	// PUZZLER
+
+	// 
+	var pp_input = {
+	    callback: function (value) { 
+	    	saveStory()
+	    	save()
+	    	countCharacters()
+			makeCharacters()
+	    },
+	    wait: 750,
+	    highlight: true,
+	    allowSubmit: false,
+	    captureLength: 2
+	}
+	$(".pp-list input").typeWatch( pp_input );
+	// 
+
+	$("body").on("click", ".add-pp", function(){
+		ul = $(this).closest("div").find(".pp-list")
+		id = $(".pp-list").index(ul)
+		index = ul.find("> li").length
+
+		ul.append(pp_item(id, index, "", []))
+		makeFroala()
+		// makeSorted("n-list")
+		countCharacters()
+		makeCharacters()
+		
+		console.log("added")
+		$(".pp-list input").typeWatch( pp_input );
+	})
+
+	function pp_item(id, index, body, chars){
+		characters = ``
+
+		console.log(chars)
+		
+		$.each(chars, function(i, item){
+			characters += `<li>
+				<div class="row">
+					<div class="col-lg-11">
+						<div class="color-nav">
+							<span class="color-select villian 
+							`+(item["color"] == 'villian' ? 'active' : '')+`" 
+							data-color="villian"></span>
+							<span class="color-select alternative  `+(item["color"] == 'alternative' ? 'active' : '')+`" data-color="alternative"></span>
+						</div>
+						<div class="name character-name">
+							<input class="form-control" type='text' placeholder="Enter Character Name..." value="`+item["name"]+`">
+						</div>
+						<div class="connection">
+							<textarea class="froalize">
+								`+item["connection"]+`
+							</textarea>
+						</div>
+					</div>
+					<div class="col-lg-1 spans-nav">
+						<span class="remove-item">
+							<i class="fa fa-times"></i>
+						</span>
+						<span>
+							<i class="fa fa-bars handle"></i>
+						</span>
+					</div>
+				</div>
+			</li>`
+		})
+
+
+
+		return `<li class='n-main'>
+				<div class="row">
+					<div class="col-lg-10 element">
+						<textarea class="froalize">`+body+`</textarea>
+					</div>
+					<div class="col-lg-2 spans-nav">
+						<span class="remove-item">
+							<i class="fa fa-times"></i>
+						</span>
+						<span class="handle">
+							<i class="fa fa-bars"></i>
+						</span>
+						<span>
+							<i class="fa fa-users" aria-hidden="true"></i>
+						</span>
+						<span class="toggle-characters btn">
+							0
+						</span>
+					</div>
+				</div>
+				<ul class="characters" id="`+id+`-`+index+`-ch-list">
+				`+characters+`
+					<hr>
+					<span class="btn btn-primary add-character">
+						Add Puzzle Piece
+					</span>
+				</ul>
+			</li>`
+	}
+	
+	makeNList()
+	function makeNList() {
+		array = <%=  @story.story_details["necessary-list"].to_json.html_safe %>;
+
+		$.each(array, function(index, item){
+			ul = $(".pp-list").eq(item["id"])
+			id = item["id"]
+			index = ul.find("> li").length
+
+			ul.append(pp_item(id, index, item["element"], item["characters"]))
+		})
+		
+		makeFroala()
+		countCharacters()
+		makeCharacters()
+		$(".pp-list input").typeWatch( pp_input );
+	}
+
+
+
+	function saveNList(){
+		hash = []
+		$(".pp-list").each(function(){
+
+			id = $(".pp-list").index($(this))
+
+			$(this).find("> li").each(function(){
+				view = $(this).find(".element").find(".fr-view").html()
+				
+				characters = []
+
+				if ($(this).find(".characters").find("li").length) {
+					$(this).find(".characters").find("li").each(function(){
+
+						if ($(this).find(".color-nav .active").length) {
+							color = $(this).find(".color-nav .active").attr("data-color")
+						} else {
+							color = null
+						}
+
+						console.log(color)
+
+						characters.push({
+							name: $(this).find(".name input").val(),
+							connection: $(this).find(".connection").find(".fr-view").html(),
+							color: color
+						})
+					})
+
+					
+				} 
+
+				hash.push({
+					id: id,
+					element: view,
+					characters: characters
+				})
+
+			})
+		})
+
+		return hash
+	}
+
+
+</script>

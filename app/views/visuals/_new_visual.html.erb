@@ -1,0 +1,160 @@
+<style>
+
+    #newVisualModal {
+        display: none;
+        background: #2c3e50 !important;
+        /*background: #fff !important;*/
+    }
+
+    .newVisual-body {
+        font-family: 'Merriweather', serif;
+        font-size: 21px;
+        font-weight: 300;
+        line-height: 1.58em;
+        margin: 0 auto;
+        padding: 100px;
+        max-width: 740px;
+        color: #fffbf3;
+    }
+
+
+
+    .newVisual-body input {
+        font-family: 'VT323', monospace;
+        text-align: center;
+        padding: 20px;
+        border-radius: 0;
+        background-color: transparent;
+        border: 0;
+        color: #F8EC23 !important;
+        outline: none; 
+        font-size: 24px;
+    }
+
+    .newVisual-body input:focus {
+        background-color: transparent;
+        color: #F8EC23 !important;
+        border: 0;
+        outline: none; 
+    }
+
+    .close-newVisualModal {
+        position: fixed;
+        background: #e6ac38;
+        color: #fff;
+        padding: 10px;
+    }
+
+    #newVisualModal .btn {
+        font-family: 'VT323', monospace;
+    }
+    
+</style>
+
+    <!--  ROOM -->
+    <!--Call your modal-->
+    <a id="newVisual" style="display:none;" href="#newVisualModal">DEMO02</a>
+
+    <!--DEMO01-->
+    <div id="newVisualModal">
+        <!--THIS IS IMPORTANT! to close the modal, the class name has to match the name given on the ID  class="close-animatedModal" -->
+        <div class="close-newVisualModal"> 
+        	X
+        </div>
+        
+        <div class="newVisual-body new-visual">
+
+            <h2 class="text-center">Let's Start a New Visual</h2>   
+            <input type="text" folder="title" class="form-control new-visual-title-input save-this" placeholder="Give it a name... anything works for now">
+            <!--  -->
+            <input type="text" folder="series" class="form-control new-visual-title-input save-this" placeholder="Is it a series?">
+            <!--  -->
+            <input type="text" folder="year" class="form-control new-visual-title-input save-this" placeholder="Year?">
+            <!--  -->
+            <input type="text" folder="link" class="form-control new-visual-link-input save-this" placeholder="Image Link?">
+            <!--  -->
+            <span class="btn btn-info save-new-visual btn-block text-center">Save</span>
+
+        </div>
+
+    </div>
+
+<script>
+    $("#newVisual").animatedModal({
+        animatedIn: "bounceInUp",
+        animatedOut: "bounceOutDown",
+        modalTarget:'newVisualModal'
+    });
+    
+    function makeBox(res){
+        
+        if (res["original"] == true) {
+            original = "original"
+        } else {
+            original = "study"
+        }
+
+        visual_box = `
+        <li class='`+original+`'>
+    
+            <span class="year">`+res["year"]+`</span>
+
+            <br>
+
+            <span class="delete-visual" data-id="`+res["id"]+`">X</span>
+            <span class="visual-title">
+                `+res["title"]+`
+            </span>
+
+            
+            
+            <a href="/visuals/`+res["id"]+`" class="enter-btn">
+                Enter
+            </a>
+        </li>
+        `
+        return visual_box
+    }
+
+
+    $(".save-new-visual").on("click", function(){
+        saveVisual()
+    })
+
+    function saveVisual(){
+        original = <%= @original %>
+
+        // alert(original)
+
+        
+
+        hash = { 
+              user_id: <%= current_user.id %>,
+              original: original,
+              _method:'post' 
+        }
+
+        $(".new-visual .save-this").each(function(){
+            hash[$(this).attr("folder")] = $(this).val()
+        })
+
+       $.ajax({
+           type: "POST",
+           dataType: "json",
+           url: '/visuals',
+           contentType: 'application/json',
+           data: JSON.stringify(hash),
+           success: function(res){
+             console.log(res["id"])
+             $(".visuals-list li:last").before(makeBox(res))
+             $(".close-newVisualModal").trigger("click")
+           }
+       })
+    }
+
+    $("body").on("click", ".add-visual", function(){
+        $("#newVisualModal").show()
+        $("#newVisual").trigger("click")
+    })
+
+</script>

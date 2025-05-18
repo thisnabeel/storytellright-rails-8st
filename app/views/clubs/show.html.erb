@@ -1,0 +1,178 @@
+<style>
+  .members-icon {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    padding: 20px;
+    background: #fffc82;
+  }
+  
+  .lil-top-nav {
+    font-size: 24px;
+  }
+
+  .discussion {
+    position: relative;
+  }
+  .discussion:hover .delete-discussion,
+  .discussion:hover .duplicate-discussion {
+    display: inline-block;
+  }
+  .delete-discussion {
+    display: none;
+    position: absolute;
+    left: -54px;
+    top: -10px;
+    font-size: 17px;
+    color: #ccc;
+    padding: 30px;
+  }
+
+  .delete-discussion:hover {
+    color: #d80000:
+  }
+
+  .duplicate-discussion:hover {
+    color: #d80090:
+  }
+
+  .duplicate-discussion {
+    display: none;
+    position: absolute;
+    right: -54px;
+    top: -10px;
+    font-size: 17px;
+    color: #ccc;
+    padding: 30px;
+  }
+</style>
+
+<%# @club.role(current_user, "admin") %>
+<% admin = true %>
+
+<br>
+<div class="jumbotron">
+  <h1 class="sf"><%= @club.title %></h1>
+</div>
+
+<% if admin %>
+  <div class="text-center lil-top-nav">
+    <span toggle="discussions" class="active">Discussions</span>
+    <i class="fa fa-toggle-off"></i>
+    <span toggle="members">Admins</span>
+  </div>
+<% else %>
+<% end %>
+
+
+<br>
+<div class="discussions view" toggle="discussions">
+  <p>Discussions: <i class="fa fa-plus btn btn-info add-discussion"></i></p>
+  <% @club.discussions.order("position ASC").each do |d| %>
+    <%= render "discussions/card", discussion: d %>
+  <% end %>
+</div>
+
+<%= render "clubs/members" %>
+
+<script>
+
+  $("body").on("click", ".lil-top-nav", function(){
+    $(this).find(".fa").toggleClass("fa-toggle-off fa-toggle-on")
+    toggle = $(this)
+      .find(".active")
+      .removeClass("active")
+      .siblings("[toggle]")
+      .addClass("active")
+      .attr("toggle")
+    console.log(toggle)
+    $(".view[toggle]").hide()
+    $(".view[toggle='"+toggle+"']").show()
+  })
+
+  makeEditor()
+
+  function makeEditor(){
+    $("[contentEditable]").contentEdit()
+  }
+
+  $("body").on("click", ".add-discussion", function(){
+    $.ajax({
+        type: "POST",
+        dataType: "json",
+        url: '/discussions',
+        contentType: 'application/json',
+        data: JSON.stringify({ 
+          title: "Untitled",
+          club_id: "<%= @club.id %>",
+          position: $(".discussions > .card").length,
+          _method:'post' 
+        }),
+        success: function(res){
+          console.log(res)
+          $(".discussions").append(res["html"])
+          makeEditor()
+          $.notify("Saved!", "success");
+        }
+    })
+  })
+
+  // 
+  $("body").on("click", ".delete-discussion", function(){
+    id = $(this).attr("data-id")
+    discussion = $(this).closest(".discussion")
+    var r = confirm("Delete Discussion? (No Undo)");
+    if (r == true) {
+      $.ajax({
+        type: "DELETE",
+        dataType: "json",
+        url: '/discussions/'+id,
+        contentType: 'application/json',
+        data: JSON.stringify({ 
+          _method:'post' 
+        }),
+        success: function(){
+          discussion.remove()
+          $.notify("Saved!", "success");
+        }
+      })
+    } else {
+    }
+  })
+
+  //
+  $("body").on("click", ".duplicate-discussion", function(){
+    id = $(this).attr("data-id")
+    discussion = $(this).closest(".discussion")
+
+    $.ajax({
+      type: "POST",
+      dataType: "json",
+      url: '/discussions/duplicate',
+      contentType: 'application/json',
+      data: JSON.stringify({ 
+        id: id,
+        _method:'post' 
+      }),
+      success: function(res){
+        console.log(res)
+        $.notify("Saved!", "success");
+        $(".discussions").append(res["html"])
+        makeEditor()
+      }
+    })
+
+  }) 
+</script>
+
+<%#  %>
+<% if !user_signed_in? %>
+<%= render "users/creds_modal" %>
+<script>
+$('#signUpModal').modal({
+    backdrop: 'static',
+    keyboard: false  // to prevent closing with Esc button (if you want this too)
+})
+</script>
+<% end %>
+<%#  %>

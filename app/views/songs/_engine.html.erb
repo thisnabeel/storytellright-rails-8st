@@ -1,0 +1,9 @@
+<script>
+    $("body").on("click", ".expand-folder", function(){
+      li = $(this).closest("ul").find('li')
+      li.toggle()
+    })
+    
+</script>
+
+<%= render "songs/touch/lyrics" %>

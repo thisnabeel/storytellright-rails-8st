@@ -1,0 +1,14 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Title:</strong>
+  <%= @joke_trigger.title %>
+</p>
+
+<p>
+  <strong>Description:</strong>
+  <%= @joke_trigger.description %>
+</p>
+
+<%= link_to 'Edit', edit_joke_trigger_path(@joke_trigger) %> |
+<%= link_to 'Back', joke_triggers_path %>

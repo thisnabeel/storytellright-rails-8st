@@ -1,0 +1,239 @@
+<style>
+	.music_keys {
+		display: none;
+	    position: fixed;
+	    left: 0;
+	    bottom: 19%;
+	    width: auto;
+	    text-align: left;
+	    background: #fff;
+	    padding: 30px;
+	    font-size: 24px;
+	    z-index: 9990;
+	}
+
+	.open-music-keys {
+		display: block;
+	    position: fixed;
+	    left: -42px;
+	    bottom: 19%;
+	    height: 300px;
+	    width: 30px;
+	    text-align: left;
+	    background: #fff;
+	    padding: 30px;
+	    font-size: 24px;
+	    z-index: 9999;
+	}
+
+	.music_keys:hover {
+		/*left: -10px;*/
+	}
+
+	.music_keys:hover .key_layout {
+	}
+
+	.music_keys li, .music_keys .tonic {
+		padding: 0 10px;
+	}
+
+	.music_keys .tonic {
+		background: #91ff91;
+	}
+
+	.music_keys .tonic select {
+		background: #daffda;
+	}
+
+	#mode {
+		display: block;
+    	width: 100%;
+	}
+</style>
+
+<div class="open-music-keys">
+	
+</div>
+
+<div class="music_keys">
+
+		<select name="" id="mode">
+			<% keys = ["ionian", "aeolian", "dorian", "phrygian", "lydian", "mixolydian", "locrian"] %>
+			<% keys.each do |k| %>
+				<option value="<%= k %>">
+					<%= k %>
+				</option>
+			<% end %>
+		</select>
+
+	<span class="tonic">
+		I = 
+		<select name="" id="key_selector">
+			<% keys = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"] %>
+			<% keys.each do |k| %>
+				<option value="<%= k %>">
+					<%= k %>
+				</option>
+			<% end %>
+		</select>
+	</span>
+	<ul class="key_layout clean-list">
+	</ul>
+</div>
+
+<script>
+	
+	var octavian = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
+	
+	$("body").on("change", "#key_selector, #mode", function(){
+		keyer()
+	})
+
+	keyer()
+
+	function keyer(){
+		val = $("#key_selector").val()
+		i = octavian.indexOf(val);
+		console.log(i)
+		output = octavian.push.apply(octavian, octavian.splice(0, i));
+		
+		console.log(octavian)
+		console.log(output)
+		
+		$(".key_layout").empty()
+
+		// scales = {
+		// 	"major": [1,3,5,6,8,10,12],
+		// 	"minor": [1,3,4,6,8,9,11],
+		// 	"mixolydian": [1,3,5,6,8,10,11],
+		// 	"lydian": [1,3,5,7,8,11,]
+		// }
+
+		// 
+		scales = {
+			"ionian": ["W", "W", "H", "W", "W", "W", "H"],
+			"dorian": ["W", "H", "W", "W", "W", "H", "W"],
+			"phrygian": ["H", "W", "W", "W", "H", "W", "W"],
+			"lydian": ["W", "W", "W", "H", "W", "W", "H"],
+			"mixolydian": ["W", "W", "H", "W", "W", "H", "W"],
+			"aeolian": ["W", "H", "W", "W", "H", "W", "W"],
+			"locrian": ["H", "W", "W", "H", "W", "W", "W"]
+		}
+
+		chord_functions = {
+			"ionian": ["major", "minor", "minor", "major", "major", "minor", "diminished"],
+			"dorian": ["minor", "minor", "major", "major", "minor", "diminished", "major"],
+			"phrygian": ["minor", "major", "major", "minor", "diminished", "major", "minor"],
+			"lydian": ["major", "major", "minor", "diminished", "major", "minor", "minor"],
+			"mixolydian": ["major", "minor", "diminished", "major", "minor", "minor", "major"],
+			"aeolian": ["minor", "diminished", "major", "minor", "minor", "major", "major"],
+			"locrian": ["diminished", "major", "minor", "minor", "minor", "major", "major" ]
+		}
+
+		romans = ["I", "II", "III", "IV", "V", "VI", "VII"]
+
+		mode = $("#mode").val()
+
+		$(".music_keys").attr("mode", mode)
+		
+		o = 1
+		$.each(scales[mode], function(index, item){
+			r = romans[index]
+
+			$(".key_layout").append(`<li note="`+octavian[o - 1]+`" chord-type="`+chord_functions[mode][index]+`" class="`+chord_functions[mode][index]+`">`+r+` = 
+				<span class="note">`+octavian[o - 1]+`</span></li>`)
+
+			if (item == "W"){
+				o += 2
+			} else {
+				o += 1
+			}
+		})
+		tonic = $(".key_layout li").first().attr('class')
+		$('.tonic').attr("chord-type", tonic)
+		$('.tonic').attr("note", $("#key_selector").val())
+	}
+
+	// 
+	$("body").on("click", ".open-music-keys", function(){
+		$(".music_keys").toggle()
+		$(".music_keys").toggleClass("open")
+	})
+
+	$("body").on("click", ".finder", function(){
+		$(".music_keys").hide()
+		$(".music_keys").removeClass("open")
+	})
+
+
+</script>
+
+<!--  -->
+
+<script>
+		
+	Synth instanceof AudioSynth; // true
+
+	var testInstance = new AudioSynth;
+	testInstance instanceof AudioSynth; // true
+
+	testInstance === Synth; // true
+
+	var piano = Synth.createInstrument('piano');
+
+	chords_formula = {
+		"major": [0,4,7],
+		"minor": [0,3,7],
+		"diminished": [0,3,6]
+	}
+
+	$("body").on("click", ".key_layout li", function(){
+		note = $(this).find(".note").html()
+		ch = $(this).attr("chord-type")
+		playChord(note, ch)
+
+	})
+
+	$("body").on("click", ".tonic", function(){
+		note = $(this).find("select").val()
+		ch = $(this).attr("chord-type")
+		playChord(note, ch)
+	})
+	
+	// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	function playChord(note, ch) {
+		i = octavian.indexOf(note);
+		octavian.push.apply(octavian, octavian.splice(0, i));
+
+		console.log(octavian)
+
+
+		$.each(chords_formula[ch], function(index, item){
+			console.log(octavian[item])
+			piano.play(octavian[item], 4, 3);
+		})
+	}
+	// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+	$(document).on('keypress',function(e) {
+		// console.log(e.key)
+
+		if ($(".music_keys").hasClass("open")) {
+
+			el = $(".music_keys [note]").eq(e.key)
+			note = el.attr("note")
+			ch = el.attr("chord-type")
+
+			console.log(note, ch)
+
+			playChord(note, ch)
+
+		} else {
+			
+
+		}
+
+	});
+
+
+</script>

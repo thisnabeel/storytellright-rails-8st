@@ -1,0 +1,48 @@
+
+<style>
+  
+  .inner-devise-form {
+    max-width: 300px;
+    margin: 30px auto;
+    margin-top: 100px;
+    display: block;
+    padding: 30px;
+    /*box-shadow: 10px 10px 5px 0px rgba(198, 212, 255, 0.5);*/
+    border-radius: 6px;
+  }
+
+</style>
+
+<div class="inner-devise-form">
+
+  <h2>Sign up</h2>
+
+  <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+    <%= devise_error_messages! %>
+
+    <div class="field">
+      <%= f.label :email %><br />
+      <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
+    </div>
+
+    <div class="field">
+      <%= f.label :password %>
+      <% if @minimum_password_length %>
+      <em>(<%= @minimum_password_length %> characters minimum)</em>
+      <% end %><br />
+      <%= f.password_field :password, autocomplete: "off" %>
+    </div>
+
+    <div class="field">
+      <%= f.label :password_confirmation %><br />
+      <%= f.password_field :password_confirmation, autocomplete: "off" %>
+    </div>
+
+    <div class="actions">
+      <%= f.submit "Sign up" %>
+    </div>
+  <% end %>
+
+  <%= render "devise/shared/links" %>
+
+</div>

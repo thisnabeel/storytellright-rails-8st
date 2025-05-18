@@ -1,0 +1,44 @@
+
+		<% if @chapter.quizzes.present? %>
+		  <div class="well quiz-well">
+		  	<h1>Prove Yourself!</h1>	
+		  	<% @chapter.quizzes.each do |q| %>
+		  	<li>
+		  		<a href="<%= quiz_path(q) %>"><span class="btn btn-warning">Take The "<%= q.title %>" Quiz</span>
+		  		</a>
+		  		<% if teacher_signed_in? %>
+			  		<span class="btn btn-danger pull-right removeQuiz" data-id="<%= q.id %>">
+			  				<i class="fa fa-trash"></i>
+			  		</span>
+		  		<% end %>
+		  	</li>
+		  	<% end %>
+		  </div>
+		<% end %>
+
+		<% if 2 == 4 %>
+		
+
+		<hr>
+		  <div class="well">
+		  	<h1>Q&A</h1>
+		  	<small>Ask any question regarding this chapter, or request for more explanation regarding a concept!</small>
+		  	<%= form_for Plea.new do |f|%>
+					<%= f.text_area :body, :class => "form-control" %>
+					
+					<% if user_signed_in? %>
+						<%= f.hidden_field :user_id, :value => current_user.id %>
+					<% end %>
+
+					<%= f.hidden_field :pleable_id, :value => @chapter.id %>
+					<%= f.hidden_field :pleable_type, :value => @chapter.class %>
+					
+					<%= f.submit "Ask A Question", :class => "btn btn-block btn-info" %>
+				<% end %>
+		  </div>
+			<div class="">
+				<hr>
+
+				<%= render "pleas/list", pleas: @chapter.pleas.order("created_at ASC"), origin_link: false %>
+			</div>
+		<% end %>

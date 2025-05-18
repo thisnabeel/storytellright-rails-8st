@@ -1,0 +1,45 @@
+<style>
+  .linked, .linked a {
+    background: #7fff92;
+    color: #000;
+  }
+
+  a {
+    color: #fff;
+  }
+</style>
+
+<div class="btn btn-primary btn-toggle tgl-linked">Toggle Linked</div>
+<div class="btn btn-primary btn-toggle tgl-circled">Toggle Essays</div>
+
+
+<table class="table table-dark">
+  <thead>
+    <tr>
+    </tr>
+  </thead>
+  <tbody>
+    <% Story.where(original: false).all.each do |s| %>
+    <tr class="<%= 'linked' if s.link.present? %> <%= 'circled' if s.story_details["catalyst"].present? %>">
+      <td>
+        <a href="/stories/<%= s.id %>" target="_blank">
+          <%= s.title %>
+        </a>
+        <% if s.story_details["catalyst"].present? %>
+          <i class="fa fa-circle"></i>
+        <% end %>
+      </td>
+    </tr>
+    <% end%>
+  </tbody>
+</table>
+
+<script>
+  $(".tgl-linked").on("click", function(){
+    $(".linked").toggle()
+  })
+
+  $(".tgl-circled").on("click", function(){
+    $(".circled").toggle()
+  })
+</script>

@@ -1,0 +1,168 @@
+<style>
+    #lists {
+        display: flex;
+    }
+
+    .boards {
+        overflow-x: scroll;
+    }
+
+    section[toggle="progress"] {
+        min-height: 100vh;
+        display: block;
+    }
+
+
+    #lists > .list {
+
+        /* background-color: #ebecf0;
+        border-radius: 3px;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        max-height: 100%;
+        position: relative;
+        white-space: normal;
+        margin: 0 6px;
+        width: 272px; */
+
+        background: #ebecf0;
+        border-radius: 3px;
+        box-sizing: border-box;
+        flex: 1 1 100%;
+        max-height: 100%;
+        position: relative;
+        white-space: normal;
+        margin: 0 6px;
+        /* min-width: 272px; */
+    }
+
+    .list-title {
+        background: transparent;
+        border-radius: 3px;
+        box-shadow: none;
+        font-weight: 600;
+        margin: -4px 0;
+        margin-bottom: 20px;
+        height: 20px;
+        min-height: 20px;
+        padding: 4px 8px;
+        resize: none;
+        max-height: 256px;
+        margin: 8px;
+        padding-bottom: 30px;
+    }
+
+    .list-card {
+        background-color: #fff;
+        border-radius: 3px;
+        box-shadow: 0 1px 0 rgb(9 30 66 / 25%);
+        cursor: pointer;
+        display: block;
+        margin-bottom: 8px;
+        max-width: 300px;
+        min-height: 20px;
+        position: relative;
+        text-decoration: none;
+        z-index: 0;
+        margin: 8px 14px;
+    }
+
+    .list-card .title {
+        padding: 6px 8px 2px;
+        position: relative;
+        z-index: 10;
+    }
+
+    #lists > .list[list="2"]{
+        background: #FFE7EC;
+    }
+
+    #lists > .list[list="3"] {
+        background: #E4EEFF;
+    }
+
+    #lists > .list[list="4"] {
+        background: #d3ffd4;
+        border-left: 2px dashed #7ef380;
+    }
+    
+    #progres-category-select {
+        font-size: 34px;
+        max-width: 350px;
+        margin: 30px auto;
+        /* display: block; */
+    }
+    
+</style>
+
+<section toggle="songs-progress">
+    
+    <article id="lists">
+
+        <% song_progress = @production.songs_progress %>
+
+        <% lists = [
+                "Chorus",
+                "Verses",
+                "Bridge",
+                "Decoration"
+            ] 
+        %>
+
+        <% lists.each_with_index do |l, index| %>
+        <ul class="list clean-list" list="<%= index + 1 %>">
+            <div class="list-title"><%= l %></div>
+            
+            <% song_progress[index + 1].each do |p| %>
+                <li class="list-card production" data-type="Song" data-id="<%= p.production.id %>" title="<%= p.title %>">
+                    <div class="title">
+                            <a href="/songs/<%= p.id %>" target="_blank" class="clean-a"><%= p.title %></a>
+                            <i class="fa fa-ellipsis-h hover-gray prod-options"></i>
+                    </div>
+                    
+                </li>
+            <% end %>
+            <% if index == 0 %>
+                <li class="list-card"><div class="btn-block btn btn-outline-info fa fa-plus add-song"></div> </li>
+            <% end %>
+        </ul>
+        <% end %>
+
+    
+    </article>
+
+</section>
+
+
+<script>
+    $("body").on("click", ".add-song", function(){
+        $this = $(this)
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: '/songs',
+            contentType: 'application/json',
+            data: JSON.stringify({ 
+                prod_id: <%= @production.id %>,
+                title: "untld",
+                year: <%= Time.now.year %>,
+                _method:'post' 
+            }),
+            success: function(res){
+                console.log(res)
+                card = 
+
+                `<li class="list-card production" data-type="Song" data-id="${res["production"]["id"]}" title="${res["title"]}">
+                    <div class="title">
+                            <a href="/songs/${res["id"]}" target="_blank" class="clean-a">untld</a>
+                            <i class="fa fa-ellipsis-h hover-gray prod-options"></i>
+                    </div>
+                </li>`
+                $this.parent().before(card)
+            }
+        })
+
+    })
+
+</script>

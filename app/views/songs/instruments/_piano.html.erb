@@ -1,0 +1,116 @@
+<style>
+
+.tonic {
+  margin-top: 50px;
+  overflow: hidden;
+  text-align: center;
+}
+.tonic-wrapper {
+  display: inline-block;
+}
+.tonic-note {
+  float: left;
+  width: 35px;
+  height: 35px;
+  margin-right: 10px;
+  background: #ff7f50;
+  border-radius: 4px;
+  color: #fff;
+  text-align: center;
+  line-height: 37px;
+  cursor: pointer;
+}
+.tonic-note:last-child {
+  margin-right: 0;
+}
+.piano-roll {
+    width: 311px;
+    position: absolute;
+    top: -148px;
+    right: 0;
+    background: #000;
+    /* margin: 50px auto 100px; */
+    padding: 5px;
+    border-radius: 3px;
+}
+.note {
+  border-radius: 2px;
+  transition: all 0.05s ease-out;
+}
+.tonic-key {
+  background: #ff7f50 !important;
+  border-color: #ff7f50 !important;
+}
+.white-notes,
+.black-notes {
+  display: flex;
+}
+.white-notes {
+  width: 300px;
+}
+.white-notes .note {
+  width: 42.857142857142854px;
+  height: 120px;
+  margin: 2px;
+  background: #fff;
+}
+.white-notes .note.highlighted-note {
+  background: #6495ed;
+}
+.black-notes {
+  position: absolute;
+  top: 7px;
+  left: 35.285714285714285px;
+}
+.black-notes .note {
+  width: 24.142857px;
+  height: 79.2px;
+  position: absolute;
+  background: #000;
+  border: 4px solid #000;
+  border-top: none;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+.black-notes .note:first-child {
+  left: 0;
+}
+.black-notes .note:nth-child(2) {
+  left: 42.857142857142854px;
+}
+.black-notes .note:nth-child(3) {
+  left: 128.57142857142856px;
+}
+.black-notes .note:nth-child(4) {
+  left: 171.42857142857142px;
+}
+.black-notes .note:nth-child(5) {
+  left: 214.28571428571428px;
+}
+.black-notes .note.highlighted-note {
+  background: #195bd3;
+  border-color: #195bd3;
+}
+
+</style>
+
+<div class="piano-wrapper">
+  <div id="piano-roll" class="piano-roll">
+    <div class="white-notes">
+      <div note="C" class="note"></div>
+      <div note="D" class="note"></div>
+      <div note="E" class="note"></div>
+      <div note="F" class="note"></div>
+      <div note="G" class="note"></div>
+      <div note="A" class="note"></div>
+      <div note="B" class="note"></div>
+    </div>
+    <div class="black-notes">
+      <div note="C#" class="note"></div>
+      <div note="D#" class="note"></div>
+      <div note="F#" class="note"></div>
+      <div note="G#" class="note"></div>
+      <div note="A#" class="note"></div>
+    </div>
+  </div>
+</div>

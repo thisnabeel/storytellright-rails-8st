@@ -1,0 +1,355 @@
+<style>
+
+	.climax_main {
+
+		padding: 20px;
+
+		background: #ede57b;
+		font-family: initial !important;
+		color: #000;
+	}
+
+	.climax_main .fr-view {
+		color: #000;
+	}
+
+	.red-3 {
+		padding: 20px;
+		background: #ff00a1;
+	}
+
+	.red-3 .fr-view {
+    	color: #fff;
+	}
+
+	.build-make {
+		position: absolute;
+	    left: -20px;
+	    color: #d2c628;
+	    top: 28px;
+	    font-size: 24px;
+	}
+
+	.build-make:hover, .build-change:hover {
+		color: #000;
+	}
+
+	.build-make.waiting, .build-change.waiting {
+		color: red;
+		left: -31px;
+		top: 15px;
+		font-size: 49px;
+	}
+
+	.build-make.waiting:hover, .build-change.waiting:hover {
+		color: red;
+	}
+
+	.highlight-yellow {
+		background: #ede57b;
+		padding: 20px;
+	}
+
+
+	.pp-changer {
+		padding: 8px;
+    	background: #ce0dbe;
+    	color: #fff;
+	}
+
+	.pp-character {
+		padding: 6px;
+	    border: 2px solid #409b12;
+	    color: #000;
+	    background: transparent;
+	}
+
+	.pp-villian {
+		padding: 8px;
+    	background: #ff1e1e;
+    	color: #fff;
+	}
+
+	.pp-object {
+		padding: 8px;
+    	background: #a8deff;
+    	color: #000;
+	}
+
+	.pp-location {
+		padding: 8px;
+    	color: #000;
+    	background: #ffed00;;
+	}
+
+	/**/
+
+	.built {
+		padding: 20px;
+    	border: 1px solid #ccc;
+    	margin: 10px;
+    	position: relative;
+    	list-style: none;
+	}
+
+	.built:hover .remove-climax-built {
+		display: block;
+	}
+
+	.build-change {
+		position: absolute;
+	    left: -20px;
+	    color: #d2c628;
+	    top: 28px;
+	    font-size: 24px;
+	}
+
+	.remove-climax-built {
+		position: absolute;
+	    left: -43px;
+	    color: #d2c628;
+	    top: 28px;
+	    font-size: 24px;
+	    display: none;
+	    height: 40px;
+	    width: 40px;
+	}
+	
+	.remove-climax-built:hover {
+		color: #000;
+	}
+
+
+
+	.built header {
+		display: inline-block;
+	}
+
+	/**/
+
+	.charge {
+		position: relative;
+		padding: 20px;
+	}
+
+	.charge input {
+		background: transparent;
+    	border: 0;
+    	border-bottom: 1px solid #ccc;
+	}
+
+	.charge .remove-climax-charge {
+		position: absolute;
+	    left: 4px;
+	    top: 12px;
+	    top: 30px;
+	    display: none;
+	}
+
+	.charge:hover .remove-climax-charge {
+		display: block;
+	}
+
+	/**/
+	
+	.piece {
+		position: relative;
+	}
+	
+	.piece .build {
+	    position: absolute;
+	    left: -10px;
+	    background: none;
+	    color: #000;
+	    display: none;
+	}
+
+	.from-proofs {
+    	background: #1c84bb;
+    	color: #fff;
+    	padding: 20px;
+    	border: 12px dashed #fe3839;
+    	border-bottom: 12px dashed #ede57b;
+	}
+
+	.piece:hover .build {
+		display: block;
+	}
+	
+	.climax-page-p {
+		border-bottom: 12px solid #ede57b;
+		border-top: 12px solid #ede57b;
+    	margin-bottom: 0;
+	}
+
+	.climax-page-header {
+		font-size: 34px;
+	}
+	
+	.hellish-1 {
+		background: #fff;
+		color: #a70001;
+		border: 2px solid #a70001;
+	}
+
+	.hellish-2 {
+		background: #a70001;
+		color: #fff
+	}
+
+	.either-or {
+		display: flex;
+	}
+
+	.either-or > div {
+		flex: 1 1 50%;
+    	border: 10px solid #ede57b;
+    	text-align: center;
+    	padding: 20px;
+	}
+
+	.good-ending {
+		background: #c8ffc8;
+	}
+
+	.bad-ending {
+		background: #ff3434;
+    	color: #fff;
+	}
+
+	[toggler="climax-more"] {
+	    margin: 0;
+	    padding: 20px;
+	}
+
+	[toggled="climax-more"] {
+		display: none;
+	}
+
+	.climax {
+		width: 80%;
+		display: block;
+		margin: 0 auto;
+	}
+
+	.froalize.red-3 {
+	}
+</style>
+
+<article class="climax" key="climax">
+
+	<h4 style="padding: 20px; margin: 0;" class="text-center">Act I (Flawed Belief + Goal):</h4>
+
+	<div class="hellishness clean-list">
+		<li class="hellish-1" put="hellish-1">
+			
+		</li>
+		<li class="hellish-2" put="hellish-2">
+			
+		</li> 
+
+		<li class="whose-hell" put="whose-hell">
+			
+		</li> 
+		<!-- !
+		<li class="hellish-3" put="hellish-3">
+			
+		</li> -->
+	</div>
+
+	<div style="border: 0;" put="plot-curtain" class="plot-curtain" >
+							</div>
+
+	<!-- <hr toggler="climax-more"> -->
+
+	<h4 style="padding: 20px; margin: 0;" class="text-center">Act III <br>(Climax):</h4>
+	<div class="message-form froalize save-this red-3" style="
+    margin: 0 auto;" fetch="red-3" data-save-code="red-3">
+		<textarea>
+			<%= @story.story_details.try(:[], "red-3").try(:html_safe) if @story.story_details.present?  %>
+		</textarea>
+	</div>
+
+
+	<ul class="magic_land climax_building_material building_material clean-list">
+		
+	</ul>
+
+</article>
+
+<script>
+
+
+
+	$("body").on("click", ".remove-climax-charge", function(){
+		li = $(this).closest(".charge")
+		li.remove()
+		saveStory()
+	})
+
+	$("body").on("click", ".remove-climax-built", function(){
+		li = $(this).closest(".built")
+		li.remove()
+		saveStory()
+	})
+
+
+	function saveClimaxBuild(){
+		climax_build = []
+		$(".climax_building_material .built").each(function(){
+			header = $(this).find("header").text()
+			type = $(this).find("header").attr("class")
+			
+			charges = []
+			
+			$(this).find(".charge input").each(function(){
+				charges.push($(this).val())
+			})
+
+			hash = {
+				header: header,
+				type: type,
+				charges: charges
+			}
+
+			climax_build.push(hash)
+		})
+		console.log(climax_build)
+		return climax_build
+	}
+		
+
+	<% if @story.story_details.try(:[], "climax_build").present? %>
+		
+		climax_build = <%= @story.story_details["climax_build"].to_json.html_safe %>;
+		console.log(climax_build)
+		$.each(climax_build, function(index, item){
+			title = item["header"]
+			type = item["type"]
+			charges = ""
+
+			$.each(item["charges"], function(index, charge){
+				charges += `
+				<article class="charge magic_land">
+					<span class="fa fa-times remove-climax-charge"></span>
+					<textarea class="froalize"></textarea>
+				</article>`
+			})
+
+
+
+			$(".climax_building_material").append(
+				`<li class='built'>
+				<i class="fa fa-bullseye fa-3x build-change"></i>
+				<i class="fa fa-times fa-3x remove-climax-built"></i>
+				<header title="`+title+`" class='`+type+`'>`+title+`</header>
+				<span class="fa fa-plus btn btn-outline-primary add-charge"></span>
+				`+charges+`
+			</li>`)
+		})
+
+		$(".built input").typeWatch( options );
+
+	<% end %>
+	
+</script>

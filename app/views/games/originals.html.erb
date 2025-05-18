@@ -1,0 +1,253 @@
+<style>
+  
+
+  .enter-btn {
+      display: block;
+    width: 100%;
+    margin-top: 30px;
+    padding: 15px 10px;
+    
+    border: 4px solid #ccc;
+    border-radius: 80px;
+    
+    font-size: .9em;
+    font-weight: bold;
+    line-height: 1em;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+  }
+
+  .enter-btn, .delete-game {
+    color: #ccc;
+    cursor: pointer;
+  }
+
+  .enter-btn:hover, .delete-game:hover {
+    color: #000;
+    border: 4px solid #000;
+  }
+
+  .delete-game:hover {
+    border: 0;
+  }
+
+  .delete-game {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    border: 0;
+  }
+
+  .add-game {
+    border: none;
+      background: #c8c8c8 !important;
+      color: white;
+      font-size: 45px;
+  }
+
+
+  .games-list > li.original {
+    box-shadow: 0 0 10px 1px #f1d60e;
+    padding: 36px;
+      border: 4px solid #f6edb7;
+  }
+
+  .year {
+    position: absolute;
+      top: -12px;
+      left: -20px;
+      background: #000;
+      color: #fff;
+      padding: 3px 5px;
+      border-radius: 7px;
+    font-family: 'VT323', monospace;
+  }
+
+
+  .top-nav .btn-info {
+    padding: 7px;
+    border-radius: 5px;
+  }
+
+  .fa-play-circle {
+      position: absolute;
+      bottom: 4px;
+      right: 0;
+      right: 8px;
+      font-size: 30px;
+      color: #cddfff;
+  }
+
+  .series-title {
+    display: block;
+    background: #FFF8DD;
+    color: #7e3dba;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+  }
+
+  /**/
+  .cover-image img {
+    max-width: 200px;
+      max-height: 260px;
+  }
+
+  /**/
+  /**/
+  .game-armature {
+    text-align: left;
+    background: #fff9fe;
+    color: #841175;
+    padding: 18px;
+    border-radius: 4px;
+  }
+  .game-armature p {
+    margin: 0;
+    padding: 0;
+  }
+
+
+  /**/
+
+  .games-list > li:hover .make-template {
+    display: block;
+  }
+
+  .make-template {
+      left: 13px;
+      position: absolute;
+      top: -11px;
+      font-size: 24px;
+      display: none;
+      padding: 13px;
+      line-height: 0;
+      background: #fff;
+  }
+
+
+  .has-inspirations {
+      position: absolute;
+      left: 0px;
+      bottom: 0px;
+      font-size: 29px;
+      color: #797912;
+      background: #ffff55;
+      width: 50px;
+      border-radius: 0px 20px 0px 20px;
+  }
+
+  .has-inspirations:hover {
+    color: #b984c6;
+  }
+
+
+</style>
+
+
+
+<p><%= @games.count %> games</p>
+
+<hr>
+<h1>My Originals:</h1>
+<%= render "games/finder" %>
+
+<ul class="games-list">
+  <% @games.each do |m| %>
+  <li class='<%= m.original == true ? 'original' : 'study' %>'>
+    <span class="delete-game" data-id="<%= m.id %>">X</span>
+    <%= render "games/production", m:m %>
+  </li>
+  <% end %>
+  <li class="add-game">
+    +
+  </li>
+</ul>
+
+<%= render "games/new_game" %>
+
+<script>
+  $("body").on("click", ".delete-game", function(){
+    id = $(this).attr('data-id')
+    $(this).closest("li").remove()
+    deletegame(id, $(this))
+  })
+
+    function deletegame(id, li){
+       $.ajax({
+           type: "POST",
+           dataType: "json",
+           url: '/delete_game',
+           contentType: 'application/json',
+           data: JSON.stringify({ 
+              id: id,
+              _method:'post' 
+           }),
+           success: function(res){
+             li.remove()
+           }
+       })
+    }
+
+   //  $(".btn-toggle").on("click", function(){
+   //   orig = "Showing Original games"
+   //   study = "Showing Study Guides"
+   //   current = $(this).html()
+   //   if ( current == orig ) {
+      // $(this).html(study)
+      // $(".original").hide()
+      // $(".study").show()
+   //   } else {
+   //     $(this).html(orig)
+   //     $(".study").hide()
+      // $(".original").show()
+   //   }
+   //  })
+
+    // $(".enter-btn").on("click", function(){
+    //  window.location = "/games/" + $(this).attr("data-id")
+    // })
+
+  $("body").on("click", ".make-template", function(){
+    li = $(this).closest("li")
+    title = "["+ li.find(".game-title").text()+"]"+"Template"
+    armature = li.find('.game-armature').text()
+
+    deets = {
+            armature: armature
+    }
+    
+    console.log(deets)
+
+    hash = {}
+    hash["user_id"] = "<%= current_user.id %>"
+    hash["title"] = title
+    hash["original"] = true
+    hash["details"] = deets
+    hash["_method"] = "post"
+
+
+       $.ajax({
+           type: "POST",
+           dataType: "json",
+           url: '/create_game',
+           contentType: 'application/json',
+           data: JSON.stringify(hash),
+           success: function(res){
+             // console.log(res["id"])
+             console.log(res)
+             alert("Created!")
+           }
+       })
+
+  })
+
+  $("body").on("click", ".toggle-acts", function(){
+    li = $(this).closest("li")
+    li.find(".game-acts").toggle()
+  })
+
+</script>
+
+<% @inspirable_type = "Game" %>
+<%= render "inspirations/modal" %>

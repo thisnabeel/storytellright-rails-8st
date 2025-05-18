@@ -1,0 +1,78 @@
+<style>
+	
+</style>
+
+<div id="adder">
+	<input type="text" id="production-input" class="form-control" placeholder="Enter Production Title...">
+	<div class="btn btn-outline-success add-production"><i class="fa fa-building"></i></div>
+    
+    <span class="btn btn-outline-primary add-production fa fa-film" productionable_type="Story"></span>
+    <span class="btn btn-outline-primary add-production fa fa-music" productionable_type="Song"></span>
+    <span class="btn btn-outline-primary add-production fa fa-smile-o" productionable_type="Joke"></span>
+    <span class="btn btn-outline-primary add-production fa fa-image" productionable_type="Visual"></span>
+    <span class="btn btn-outline-primary add-production fa fa-gamepad" productionable_type="Game"></span>
+
+</div>
+
+<script>
+	$("body").on("click", ".add-production", function(){
+		input = $("#production-input")
+        val = input.val()
+        productionable_type = $(this).attr("productionable_type")
+
+		if ( $(".highlighted").length ){
+			parent_id = $(".highlighted").attr("data-id")
+		} else {
+			parent_id = "<%= @production.present? ? @production.id : 'null' %>"
+		}
+		
+		console.log(parent_id)
+
+		if (val.length > 1) {
+
+			$.ajax({
+			    type: "POST",
+			    dataType: "json",
+			    url: '/productions',
+			    contentType: 'application/json',
+			    data: JSON.stringify({ 
+			      title: val,
+                  production_id: parent_id,
+                  user_id: $("body").attr("user-id"),
+                  productionable_type: productionable_type,
+			      _method:'post' 
+			    }),
+			    success: function(res){
+			     console.log(res)
+                 production = res
+                 
+                 block = $(".production.highlighted")
+                 if ($(".production.highlighted").length) {
+                    block = $(".production.highlighted")
+                    block.append(makeMainMapItem(res))
+                 } else {
+                    $(".production-list").append(makeMainMapItem(res))
+                 }
+
+
+				 // refreshPostsOrder()
+				 debug()
+
+			    }
+			})
+			
+			input.val("")
+		}
+
+
+	})
+
+	$("body").on("click", ".production-head .show-btn", function(){
+		li = $(this).closest("li")
+		code = li.attr("data-code")
+		 window.open( 
+              "/map/"+code, "_blank");
+	})
+
+
+</script>

@@ -1,0 +1,50 @@
+<style>
+  .header-img {
+    max-width: 350px;
+    margin: 0 auto;
+    display: block;
+  }
+
+  .armature {
+    background: white;
+    box-shadow: 0 15px 15px -10px rgb(0 0 0 / 30%);
+    margin-bottom: 10px;
+    padding: 20px;
+  }
+
+  .quote {
+    font-family: Merriweather, Georgia, serif;
+        font-size: 14pt;
+  }
+
+  .armature:nth-of-type(2n) {
+		background: #DE9B6C;
+		color: white;
+	}
+</style>
+
+
+<img src="<%= asset_path('armature.png') %>" class="header-img" alt="">
+
+<h1>Listing Armatures</h1>
+
+  <ul class="clean-list">
+  <% @armatures.each do |armature| %>
+  <li class="armature">
+    <div class="quote">
+      <%= armature.message %>
+    </div>
+    <div class="edit">
+        <td><%= link_to 'Show', armature %></td>
+        <td><%= link_to 'Edit', edit_armature_path(armature) %></td>
+        <td><%= link_to 'Destroy', armature, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+    </div>
+  </li>
+  <% end %>
+  </ul>
+
+
+<br>
+<% if User.is_admin? current_user %>
+  <%= link_to 'New Armature', new_armature_path %>
+<% end %>

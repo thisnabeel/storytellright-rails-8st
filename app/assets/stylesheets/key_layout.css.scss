@@ -1,0 +1,35 @@
+.music_keys {
+
+	li:nth-child(1) {
+		display: none;
+	}
+
+
+	li:nth-child(2),
+	li:nth-child(4) {
+		background: #c4e6ff;
+	}
+
+	li:nth-child(3),
+	li:nth-child(6) {
+		background: #daffda;
+	}
+
+	li:nth-child(5) {
+		background-color: #8a0e0e;
+		color: #fff;
+	}
+
+	li:nth-child(7) {
+		background-color: red;
+		color: #fff;
+	}
+
+	.minor {
+		text-transform: lowercase;
+    	font-family: cursive;
+	}
+
+}
+
+

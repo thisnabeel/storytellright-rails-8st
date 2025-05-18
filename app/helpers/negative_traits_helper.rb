@@ -1,0 +1,2 @@
+module NegativeTraitsHelper
+end

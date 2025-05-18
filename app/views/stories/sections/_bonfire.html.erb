@@ -1,0 +1,97 @@
+<style>
+	.bonfire-nav  {
+		display: flex;
+		text-align: center;
+	}
+
+	.bonfire-nav > div {
+		flex: 1 1 25%;
+		padding: 10px;
+	}
+
+	.active-bonfire-nav {
+		background: #000;
+		color: #fff;
+	}
+
+	.bonfire-views .bonfire-view {
+		display: none;
+	}
+
+	.bonfire-header {
+		padding: 30px;
+	}
+
+	.bonfire-header img {
+		max-width: 100px;
+		display: block;
+		margin: 0 auto;
+	}
+
+	/**/
+	.tip-intro {
+		position: relative;
+	}
+
+	.abstractify {
+		position: absolute;
+	    left: -43px;
+	    top: 43px;
+	    background: transparent;
+	    color: #ccc;
+	    padding: 6px;
+	    border-radius: 100%;
+	    cursor: pointer;
+	}
+
+	.abstractify:hover {
+		color: #000;
+	    background: #fff;
+	}
+</style>
+
+<article class="part" id="part-0" key="scaffold">
+
+	<div class="bonfire-header">
+		<img src="<%= asset_path("bonfire-2.png") %>" alt="">
+	</div>
+
+<!-- 	<div class="bonfire-nav">
+		<div toggle="deny-accept" class="active-bonfire-nav">
+			Denial Start
+		</div>
+	</div> -->
+			
+	<div class="bonfire-views">
+		<div class="bonfire-view" toggle="deny-accept" title="Deny => Accept">
+			<%= render "stories/bonfire/deny_accept" %>			
+		</div>
+		<div class="bonfire-view" toggle="accept-accept" title="Accept => Accept">
+			<%= render "stories/bonfire/accept_accept" %>			
+		</div>
+		<div class="bonfire-view" toggle="accept-deny" title="Accept => Deny">
+			<%= render "stories/bonfire/accept_deny" %>			
+		</div>
+		<div class="bonfire-view" toggle="deny-deny" title="Deny => Deny">
+			<%= render "stories/bonfire/deny_deny" %>			
+		</div>
+	</div>
+
+</article>
+
+<script>
+	$("body").on("click", ".bonfire-nav > div", function(){
+		toggle = $(this).attr("toggle")
+		$(".bonfire-views .bonfire-view").hide()
+		$(".bonfire-views .bonfire-view[toggle='"+toggle+"']").show()
+
+
+		
+		$(this).siblings().removeClass("active-bonfire-nav")
+		$(this).addClass("active-bonfire-nav")
+	})
+
+	$(".bonfire-view").first().show()
+</script>
+
+<%= render "stories/bonfire/bonfire_modal" %>

@@ -1,0 +1,21 @@
+<%= form_for(@symbolism) do |f| %>
+  <% if @symbolism.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@symbolism.errors.count, "error") %> prohibited this symbolism from being saved:</h2>
+
+      <ul>
+      <% @symbolism.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :title %><br>
+    <%= f.text_field :title %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

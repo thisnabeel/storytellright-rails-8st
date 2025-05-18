@@ -1,0 +1,59 @@
+<style>
+  .presentation-cover {
+    max-height: 250px;
+  }
+
+  .presentations {
+    max-width: 750px;
+    display: block;
+    margin: 0 auto;
+  }
+
+  .presentations .flex-box {
+    display: flex;
+  }
+
+  .presentations .flex-box .flex-1 {
+    flex: 1 1 0%;
+  }
+
+  .presentations .flex-box .flex-2 {
+    flex: 1 1 70%;
+  }
+
+  .card-parent {
+    background: #211e1e;
+    color: #fff;
+    padding: 10px;
+    display: inline-block;
+    border-radius: 6px;
+  }
+  
+  .p-card {
+    margin-bottom: 10px;
+  }
+</style>
+
+<section class="presentations">
+<% presentations.each do |p| %>
+  <div class="card p-card w-100 <%= 'hidden' if !p.body.present? || p.body.count < 1 %>">
+    <div class="flex-box">
+          <div class="flex-1"></div>
+          <% if p.presentable.cover.present? %>
+              <img src="<%= p.presentable.cover %>" alt="" class="img-responsive presentation-cover">
+          <% end %>
+          <div class="flex-2">
+          <div class="card-body">
+              <h5 class="card-title card-parent"><%= p.presentable.title %></h5>
+              <h1 class="card-title"><%= p.title %></h1>
+              <% if browser.device.mobile? %>
+                <a target="_blank" class="btn btn-block btn-lg btn-primary" href="/presentations/<%= p.id %>" data-id="<%= p.id %>"><i class="fa fa-tv"></i></a>
+              <% else %>
+                <span  class="btn btn-block btn-lg btn-primary view-presentation" data-id="<%= p.id %>"><i class="fa fa-tv"></i></span>
+              <% end %>
+          </div>
+          </div>
+    </div>
+  </div>
+<% end %>
+</section>

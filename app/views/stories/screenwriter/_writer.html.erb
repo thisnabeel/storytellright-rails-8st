@@ -1,0 +1,270 @@
+<style>
+/*  input.form-control,
+  textarea.form-control,
+  input.form-control:focus {
+    background-color: transparent;
+    border: none;
+
+  }
+*/
+
+  #screenwriter h1 { font-family: "Courier New", Courier, "Lucida Sans Typewriter", "Lucida Typewriter", monospace; font-style: normal; font-variant: normal; font-weight: 700; line-height: 23px; } 
+  #screenwriter h3 { font-family: "Courier New", Courier, "Lucida Sans Typewriter", "Lucida Typewriter", monospace; font-style: normal; font-variant: normal; font-weight: 700; line-height: 23px; } 
+  #screenwriter p { font-family: "Courier New", Courier, "Lucida Sans Typewriter", "Lucida Typewriter", monospace;  font-style: normal; font-variant: normal; font-weight: 400; line-height: 23px; } 
+  #screenwriter blockquote { font-family: "Courier New", Courier, "Lucida Sans Typewriter", "Lucida Typewriter", monospace; font-style: normal; font-variant: normal; font-weight: 400; line-height: 23px; } 
+  #screenwriter pre { font-family: "Courier New", Courier, "Lucida Sans Typewriter", "Lucida Typewriter", monospace; font-style: normal; font-variant: normal; font-weight: 400; line-height: 23px; }
+
+  #screenwriter .scene-heading {
+    font-weight: bolder;
+    text-transform: uppercase;
+  }
+
+  #screenwriter {
+    background: #fff;
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 60px;
+  }
+
+  #screenwriter .speaker {
+    max-width: 320px;
+    margin: 0 auto;
+    text-align: center;
+    text-transform: uppercase;
+  }
+
+  #screenwriter .speech {
+    max-width: 320px;
+    margin: 0 auto;
+  }
+
+  #screenwriter > section {
+    position: relative;
+  }
+
+  #screenwriter > section .section-nav {
+    position: absolute;
+    left: -45px;
+    top: -1px;
+    color: transparent;
+  }
+
+  #screenwriter > section:hover .section-nav {
+    position: absolute;
+    left: -45px;
+    top: -1px;
+    color: #ccc;
+  }
+
+  #screenwriter .remove-section:hover {
+    color: #000;
+    cursor: pointer;
+  }
+
+  #screenwriter > .lil-nav {
+    color: #ccc
+  }
+
+  #screenwriter .lil-nav .fa:hover {
+    color: #000;
+    cursor: pointer;
+  }
+
+  #screenwriter .scene-heading p, 
+  #screenwriter .speaker p {
+    font-weight: bold;
+  }
+
+  .modal-open .top-bar {
+    z-index: 1;
+  }
+</style>
+
+<br>
+
+<div id="screenwriter">
+
+    <div class="lil-nav">
+      <i class="fa fa-map"></i>
+      <i class="fa fa-bolt"></i>
+      <i class="fa fa-commenting-o"></i>
+    </div>
+  
+</div>
+
+<script>
+  $("body").on('click', ".fa-map", function(){
+
+    output = `
+      <section class="scene-heading" type="scene-heading">
+      `+section_nav()+`
+      <article class="heading" type="heading"></article>
+      </section>`
+
+    if ($(this).closest("section").length){
+      $(this).closest("section").after(output)
+    } else {
+      $("#screenwriter > .lil-nav").before(output)
+    }
+
+
+
+    makeSWFroala()
+  })
+
+
+  $("body").on('click', ".fa-bolt", function(){
+
+    output = `
+      <section class="action" type="action">
+      `+section_nav()+`
+      <article class="action" type="action"></article>
+      </section>`
+
+    if ($(this).closest("section").length){
+      $(this).closest("section").after(output)
+    } else {
+      $("#screenwriter > .lil-nav").before(output)
+    }
+
+    makeSWFroala()
+  })
+
+  $("body").on('click', ".fa-commenting-o", function(){
+
+    output = `
+      <section class="dialogue" type="dialogue">
+        `+section_nav()+`
+        <article class="speaker" type="speaker">
+        </article>
+        <article class="speech" type="speech">
+        </article>
+      </section>`
+
+    if ($(this).closest("section").length){
+      $(this).closest("section").after(output)
+    } else {
+      $("#screenwriter > .lil-nav").before(output)
+    }
+
+
+    makeSWFroala()
+  })
+
+  function section_nav(){
+    return `<div class="section-nav">
+          <div class="fa fa-times remove-section"></div>
+          <div class="fa fa-bars arrange-section"></div>
+          <div class="lil-nav">
+            <i class="fa fa-map"></i>
+            <i class="fa fa-bolt"></i>
+            <i class="fa fa-commenting-o"></i>
+          </div>
+        </div>`
+  }
+
+  $("body").on("click", ".remove-section", function(){
+    li = $(this).closest("section").remove()
+    saveSW($(this).closest("article"), null)
+  })
+
+
+
+  makeSWFroala()
+
+  function makeSWFroala(){
+    $("#screenwriter section > article").froalaEditor({
+      key: froalaKey,
+      toolbarInline: true,
+      charCounterCount: false,
+      saveInterval: 1000,
+      pastePlain: true
+    })
+    .on('froalaEditor.save.before', function (e, editor) {
+      // Before save request is made.
+      saveSW($(this), null)
+    })
+    .on('froalaEditor.save.after', function (e, editor, response) {
+      // After successfully save request.
+    })
+    .on('froalaEditor.save.error', function (e, editor, error) {
+      // Do something here.
+    });
+  }
+
+  function saveSW(el, cursor){
+    array = []
+    $("#screenwriter > section").each(function(){
+      // $(this).find("article").froalaEditor('destroy');
+      hash = {
+        type: $(this).attr("type"),
+        articles: []
+      }
+      $(this).find("> article").each(function(){
+        hash["articles"].push({
+          type: $(this).attr("type"),
+          body: $(this).find(".fr-view").html()
+        })
+      })
+      array.push(hash)
+    })
+    console.log(array)
+
+    // console.log(scene)
+
+    var my_object = array;
+
+    var data_str = encodeURIComponent(JSON.stringify(my_object));
+
+    // $("[key='"+$("#screenwriter").attr("data-key")+"'] > li").eq($())
+    
+    $(".triggered-sw").attr("data-script", data_str)
+
+    console.log(data_str)
+    var my_object = JSON.parse(decodeURIComponent(data_str));
+    console.log(my_object)
+
+    saveStory()
+    
+    // resetTest(array)
+  }
+
+
+  function resetTest(array){
+    $("#screenwriter").empty()
+
+    $.each(array, function(index, item){
+        $("#screenwriter").append(printItem(item))
+      })
+
+    $("#screenwriter").append(`
+    <div class="lil-nav">
+      <i class="fa fa-map"></i>
+      <i class="fa fa-bolt"></i>
+      <i class="fa fa-commenting-o"></i>
+    </div>`)
+    
+    makeSWFroala()
+  }
+
+  function printItem(item){
+    articles = ``
+    
+    $.each(item["articles"], function(index, article){
+      articles +=
+      `<article class="`+article["type"]+`" type="`+article["type"]+`">
+        `+article["body"]+`
+        </article>`
+    })
+
+    output = 
+    `<section class="`+item["type"]+`" type="`+item["type"]+`">
+        `+section_nav()+`
+        `+articles+`
+      </section>`
+
+    return output
+  }
+
+
+</script>

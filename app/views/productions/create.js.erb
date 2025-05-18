@@ -1,0 +1,1 @@
+$(`[company-id="<%= @production.company_id %>"]`).append("<%= escape_javascript(render partial: 'productions/production', locals: {  production: @production } ) %>");

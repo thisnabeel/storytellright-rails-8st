@@ -1,0 +1,318 @@
+<style>
+
+.questions {
+    list-style: none;
+    padding: 0;
+}
+
+.questions > li {
+    border: 1px solid #add8ff;
+    border-radius: 12px 12px 10px 10px;
+    padding: 20px;
+    margin-bottom: 10px;
+}
+
+.which {
+    font-size: 24px;
+    font-style: italic;
+    padding: 10px;
+    color: #fff;
+    background: #0061b6;
+    border-radius: 10px;
+    margin-bottom: 18px;
+    display: block;
+}
+
+.questions .question {
+	position: relative;
+}
+
+.questions .question .question-movement {
+  padding: 10px;
+  position: absolute;
+  right: 0;
+  top: 0 ;
+}
+
+.mark-as-correct {
+  color: #e7e7e7;
+  padding: 0px 7px;
+}
+
+.marked-as-correct {
+  color: #2ecc71;
+  padding: 0px 7px;
+}
+
+.choices {
+    list-style: none;
+    padding-left: 20px;
+}
+
+.choices .delete-choice {
+    padding: 0px 7px;
+    color: #e74c3c;
+}
+
+
+.question-choices input {
+border: 0;
+border-bottom: 1px solid #ccc; 
+}
+
+.question-choice, .question-choice:focus {
+	background-color: transparent;
+	border-bottom: 1px solid #74b9ff 
+}
+
+.question-description {
+	margin-top: 20px;
+	padding: 20px;
+	color: #30336b;
+	border: 2px dashed #ccc;
+}
+
+</style>
+
+
+
+<h1>
+  Title
+  <span class="pull-right btn btn-info submit-form" onClick="submitForm()">Submit</span>
+  <span class="pull-right btn btn-warning bulk-modal">Bulk Choices </span>
+</h1>
+
+<input type="text" class='form-control game-title' value="<%= @recipe.title %>">
+<br>
+<label for="">
+  Description
+</label>
+<textarea class="description form-control">
+</textarea>
+<hr>
+
+
+<ul class="questions">
+	
+	<% if @recipe.details.present? %>
+		<% @recipe.details.each_with_index do |td, index| %>
+			<li class="question">
+				<section class="question-movement">
+					<i class="fa fa-arrow-down move-question-up"></i>
+					<i class="fa fa-arrow-up move-question-down"></i>
+					<i class="fa fa-times delete-question"></i>
+				</section>
+				<label>Mark: <span class="position"></span></label>
+				<br><small>Mark Title:</small>
+				<input class="form-control mark-title" placeholder="Title" value="<%= td["title"] %>">
+				<br><small>Short:</small>
+				<input class="form-control mark-short" placeholder="Short" value="<%= td["mark_short"] %>">
+				<br><small>Color:</small>
+				<input class="form-control mark-color" placeholder="hex color" value="<%= td["mark_color"] %>">
+				<br><small>Description:</small>
+				<section class="mark-description">
+					<textarea><%= td["mark_description"] %></textarea>
+				</section>
+				<br><small>Gap:</small>
+				<input class="form-control mark-gap" type="number" placeholder="Even Number" value="0">
+			</li>
+		<% end %>
+	<% end %>
+	
+</ul>
+
+<i class="fa fa-plus fa-4x add-question"></i>
+
+
+<script>
+	
+	function makeQuestion(){
+		question = 
+		`<li class="question">`+
+			`<section class="question-movement">
+				<i class="fa fa-arrow-down move-question-up"></i>
+				<i class="fa fa-arrow-up move-question-down"></i>
+				<i class="fa fa-times delete-question"></i>
+			</section>`+
+			`<label>Mark: <span class="position"></span></label>`+
+			`<br><small>Mark Title:</small>`+
+			`<input class="form-control mark-title" placeholder="Title" value="Untitled">`+
+			`<br><small>Short:</small>`+
+			`<input class="form-control mark-short" placeholder="Short" value="Untitled">`+
+			`<br><small>Color:</small>`+
+			`<input class="form-control mark-color" placeholder="hex color" value="#000">`+
+			`<br><small>Description:</small>`+
+			`<section class="mark-description">`+
+				`<textarea></textarea>`+
+			`</section>`+
+			`<br><small>Gap:</small>`+
+			`<input class="form-control mark-gap" type="number" placeholder="Even Number" value="0">`+
+		`</li>`
+
+		return question
+	}
+	
+	function populatePositions(){
+		$(".question").each(function(){
+			position = $(this).index() + 1
+			$(this).find(".position").html(position)
+			$(this).attr("data-position", position)
+		})
+	}
+
+	function submitForm(){
+		list = []
+		$(".question").each(function(){
+			position = $(this).attr("data-position")
+			mark_title = $(this).find(".mark-title").val()
+			mark_short = $(this).find(".mark-short").val()
+			mark_color = $(this).find(".mark-color").val()
+			mark_description = $(this).find(".mark-description").find(".fr-view").html()
+			mark_gap = $(this).find(".mark-gap").val()
+
+			question = {
+				position: position,
+				title: mark_title,
+				mark_short: mark_short,
+				mark_color: mark_color,
+				mark_description: mark_description
+			}
+
+			if (mark_gap > 0) {
+				question["mark_gap"] = mark_gap
+			}
+			
+			if ($(this).find(".question-choice").length > 1) {
+				question["question_choices"] = []
+				$(this).find(".question-choice").each(function(){
+					question["question_choices"].push($(this).val())
+				})
+			}
+			
+			list.push(question)
+
+		})
+		console.log(list)
+		sendUp(list)
+	}
+
+	makeFroala()
+
+	function makeFroala(){
+		$(".mark-description textarea").froalaEditor({
+			key: froalaKey,
+      		toolbarInline: true,
+      		charCounterCount: false,
+      		toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'color', 'emoticons', '-', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'indent', 'outdent', '-', 'insertImage', 'insertLink', 'insertFile', 'insertVideo', 'undo', 'redo']
+		})
+	}
+
+
+	$(".add-question").on("click", function(){
+		$(".questions").append(makeQuestion())
+		makeFroala()
+		populatePositions()
+	})
+
+	$(".questions").on("click", ".move-question-down", function(){
+		actual = $(this).closest(".question")
+		prev = actual.prev(".question")
+		prev.before(actual)
+		console.log("hiii")
+		populatePositions()
+	})
+
+	$(".questions").on("click", ".move-question-up", function(){
+		actual = $(this).closest(".question")
+		prev = actual.next(".question")
+		prev.after(actual)
+		console.log("hiii")
+		populatePositions()
+	})
+
+	$(".questions").on("click", ".delete-question", function(){
+		$(this).closest(".question").remove()
+		populatePositions()
+	})
+		
+	  $('.questions').on("keypress", ".question-choice", function (e) {
+	   var key = e.which;
+	   if(key == 13 && $(this).val() != "")  // the enter key code
+	    {
+	      $(this).closest(".question-choices").append('<input type="text" class="form-control question-choice" placeholder="Enter Option">')
+	      $(this).closest(".question").find(".question-choice").last().focus()
+	    }
+	  });
+
+	  $('.questions').on("keydown", ".question-choice", function(e) {
+	      if ((e.which == 8 || e.which == 46) && $(this).val() =='' && $(this).closest(".question").find(".question-choice").length > 1) {
+	          $(this).prev('input').focus();
+	          $(this).remove()
+	      }
+	  });
+
+	  $('.questions').on('keydown', ".question-choice",function(e) {
+            var code = (e.keyCode ? e.keyCode : e.which);
+            switch (code){
+              case 40:
+                // alert("Down pressed");
+                $(this).next('input').focus();
+
+                if ($(this).index() == $(this).closest(".question").find(".question-choice").length - 1 && $(this).val() != "") {
+					$(this).closest(".question-choices").append('<input type="text" class="form-control question-choice" placeholder="Enter Option">')
+					$(this).next(".question-choice").focus()
+                }
+
+                break;
+              case 38:
+                // alert("Up pressed");
+                $(this).prev('input').focus();
+
+				if ($(this).index() == 0) {
+					$(this).closest(".question").find(".question-text").focus()
+				} else {
+					if ($(this).val() == "") {
+						$(this).remove()
+					}
+				}
+
+                break;
+            }
+      });
+
+	  $('.questions').on('keydown', ".question-text",function(e) {
+            var code = (e.keyCode ? e.keyCode : e.which);
+            switch (code){
+              case 40:
+                // alert("Down pressed");
+				$(this).closest(".question").find(".question-choice").first().focus()
+
+                break;
+              case 38:
+
+                break;
+            }
+      });
+	
+	function sendUp(list){
+		console.log(list)
+		$.ajax({
+	       type: "PUT",
+	       dataType: "json",
+	       url: '/recipes/<%= @recipe.id %>',
+	       contentType: 'application/json',
+	       data: JSON.stringify({ 
+	          details: list,
+	          _method:'post' 
+	       }),
+	       success: function(res){
+	         console.log(res)
+	       }
+	   })
+	}
+
+
+</script>
+
+<%= link_to 'Show', @recipe %> |
+<%= link_to 'Back', recipes_path %>

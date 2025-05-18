@@ -1,0 +1,49 @@
+<%# @discussion.club.role(current_user, "admin") %>
+<% @admin = true %>
+
+
+<br>
+<div class="jumbotron" unlocked="<%= (Time.zone.now > (@discussion.unlock_time || (Time.now + 1.week))) == true ? 'true' : 'false' %>">
+  <h5><%= @discussion.club.title %></h5>
+  <h1><%= @discussion.title %></h1>
+  <input class="timepicker form-control" placeholder="Enter Unlock Date+Time here" <%= 'disabled' if !@admin %> value="<%= @discussion.unlock_at%>">
+</div>
+
+<%= render "discussions/questions" %>
+
+<script>
+  var timeTypeWatchOptions = {
+    callback: function (value) { 
+      console.log(value)
+      m = moment(value);
+      if (m.isValid()){
+        console.log(m.toDate())
+        $.ajax({
+          type: "PUT",
+          dataType: "json",
+          url: '/discussions/<%= @discussion.id %>',
+          contentType: 'application/json',
+          data: JSON.stringify({ 
+            unlock_time: m.toDate(),
+            unlock_at: value,
+            _method:'post' 
+          }),
+          success: function(res){
+            console.log(res)
+            $.notify("Saved!", "success");
+          }
+        })
+      } else {
+
+      }
+
+    },
+    wait: 750,
+    highlight: true,
+    allowSubmit: false,
+    captureLength: 0
+  }
+
+  $(".timepicker").typeWatch( timeTypeWatchOptions );
+
+</script>

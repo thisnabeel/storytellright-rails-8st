@@ -1,0 +1,134 @@
+<style>
+    #members-side {
+        display: none;
+        max-width: 450px;
+        margin: 0 auto;
+    }
+
+    .members li {
+        border: 1px dashed #ccc;
+        padding: 20px;
+        position: relative;
+    }
+
+    .members .handle {
+        position: absolute;
+        left: -20px;
+        top: 0;
+    }
+
+    .members .remove-user {
+        position: absolute;
+        left: -40px;
+        top: 0;
+    }
+
+</style>
+
+<div id="members-side" class="view" toggle="members">
+    <div class="members clean-list" id="members-sort">
+        <% @club.members.each do |user| %>
+            <li data-email="<%= user["email"] %>" class="user">
+                <i class="fa fa-bars handle"></i>
+                <i class="fa fa-times remove-user"></i>
+                <label for="">Email:</label>
+                <input type="text" class="form-control email" value="<%= user["email"] %>">
+                <input type="text" class="form-control hidden name" value="<%= user["name"] %>">
+                <input type="text" class="form-control hidden role" value="<%= user["role"] %>">
+            </li>
+        <% end %>
+    </div>
+    <li class="add-user"><i class="fa fa-plus"></i></li>
+</div>
+
+<script>
+$("body").on("click", ".members-icon", function(){
+    $("#members-side").show()
+})
+
+var membersTypeWatchOptions = {
+    callback: function (value){ 
+        saveMembers()
+    },
+    wait: 750,
+    highlight: true,
+    allowSubmit: false,
+    captureLength: 0
+}
+
+function saveMembers(){
+    members = []
+    $(".members > .user").each(function(){
+        email = $(this).find(".email").val();
+        name = $(this).find(".name").val();
+        role = $(this).find(".role").val();
+        members.push({
+            "email": email,
+            "name": name,
+            "password": "",
+            "role": role
+        })
+    })
+    
+    console.log(members)
+
+    $.ajax({
+        type: "PUT",
+        dataType: "json",
+        url: '/clubs/<%= @club.id %>',
+        contentType: 'application/json',
+        data: JSON.stringify({ 
+            members: members,
+            _method:'post'
+        }),
+        success: function(res){
+            console.log(res)
+        }
+    })
+}
+
+// 
+$("body").on("click", ".add-user", function(){
+    user = {
+            "email": "",
+            "name": "",
+            "password": "",
+            "role": ""
+        }
+    $(".members").append(
+        `<li data-email="${user["email"]}" class="user">
+                <i class="fa fa-bars handle"></i>
+                <i class="fa fa-times remove-user"></i>
+                <label for="">Email:</label>
+                <input type="text" class="form-control email" value="${user["email"]}">
+                <input type="text" class="form-control hidden name" value="${user["name"]}">
+                <input type="text" class="form-control hidden role" value="admin">
+            </li>`
+    )
+    $(".members input").typeWatch( membersTypeWatchOptions );
+    new Sortable(document.getElementById('members-sort'), {
+        handle: '.handle', // handle's class
+        animation: 150,
+        onUpdate: function (/**Event*/evt) {
+            saveMembers()
+            // same properties as onEnd
+        },
+    });
+})
+
+$(".members input").typeWatch( membersTypeWatchOptions );
+new Sortable(document.getElementById('members-sort'), {
+    handle: '.handle', // handle's class
+    animation: 150,
+    onUpdate: function (/**Event*/evt) {
+        saveMembers()
+		// same properties as onEnd
+	},
+});
+
+$("body").on("click", ".remove-user", function(){
+    $(this).closest("li").remove()
+    saveMembers()
+})
+
+</script>

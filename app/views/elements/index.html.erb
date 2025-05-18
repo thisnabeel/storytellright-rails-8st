@@ -1,0 +1,39 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Listing Elements</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Body</th>
+      <th>Source</th>
+      <th>Position</th>
+      <th>Tags</th>
+      <th>Location</th>
+      <th>Elementable</th>
+      <th>Elementable type</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @elements.each do |element| %>
+      <tr>
+        <td><%= element.body %></td>
+        <td><%= element.source %></td>
+        <td><%= element.position %></td>
+        <td><%= element.tags %></td>
+        <td><%= element.location %></td>
+        <td><%= element.elementable_id %></td>
+        <td><%= element.elementable_type %></td>
+        <td><%= link_to 'Show', element %></td>
+        <td><%= link_to 'Edit', edit_element_path(element) %></td>
+        <td><%= link_to 'Destroy', element, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Element', new_element_path %>

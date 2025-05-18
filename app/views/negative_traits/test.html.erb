@@ -1,0 +1,216 @@
+
+<style>
+	.search-items {
+		padding: 40px;
+		font-size: 24px;
+	}
+
+  .items-search-results {
+    padding: 10px;
+    background: rgb(66, 64, 64);
+    font-size: 22px;
+    top: 50px;
+    width: 100%;
+    border: 2px solid #5f4a4a;
+    z-index: 9999999;
+    color: #fff;
+    /*color: rgb(66, 64, 64);*/
+  }
+
+  .items-search-results li {
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+  }
+
+  .items-search-results li a {
+    width: 100%;
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .items-search-results li:hover {
+    background-color: #000000;
+  }
+
+  .question {
+  	text-align: center;
+    padding: 30px;
+  }
+
+  .select-trait {
+  	display: inline-block;
+    max-width: fit-content;
+    margin: 0px auto;
+    font-size: 24px;
+    border: 0;
+    background: #fcfbfb;
+  }
+
+  .holder {
+  	display: grid;
+  }
+
+  .question-definition {
+  	text-align: center;
+    padding: 30px;
+  }
+
+  .question-definition p {
+	padding: 0;
+	margin: 0;
+  }
+
+  .question-definition > span {
+  	display: none;
+  }
+
+  /**/
+
+  .head {
+  	padding-top: 100px;
+  }
+
+</style>
+
+
+<div class="head">
+	
+
+	
+	<div class="holder">
+		<% @nts = NegativeTrait.all.order("title ASC") %>
+		<small class="text-center"><%= @nts.count %> Negative Traits</small>
+		<select class="select-trait form-control">
+			<% @nts.all.each do |nt| %>
+				<option value="<%= nt.id %>"><%= nt.title %></option>
+			<% end %>
+		</select>
+
+	</div>
+
+	<section class="question-definition">
+		<% @nts.all.each do |nt| %>
+			<span data-id="<%= nt.id %>">
+				<%= nt.details.try(:[], "def").try(:html_safe) %>
+			</span>
+		<% end %>
+	</section>
+
+</div>
+
+<input type="text" class="search-items form-control" placeholder="Search Phrase here...">
+	<div class="items-search-results clean-list">
+		
+	</div>
+
+<div class="hidden bank">
+	<% @nts.all.each do |nt| %>
+		<div class="trait" 
+			data-id="<%= nt.id %>" 
+			data-title="<%= nt.title %>"
+			data-definition="<%= nt.details.try(:[], "def").try(:html_safe) %>"
+		>
+			<%= nt.details.try(:[], "assoc-behaviors").try(:html_safe) %>
+		</div>
+	<% end %>
+</div>
+
+<script>
+	$("body").on("click", ".start", function(){
+		makeRandomTrait()
+	})
+
+	$("body").on("change", ".select-trait", function(){
+		id = $(this).val()
+		$(".question-definition span").hide()
+		$(".question-definition span[data-id='"+id+"']").show()
+	})
+
+	
+	// makeRandomTrait()
+	// function makeRandomTrait(){
+	// 	random_trait = $(".trait").eq(Math.floor(Math.random() * $(".trait").length));
+	// 	$(".question .question-title").html(random_trait.attr("data-title"))
+	// 	$(".question .question-definition").html(random_trait.attr("data-definition"))
+	// 	$(".question").attr("data-id", random_trait.attr("data-id"))
+	// }
+
+	$("body").on("click", ".question-definition span", function(){
+		modal = $("#ntModal")
+		$.getJSON( "/negative_traits/" + $(this).attr("data-id"), function( data ) {
+		  console.log(data)
+		  $.each(data["details"], function(index, item){
+			console.log(index)
+			modal.find(".modal-title").html(data["title"])
+			modal.find(".deet[data-title='"+index+"']").find("p").html(item)
+		  })
+
+		  modal.modal("show")
+		});
+	})
+
+
+
+  var phraseSearchOptions = {
+    callback: function (value) { 
+      console.log(value)
+      phraseSearch(value)
+    },
+    wait: 250,
+    highlight: true,
+    allowSubmit: false,
+    captureLength: 1
+  }
+
+  $(".search-items").typeWatch( phraseSearchOptions );
+
+
+	// 
+	function phraseSearch(search){
+		$(".items-search-results").empty()
+
+		if (search.length < 1){
+
+			return
+		}
+		
+		// $(".bank li").indexOf(txt) >= 0
+		$( "li:contains("+search+")" ).each(function(){
+			$(".items-search-results").append(`<li class='cursor' data-id="`+$(this).closest(".trait").attr("data-id")+`">`+$(this).html()+`</li>`)
+		})
+    }
+
+    $("body").on("click", ".items-search-results li", function(){
+		id = $(this).attr("data-id");
+		$(".answer").each(function(){
+			console.log($(this).attr("data-id"))
+			console.log(id)
+			if ($(this).attr("data-id") == id) {
+				// alert("Correct!")
+				Swal.fire("YOU GOT IT!")
+				confetti.start()
+        console.log("correct!")
+        
+        $(".items-search-results").empty()
+        $(".search-items").val("")
+        
+
+        setTimeout(function(){ 
+    				confetti.stop()
+            $("#progressBar > div").animate({ width: "100%" }, 100);
+            $("#progressBar > div").removeClass("dying")
+            refreshQuiz()
+            Swal.close()
+            return
+				}, 1000);
+
+				return
+			}
+		})
+	})
+
+
+</script>
+
+<%= render "negative_traits/modal" %>

@@ -1,0 +1,67 @@
+<%= form_with(model: slide, local: true) do |form| %>
+  <% if slide.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(slide.errors.count, "error") %> prohibited this slide from being saved:</h2>
+
+      <ul>
+      <% slide.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :presentation_id %>
+    <%= form.number_field :presentation_id %>
+  </div>
+
+  <div class="field">
+    <%= form.label :body %>
+    <%= form.text_area :body %>
+  </div>
+
+  <div class="field">
+    <%= form.label :media_url %>
+    <%= form.text_field :media_url %>
+  </div>
+
+  <div class="field">
+    <%= form.label :body_font_size_desktop %>
+    <%= form.number_field :body_font_size_desktop %>
+  </div>
+
+  <div class="field">
+    <%= form.label :body_font_size_mobile %>
+    <%= form.number_field :body_font_size_mobile %>
+  </div>
+
+  <div class="field">
+    <%= form.label :media_size_desktop %>
+    <%= form.number_field :media_size_desktop %>
+  </div>
+
+  <div class="field">
+    <%= form.label :media_size_mobile %>
+    <%= form.number_field :media_size_mobile %>
+  </div>
+
+  <div class="field">
+    <%= form.label :title_font_size_desktop %>
+    <%= form.number_field :title_font_size_desktop %>
+  </div>
+
+  <div class="field">
+    <%= form.label :title_font_size_mobile %>
+    <%= form.number_field :title_font_size_mobile %>
+  </div>
+
+  <div class="field">
+    <%= form.label :position %>
+    <%= form.number_field :position %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

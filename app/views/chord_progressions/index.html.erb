@@ -1,0 +1,33 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Listing Chord Progressions</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Progression</th>
+      <th>Tags</th>
+      <th>Scale</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @chord_progressions.each do |chord_progression| %>
+      <tr>
+        <td><%= chord_progression.title %></td>
+        <td><%= chord_progression.progression %></td>
+        <td><%= chord_progression.tags %></td>
+        <td><%= chord_progression.scale %></td>
+        <td><%= link_to 'Show', chord_progression %></td>
+        <td><%= link_to 'Edit', edit_chord_progression_path(chord_progression) %></td>
+        <td><%= link_to 'Destroy', chord_progression, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Chord progression', new_chord_progression_path %>

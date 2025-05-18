@@ -1,0 +1,396 @@
+<style>
+
+    @import url('https://fonts.googleapis.com/css?family=Merriweather:300,400');
+    /* font-family: 'Merriweather', serif !important; */
+    @import url('https://fonts.googleapis.com/css?family=Calistoga&display=swap');
+    /* font-family: 'Calistoga', cursive; !important;*/
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      /*font-family: 'Calistoga', cursive;*/
+     }
+
+     body {
+        position: relative;
+        line-height: 1;
+
+        background-color: #000 !important;
+        color: #fff !important;
+	}
+	
+	.reveal .backgrounds {
+		background: #000;
+	}
+
+
+    section h3 {
+      direction: ltr !important;
+      /*font-family: 'Merriweather', serif !important;*/
+      line-height: 1.58em !important;
+    }
+
+    .summary {
+      max-height: 70vh !important;
+      overflow-y: scroll;
+    }
+
+    h1 {
+    	font-size: 6em !important;
+    	text-align: left;
+    }
+    h2 {
+    	font-size: 4em !important;
+      text-align: left;
+    }
+    h3 {
+    	font-size: 2em !important;
+      text-align: left;
+    }
+
+    p {
+    	font-size: 1.5em !important;
+      display: block;
+      max-width: 50vw;
+      margin: 0 auto;
+      text-align: left;
+     font-family: 'Merriweather', serif !important; 
+    }
+
+    ul {
+    	/*list-style: none;*/
+    	padding: 0;
+    	text-align: left;
+    	font-size: 34px !important;
+    	display: block;
+    	max-width: 50vw;
+    	margin: 0 auto;
+    }
+
+    ul li {
+    	padding-bottom: 10px;
+    	line-height: 1
+    }
+
+    .blue-back {
+      border-radius: 5px;
+      font-size: 34px;
+      background: blue;
+      color: #fff;
+      text-align: center;
+      padding: 40px;
+    }
+
+    p + ul, p + ol {
+      padding-top: 10px !important;
+    }
+
+    .reveal {
+    	position: static;
+    }
+
+/*    img {
+		max-height: 80vh !important;
+    	max-width: 100% !important;
+    }
+*/
+
+	.slides > section:nth-child(n + 2) {
+		width: 100%;
+    	height: 90%;
+	}
+
+    img + p {
+    	text-align: center;
+    	padding: 24px;
+    }
+
+	figure, figcaption {
+		color: #fff !important;
+		background: transparent !important;
+		font-style: inherit !important;
+	    text-align: center !important;
+	    font-family: GreyCliffCf-Regular !important;
+	    text-transform: none !important;
+	    padding-top: 14px;
+	    font-size: 28px;
+	}
+
+	.top-title {
+		position: fixed;
+
+	    z-index: 999;
+	    background: #292020;
+	    color: #ccc9c9;
+	    padding: 20px;
+	    font-family: GreyCliffCF-Light;
+	    display: none;
+	}
+
+	.top-credit {
+		position: fixed;
+		right: 0;
+	    z-index: 999;
+	    background: #292020;
+	    color: #fff200;
+	    padding: 20px;
+	    font-family: GreyCliffCF-Bold;
+	    display: none;
+	    font-size: 25px;
+	}
+
+	.reveal section.img_container {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+	}
+
+/*	.reveal section img {
+	        display: block;
+	        margin: auto;
+	        height: auto;
+	        max-height: 100%;
+	        width: auto;
+	        max-width: 100%;
+	}*/
+
+	.reveal section img {
+		display: block;
+	    margin: auto;
+	    min-height: 100%;
+	    max-height: 100%;
+	    width: auto;
+	    max-width: 100%;
+	    /* object-fit: contain; */
+	}
+
+	.reveal figcaption {
+		display: none;
+	}
+
+	.slide-body {
+		display: block;
+		line-height: 26px !important;
+		position: static;
+		border: none;
+		padding: 0px;
+		padding-top: 20px;
+		width: 360px;
+
+		background: rgb(0, 0, 0);
+		color: rgb(255, 242, 0);
+		text-align: center;
+		height: auto;
+		bottom: -2vh;
+		margin: auto;
+		left: 0px;
+		right: 0px;
+		font-size: 24px !important;
+	}
+
+	#audioPlayer {
+		top: 620px;
+	    width: 80%;
+	    margin: 0 auto;
+	    display: block;
+	    position: absolute;
+	    margin-left: auto;
+	    margin-right: auto;
+	    left: 0;
+	    right: 0;
+	    text-align: center;
+	}
+	/*  */
+
+	.reveal .controls .navigate-right.enabled {
+		border-left-color: #ccc;
+	}
+
+	.reveal .controls .navigate-left.enabled {
+		border-right-color: #ccc;
+	}
+
+	.reveal .controls .navigate-bottom.enabled {
+		border-top-color: #ccc;
+	}
+
+	.reveal .controls .navigate-top.enabled {
+		border-bottom-color: #ccc;
+	}
+	
+	
+</style>
+
+<div class="hidden main-raw">
+	<% @presentation.body.try(:each) do |slide| %>
+		<li class="slide"
+			<% slide.try(:each) do |i| %>
+				<%= "#{i[0]}=" %>"<%= i[1] %>" 
+			<% end %>
+		>
+			<span class="fa fa-times remove-slide"></span>
+		</li>
+	<% end %>
+</div>
+
+<span class="top-title"><%= @presentation.presentable.try(:title) || @presentation.presentable.home.try(:title)  %></span>
+<span class="top-credit"></span>
+
+<div class="reveal">
+  <div class="slides">
+    <section>
+    	<h3><%= @presentation.presentable.try(:title) %></h3>
+		<h1><%= @presentation.title %></h1>
+    </section>
+  </div>
+</div>
+
+
+<script src="https://js.pusher.com/5.0/pusher.min.js"></script>
+<script>
+
+	// var speechChannel = pusher.subscribe("speech");
+	function pushSlide(speech){
+		// console.log("HIHIHI")
+		// console.log("speech", speech)
+		// console.log(pusher)
+		// pusher.trigger("speech", "client-slide-change", {
+  		// 	message: speech
+		// });
+		$.ajax({
+			type: "POST",
+			dataType: "json",
+			url: '/tele',
+			contentType: 'application/json',
+			data: JSON.stringify({ 
+				message: speech,
+				_method:'post' 
+			}),
+			success: function(res){
+				console.log(res)
+			}
+		})
+	}
+
+	$(".slide").each(function(){
+		
+		slide = $(this)
+		media = slide.attr("data-media")
+		caption = slide.attr("data-caption")
+		body = slide.attr("data-body")
+		file = slide.attr("data-file")
+		speech = slide.attr("data-speech")
+		
+		
+
+		out = ``
+		if (media && media.length > 1) {
+			
+			if (media.indexOf("watch?v=") >= 0) {
+
+				media = media.split("watch?v=")[1]
+
+				out = `<iframe src="https://www.youtube.com/embed/`+media+`" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`
+			} else {
+
+				
+				out = `<img src="`+media+`" alt="" />`
+
+			}
+
+
+			if (caption.length > 1) {
+				out += `<figcaption class="text-center hidden">`+caption+`</figcaption>`
+			}
+
+			if (body.length > 1) {
+				out += `<span class="slide-body">`+body+`</span>`
+			}
+		}
+
+		$(".slides").append(`<section data-speech="${speech}" data-file="`+file+`">`+out+`</section>`)
+
+		
+
+	})
+
+	$(".slides").append(`<section>
+		<h1>The End</h1>
+		<h3>Brought to you by <a href="http://www.storytellright.com">storytellright.com</a></h3>
+    </section>`)
+
+
+	Reveal.initialize({
+		// autoPlayMedia: true
+		embedded: false
+	});
+
+	Reveal.on( 'slidechanged', event => {
+		// alert(event.indexh)
+		if (event.indexh > 0) {
+			$(".top-title").show()
+		} else {
+			$(".top-title").hide()
+		}
+
+		$("audio").remove();
+
+		section = $(".slides > section").eq(event.indexh)
+
+		file = section.attr("data-file")      
+
+		if (file && file.length > 0) {
+			
+			if (whatMedia(file) == "audio") {
+				out = ``
+				$("body").append(`<audio src="" id="audioPlayer" controls></audio>`)
+				changeAudioPlayer(file)
+				// $("#audioPlayer").show()
+			}
+
+		}
+		
+		curry = section
+		if (curry.find("figcaption").length) {
+			credit = curry.find("figcaption").html()
+			console.log("curry", credit)
+			$(".top-credit").show().html(credit)
+		} else {
+			$(".top-credit").hide()
+		}
+
+
+		pushSlide(section.attr("data-speech"))
+
+	  // event.previousSlide, event.currentSlide, event.indexh, event.indexv
+	} );
+
+	$("body").on("click", ".reveal section img ", function(){
+		$("section.present .slide-body").toggle()
+	})
+
+	// 
+	// 
+	function changeAudioPlayer(sourceUrl) {
+	    var audio = $("#audioPlayer");      
+	    $("#audioPlayer").attr("src", sourceUrl);
+	    /****************/
+	    audio[0].pause();
+	    audio[0].load();//suspends and restores all audio element
+
+	    //audio[0].play(); changed based on Sprachprofi's comment below
+	    // audio[0].oncanplaythrough = audio[0].play();
+	    /****************/
+	}
+
+
+
+
+
+
+
+
+</script>

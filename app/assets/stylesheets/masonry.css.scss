@@ -1,0 +1,63 @@
+.garage-masonry {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.masonry-container {
+  // columns: 5 200px;
+  // column-gap: 1.5rem;
+  // width: 90%;
+  // margin: 0 auto;
+  padding: 30px;
+
+  -webkit-columns: 2 200px;
+  -moz-columns: 2 200px;
+  columns: 2 200px;
+  -webkit-column-gap: 1.5rem;
+  -moz-column-gap: 1.5rem;
+  column-gap: 0.5rem;
+  width: 100%;
+  margin: 0 auto;
+
+  .gp-task {
+    text-align: left;
+  }
+
+  .gp-username {
+    color: #416fff;
+    text-align: center;
+  }
+  > div {
+    width: 100%;
+    padding: 10px;
+    margin: 10px;
+
+    // width: 150px;
+    margin: 0 1.5rem 1.5rem 0;
+    display: inline-block;
+    // width: 100%;
+    // border: solid 2px #f3f3f3;
+    border: solid 2px transparent;
+    // padding: 5px;
+    // box-shadow: 5px 5px 5px rgba(0,0,0,0.5);
+    border-radius: 5px;
+    transition: all 0.25s ease-in-out;
+    &:hover img {
+    }
+    &:hover {
+      // background: #ccc;
+    }
+    img {
+      width: 100%;
+      height: auto;
+      border-radius: 5px;
+      transition: all 0.25s ease-in-out;
+    }
+    .necessity {
+      font-weight: 700;
+      padding: 10px;
+    }
+  }
+}

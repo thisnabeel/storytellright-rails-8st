@@ -1,0 +1,227 @@
+<p id="notice"><%= notice %></p>
+
+<style>
+
+	body {
+
+		background: #ddd6f3; /* fallback for old browsers */
+		background: -webkit-linear-gradient(to left, #ddd6f3 , #faaca8); /* Chrome 10-25, Safari 5.1-6 */
+		background: linear-gradient(to left, #ddd6f3 , #faaca8); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+		        
+  	}
+
+	.beats-collection {
+		background-color: #fff;
+		margin: 50px 0 ;
+		border-radius: 25px;
+	}
+
+
+	.Wallop {
+	padding: 25px 75px;
+
+	}
+	.beat {
+		text-align: center;
+	}
+
+	.beat .minute {
+		color: #3cc2d9;
+	}
+
+	.buttons {
+		margin: 0 auto;
+		display: block;
+		text-align: center;
+	}
+
+	.tasks li {
+		text-align: left;
+	}
+
+	.tasks .field {
+		margin: 40px;
+	}
+
+	.question {
+		font-size: 17px;
+	}
+
+	.tasks textarea {
+		padding: 15px;
+	}
+
+	.fancy-select .trigger {
+    	width: 100% !important;
+	}
+
+	.fancy-select ul {
+		width: 100%;
+    	padding-left: 0px;
+	}
+
+	.minute {
+	}
+
+	.story_beat {
+		font-size: 24px;
+		text-align: center;
+		font-family: 'Gentium Book Basic', serif;
+
+	}
+
+	.story-title {
+		font-family: 'VT323', monospace;
+        text-align: center;
+        font-size: 46px;
+        border-top: 40px solid #2b2b2f;
+        border-bottom: 40px solid #2b2b2f;
+	}
+
+	.user_answer {
+		font-family: 'VT323', monospace;
+		font-size: 24px;
+	}
+
+	.answer-box, .answer-box p {
+		text-align: left !important;
+		font-family: 'VT323', monospace !important;
+		font-size: 24px
+	}
+	
+	.question_description {
+		text-align: left;
+	}
+
+</style>
+
+<p id="notice"><%= notice %></p>
+
+<a href="/">
+<!-- <span class="btn btn-warning">Go Back To Story</span>
+ --></a>
+
+<h1 class="text-center story-title">
+	<a href="/stories/1">
+		<%= @story.title %>
+	</a>
+</h1>
+
+<div class="beats-collection container">
+<br>
+ <div class="Wallop beats Wallop--slide">
+	<div class="Wallop-list">
+	<% @recipe_details.each_with_index do |td, index| %>
+	  <div class="Wallop-item" data-position="<%= td["position"] %>">
+		  <div class="beat" style="padding: 15px;">
+		  		<h2 class="question_text"><%= td["question_text"] %></h2>
+		  		<hr>	
+				<section class="question_description"><%= td["question_description"].html_safe %></section>
+				<section class="answer-box" data-question-type="<%= td["question_input_type"] %>">
+					<% if td["question_choices"].present? %>
+					<% elsif td["question_input_type"] == "textarea" %>
+						<textarea><%= td["user_answer"].html_safe if td["user_answer"].present? %></textarea>
+					<% elsif td["question_input_type"] == "input" %>
+						<input type="text" class="form-control text-center user_answer" value="<%= td["user_answer"] if td["user_answer"].present? %>">
+					<% end %>
+				</section>
+		  </div>
+		<hr>
+
+	  </div>
+	<% end %>
+	</div>
+	<div class="buttons">
+	<button class="Wallop-buttonPrevious btn btn-primary btn-outline">Previous</button>
+	<button class="Wallop-buttonNext btn btn-primary btn-outline">Next</button>
+
+	</div>
+  </div>
+
+<br>
+
+<script>
+$(document)  
+
+	var slider = document.querySelector('.Wallop');
+
+	var Wallop = new Wallop(slider);
+
+	var handler = function(event) {
+		v = event.detail.currentItemIndex
+		
+		console.log(v)
+		if (v == ($(".Wallop-item").length - 1)) {
+			$(".Wallop-buttonNext").hide()
+		} else {
+			$(".Wallop-buttonNext").show()
+		}
+
+		if (v == 0 ) {
+			$(".Wallop-buttonPrevious").hide()
+		} else {
+			$(".Wallop-buttonPrevious").show()
+		}
+
+		save()
+
+	};
+
+	Wallop.on('change', handler);
+
+    function save(){
+    	list = []
+	   	$(".Wallop-item").each(function(){
+	   		answer_box = $(this).find(".answer-box")
+	   		if (answer_box.find("input").length) {
+				user_answer = $(this).find(".answer-box").find("input").val()
+	   		} else if (answer_box.find(".fr-view").length) {
+				user_answer = $(this).find(".answer-box").find(".fr-view").html()
+	   		} else if (answer_box.find(".textarea").length){
+				user_answer = $(this).find(".answer-box").find(".textarea").val()
+	   		}
+			question = {
+				position: $(this).attr("data-position"),
+				question_text: $(this).find(".question_text").html(),
+				question_description: $(this).find(".question_description").html(),
+				user_answer: user_answer,
+				question_input_type: $(this).find(".answer-box").attr("data-question-type"),
+			}
+			list.push(question)
+	   	})
+		sendUp(list)
+	}
+
+	$("textarea").froalaEditor({
+		toolbarInline: true,
+  		charCounterCount: false,
+  		key: froalaKey,
+  		toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'color', 'emoticons', '-', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'indent', 'outdent', '-', 'insertImage', 'insertLink', 'insertFile', 'insertVideo', 'undo', 'redo']
+
+	})
+
+	$( ".user_answer" ).keyup(function() {
+	  save();
+	});
+
+	$( ".fr-view" ).keyup(function() {
+	  save();
+	});
+
+	function sendUp(list){
+		$.ajax({
+	       type: "PUT",
+	       dataType: "json",
+	       url: '/story_recipes/<%= @story_recipe.id.to_s %>',
+	       contentType: 'application/json',
+	       data: JSON.stringify({ 
+			  details: list,
+	          _method:'post' 
+	       }),
+	       success: function(res){
+	         console.log(res)
+	       }
+	    })
+	}
+
+</script>

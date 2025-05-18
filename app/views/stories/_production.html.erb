@@ -1,0 +1,51 @@
+
+		<% if m.check("armature") %>
+			<span class="make-template btn btn-outline-primary">+</span>
+		<% end %>
+
+		<% if m.inspirations.present? %>  
+		  <span class="has-inspirations" data-id="<%= m.id %>">
+		    <i class="fa fa-lightbulb-o"></i>
+		  </span>
+		<% end %>
+		
+		<span class="year"><%= m.year %></span>
+
+		<div class="cover-image">
+				<img src="<%= m.cover %>" alt="">
+		</div>
+		<br>
+
+		<!-- Armature -->
+		<% if m.link.present? %>
+			<span class="watch">
+				<i class="fa fa-play-circle"></i>
+			</span>
+		<% end %>
+
+		<i class="fa fa-code-fork send-company" aria-hidden="true"></i>
+
+
+
+		<span class="delete-story" data-id="<%= m.id %>">X</span>
+		<% if m.series.present? %>
+			<span class="series-title"><%= m.series %></span>
+		<% end %>
+		<span class="story-title">
+			<%= m.title %>
+		</span>
+
+		<% if m.check("armature") %>
+			<hr>
+			<div class="story-armature">
+				<%= m.check("armature").html_safe %>
+			</div>
+		<% end %>
+		
+		
+		<%= render "stories/index_components/acts", m: m %>
+		
+		<a href="/stories/<%= m.id %>" class="enter-btn">
+			Enter
+		</a>
+	</li>

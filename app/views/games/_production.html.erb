@@ -1,0 +1,48 @@
+<% if m.check("armature") %>
+      <span class="make-template btn btn-outline-primary">+</span>
+    <% end %>
+
+    <% if m.inspirations.present? %>  
+      <span class="has-inspirations" data-id="<%= m.id %>">
+        <i class="fa fa-lightbulb-o"></i>
+      </span>
+    <% end %>
+
+    <% if m.series.present? %>
+      <span class="series-title"><%= m.series %></span>
+    <% end %>
+    
+    <span class="year"><%= m.year %></span>
+
+    <div class="cover-image">
+        <img src="<%= m.cover %>" alt="">
+    </div>
+    <br>
+
+    <!-- Armature -->
+    <% if m.link.present? %>
+      <span class="watch">
+        <i class="fa fa-play-circle"></i>
+      </span>
+    <% end %>
+
+    <span class="game-title">
+      <%= m.title %>
+    </span>
+
+    <% if m.check("controls") %>
+      <hr>
+      <div class="game-armature">
+        <%= m.check("controls").html_safe %>
+      </div>
+    <% end %>
+    <% if m.check("challenge") %>
+      <div class="game-challenge">
+        <%= m.check("challenge").html_safe %>
+      </div>
+    <% end %>
+    
+        
+    <a href="/games/<%= m.id %>" class="enter-btn">
+      Enter
+    </a>

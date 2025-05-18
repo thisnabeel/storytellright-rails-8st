@@ -1,0 +1,122 @@
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+
+<style>
+  .riffs .riff {
+    /* padding: 30px; */
+    position: relative;
+  }
+
+  .riff .remove-riff {
+    position: absolute;
+    left: -20px;
+  }
+
+  .riff {
+    /* border: 6px solid #ccc; */
+    text-align: center;
+    padding: 10px 0;
+  }
+
+  .riff span {
+    font-size: 24px;
+  }
+
+  .riffs {
+    max-width: 350px;
+    margin: 0 auto;
+    display: block;
+  }
+
+  /*  */
+
+  .play-audio {
+    position: relative;
+  }
+
+  .play-audio .fa {
+    position: absolute;
+    right: -34px;
+    top: 11px;
+    display: none;
+  }
+
+  .playing {
+    background-color: #007bff;
+    color: #fff;
+  }
+
+  .playing .fa {
+    display: block;
+    color: #007bff;
+  }
+
+</style>
+
+<p id="notice"><%= notice %></p>
+
+<h1>Listing <a href="/riffs/new">Riffs</a></h1>
+<hr>
+
+<ul class="clean-list riffs">
+</ul>
+
+
+<audio src="" id="radio" class="hidden" preload="none"></audio>
+
+<script>
+
+  // $(".riffs").append(makeRiff(res))
+    $.each(<%= Riff.all.order("position ASC").to_json.html_safe %>, function(index, item){
+      $(".riffs").append(makeRiff(item))
+  })
+
+
+
+  function makeRiff(item) {
+    console.log(item)
+    return `
+      <li class="riff" data-id="`+item["id"]+`">
+        <span class="save-this play-audio btn-block btn btn-outline-primary" value="`+item["demo"]+`">`+item["title"]+` <i class="fa fa-volume-up"></i></span>
+      </li>`
+  }
+
+
+  $("body").on("click", ".play-audio", function(){
+    url = $(this).attr("value")
+    console.log(url)
+
+
+    if ($(this).hasClass("playing")) {
+      $(this).removeClass("playing")
+      player.pause();
+    } else {
+      $(".playing").removeClass("playing")
+      $(this).addClass("playing")
+      playSound(url);
+    }
+  })
+
+  var player = document.getElementById('radio');
+
+  function playSound(url) {
+    // var sounds = document.getElementsByTagName('audio');
+    // for(i=0; i<sounds.length; i++) sounds[i].pause();
+    // $("audio").remove()
+
+    // var a = new Audio(url);
+    // a.play();
+
+    player.pause();
+    player.src = url;
+    player.currentTime = 0;
+    player.play();
+  }
+
+  player.addEventListener('ended', function(){
+    $(".btn-primary").toggleClass('btn-primary btn-outline-primary')
+  });
+
+
+// 
+</script>
+

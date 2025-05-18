@@ -1,0 +1,1 @@
+json.merge! @story_recipe.attributes

@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Listing Joke Structures</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Description</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @joke_structures.each do |joke_structure| %>
+      <tr>
+        <td><%= joke_structure.title %></td>
+        <td><%= joke_structure.description %></td>
+        <td><%= link_to 'Show', joke_structure %></td>
+        <td><%= link_to 'Edit', edit_joke_structure_path(joke_structure) %></td>
+        <td><%= link_to 'Destroy', joke_structure, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Joke structure', new_joke_structure_path %>

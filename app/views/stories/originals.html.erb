@@ -1,0 +1,328 @@
+<style>
+	
+	.stories-list {
+		list-style: none;
+		padding: none;
+	}
+
+	.stories-list > li {
+		position: relative;
+		width: 300px;
+		margin: 20px;
+		padding: 40px;
+		display: inline-block;
+		vertical-align: top;
+
+		box-shadow: 0 0 10px 1px #c8c8c8;
+		border-radius: 20px;
+		text-align: center;
+		background-color: #fff;
+	}
+
+	.story-title {
+		font-family: 'sf';
+        text-align: center;
+        font-size: 24px;
+	}
+
+	.enter-btn {
+      display: block;
+	  width: 100%;
+	  margin-top: 30px;
+	  padding: 15px 10px;
+	  
+	  border: 4px solid #ccc;
+	  border-radius: 80px;
+	  
+	  font-size: .9em;
+	  font-weight: bold;
+	  line-height: 1em;
+	  letter-spacing: .04em;
+	  text-transform: uppercase;
+	}
+
+	.enter-btn, .delete-story {
+		color: #ccc;
+		cursor: pointer;
+	}
+
+	.enter-btn:hover, .delete-story:hover {
+		color: #000;
+		border: 4px solid #000;
+	}
+
+	.delete-story:hover {
+		border: 0;
+	}
+
+	.delete-story {
+		position: absolute;
+		top: 20px;
+		left: 20px;
+		border: 0;
+	}
+
+	.add-story {
+		border: none;
+	    background: #c8c8c8 !important;
+	    color: white;
+	    font-size: 45px;
+	}
+
+
+	.stories-list > li.original {
+		box-shadow: 0 0 10px 1px #f1d60e;
+		padding: 36px;
+    	border: 4px solid #f6edb7;
+	}
+
+	.year {
+		position: absolute;
+	    top: -12px;
+	    left: -20px;
+	    background: #000;
+	    color: #fff;
+	    padding: 3px 5px;
+	    border-radius: 7px;
+		font-family: 'VT323', monospace;
+	}
+
+
+	.top-nav .btn-info {
+		padding: 7px;
+		border-radius: 5px;
+	}
+
+	.fa-play-circle {
+	    position: absolute;
+	    bottom: 4px;
+	    right: 0;
+	    right: 8px;
+	    font-size: 30px;
+	    color: #cddfff;
+	}
+
+	.series-title {
+		display: block;
+		background: #FFF8DD;
+		color: #7e3dba;
+		padding: 10px;
+		border-radius: 10px;
+		margin-bottom: 30px;
+	}
+
+	/**/
+	.cover-image img {
+		max-width: 200px;
+    	max-height: 260px;
+	}
+
+	/**/
+	/**/
+	.story-armature {
+		text-align: left;
+		background: #fff9fe;
+		color: #841175;
+		padding: 18px;
+		border-radius: 4px;
+	}
+	.story-armature p {
+		margin: 0;
+		padding: 0;
+	}
+
+
+	/**/
+
+	.stories-list > li:hover .make-template {
+		display: block;
+	}
+
+	.make-template {
+	    left: 13px;
+	    position: absolute;
+	    top: -11px;
+	    font-size: 24px;
+	    display: none;
+	    padding: 13px;
+	    line-height: 0;
+	    background: #fff;
+	}
+
+
+	.has-inspirations {
+	    position: absolute;
+	    left: 0px;
+	    bottom: 0px;
+	    font-size: 29px;
+	    color: #797912;
+	    background: #ffff55;
+	    width: 50px;
+	    border-radius: 0px 20px 0px 20px;
+	}
+
+	.has-inspirations:hover {
+		color: #b984c6;
+	}
+
+
+</style>
+
+
+
+
+<p><%= @stories.count %> Stories</p>
+
+<hr>
+<h1>My Originals:</h1>
+<%= render "stories/finder" %>
+
+<ul class="stories-list">
+	<% @stories.each do |m| %>
+	<li class='original' data-id="<%= m.id %>" production-type="Story" >
+
+
+		<% if m.check("armature") %>
+			<span class="make-template btn btn-outline-primary">+</span>
+		<% end %>
+
+		<% if m.inspirations.present? %>  
+		  <span class="has-inspirations" data-id="<%= m.id %>">
+		    <i class="fa fa-lightbulb-o"></i>
+		  </span>
+		<% end %>
+		
+		<span class="year"><%= m.year %></span>
+
+		<div class="cover-image">
+				<img src="<%= m.cover %>" alt="">
+		</div>
+		<br>
+
+		<!-- Armature -->
+		<% if m.link.present? %>
+			<span class="watch">
+				<i class="fa fa-play-circle"></i>
+			</span>
+		<% end %>
+
+		<i class="fa fa-code-fork send-company" aria-hidden="true"></i>
+
+
+
+		<span class="delete-story" data-id="<%= m.id %>">X</span>
+		<% if m.series.present? %>
+			<span class="series-title"><%= m.series %></span>
+		<% end %>
+		<span class="story-title">
+			<%= m.title %>
+		</span>
+
+		<% if m.check("armature") %>
+			<hr>
+			<div class="story-armature">
+				<%= m.check("armature").html_safe %>
+			</div>
+		<% end %>
+		
+		
+		<%= render "stories/index_components/acts", m: m %>
+		
+		<a href="/stories/<%= m.id %>" class="enter-btn">
+			Enter
+		</a>
+	</li>
+	<% end %>
+	<li class="add-story">
+		+
+	</li>
+</ul>
+
+<%= render "stories/new_story" %>
+
+<script>
+	$("body").on("click", ".delete-story", function(){
+		id = $(this).attr('data-id')
+		$(this).closest("li").remove()
+		deleteStory(id, $(this))
+	})
+
+    function deleteStory(id, li){
+       $.ajax({
+           type: "POST",
+           dataType: "json",
+           url: '/delete_story',
+           contentType: 'application/json',
+           data: JSON.stringify({ 
+              id: id,
+              _method:'post' 
+           }),
+           success: function(res){
+             li.remove()
+           }
+       })
+    }
+
+   //  $(".btn-toggle").on("click", function(){
+   //  	orig = "Showing Original Stories"
+   //  	study = "Showing Study Guides"
+   //  	current = $(this).html()
+   //  	if ( current == orig ) {
+			// $(this).html(study)
+			// $(".original").hide()
+			// $(".study").show()
+   //  	} else {
+   //  		$(this).html(orig)
+   //  		$(".study").hide()
+			// $(".original").show()
+   //  	}
+   //  })
+
+    // $(".enter-btn").on("click", function(){
+    // 	window.location = "/stories/" + $(this).attr("data-id")
+    // })
+
+	$("body").on("click", ".make-template", function(){
+		li = $(this).closest("li")
+		title = "["+ li.find(".story-title").text()+"]"+"Template"
+		armature = li.find('.story-armature').text()
+
+		deets = {
+            armature: armature
+		}
+		
+		console.log(deets)
+
+		hash = {}
+		hash["user_id"] = "<%= current_user.id %>"
+		hash["title"] = title
+		hash["original"] = true
+		hash["story_details"] = deets
+		hash["_method"] = "post"
+
+
+       $.ajax({
+           type: "POST",
+           dataType: "json",
+           url: '/create_story',
+           contentType: 'application/json',
+           data: JSON.stringify(hash),
+           success: function(res){
+             // console.log(res["id"])
+             console.log(res)
+             alert("Created!")
+           }
+       })
+
+	})
+
+	$("body").on("click", ".toggle-acts", function(){
+		li = $(this).closest("li")
+		li.find(".story-acts").toggle()
+	})
+
+
+</script>
+
+<% @inspirable_type = "Story" %>
+<%= render "inspirations/modal" %>

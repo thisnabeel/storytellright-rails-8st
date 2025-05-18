@@ -1,0 +1,31 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Listing Production Users</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Production</th>
+      <th>User</th>
+      <th>Role</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @production_users.each do |production_user| %>
+      <tr>
+        <td><%= production_user.production_id %></td>
+        <td><%= production_user.user_id %></td>
+        <td><%= production_user.role %></td>
+        <td><%= link_to 'Show', production_user %></td>
+        <td><%= link_to 'Edit', edit_production_user_path(production_user) %></td>
+        <td><%= link_to 'Destroy', production_user, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Production user', new_production_user_path %>

@@ -1,0 +1,177 @@
+<style>
+    .tasks {
+        display: none;
+        width: 17vw;
+        height: 100vh;
+        position: fixed;
+        right: 0;
+        bottom: 0px;
+        background: #fff;
+        border-radius: 10px 0 0 10px;
+        z-index: 999999;
+        box-shadow: 0px 0px 20px 12px rgba(255, 198, 198, 0.4);
+        background: #FFD194;
+        background: -webkit-linear-gradient(right, #FFD194, #ffcb86);
+        background: -o-linear-gradient(right, #FFD194, #ffcb86);
+        background: linear-gradient(to left, #FFD194, #ffcb86);
+        /* color: #fff; */
+    }
+
+    .tasks-header {
+        padding: 20px;
+        font-weight: 800;
+    }
+
+    .close-tasks {
+        top: 10px;
+        left: -52px;
+        position: absolute;
+        /* background: #fff; */
+        font-size: 30px;
+        width: 50px;
+        height: 50px;
+        border-radius: 100%;
+        /* color: #fff; */
+        text-align: center;
+    }
+
+    .message-editor {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+    }
+
+    .tasks-list .task {
+        font-size: 17px;
+        padding: 15px;
+        position: relative;
+        border-left: 4px solid #e9ba7d;
+        border-bottom: 1px solid #e9ba7d;
+        margin-bottom: 10px;
+    }
+
+    .remove-task {
+        position: absolute;
+        left: -38px;
+        top: 8px;
+        display: none;
+        padding: 10px;
+    }
+
+    .task:hover .remove-task {
+        display: inline-block;
+    }
+</style>
+
+<aside class="tasks" >
+
+	<div class="tasks-header">
+		<span class="rh-title">
+			To-Do</span>
+	</div>
+
+	<div class="tasks-content">
+		
+		<ul class="tasks-list clean-list">
+		</ul>
+
+	</div>
+	
+	
+	<div class="tasks-footer">
+		<span class="close-tasks cursor">
+			<span class="fa fa-times" aria-hidden="true"></span>
+		</span>		
+	</div>
+
+    <div class="message-editor">
+        <textarea name="" id="message-typer" class="form-control" spellcheck="false"></textarea>
+        <div class="btn btn-info btn-block send-msg in-chat" production-id="">Add Task</div>
+    </div>
+</aside>
+
+<script>
+    $("body").on("click", ".send-msg", function(){
+        val = $("#message-typer").val()
+        id = $(this).attr("production-id")
+
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: '/tasks',
+            contentType: 'application/json',
+            data: JSON.stringify({ 
+                production_id: id,
+                note: val,
+                user_id: $("body").attr("user-id"),
+                _method:'post' 
+            }),
+            success: function(res){
+                console.log(res)
+                $(".tasks-list").append(taskMaker(res))
+                $("#message-typer").val("")
+                refreshTaskBadge()
+            }
+        })
+
+
+    })
+
+    function populateTasks(id){
+        $.getJSON( "/productions/"+id, function( data ) {
+            console.log(data)
+            $(".tasks-list").empty()
+            $.each(data["tasks"], function(index, item){
+                $(".tasks-list").append(taskMaker(item))
+            })
+        });
+        $(".send-msg").attr("production-id", id)
+        $(".tasks").attr("production-id", id)
+
+    }
+
+    function taskMaker(item){
+        return `<li class="task">
+                    <span class="remove-task fa fa-trash" data-id=${item["id"]}></span>
+                    <div class="task-body">
+                        ${item["note"]}
+					</div>
+                </li>`
+    }
+
+    $("body").on("click", ".add-task", function(){
+        $(".tasks").show()
+        p = $(this).closest(".production")
+        $(".rh-title").html(p.attr("title"))
+        id = p.attr("data-id")
+        populateTasks(id)
+    })
+
+    // 
+    $("body").on("click", ".remove-task", function(){
+        id = $(this).attr("data-id")
+        li = $(this).closest("li")
+        $.ajax({
+            type: "DELETE",
+            dataType: "json",
+            url: '/tasks/'+id,
+            contentType: 'application/json',
+            data: JSON.stringify({ 
+                _method:'post' 
+            }),
+            success: function(){
+                li.remove()
+                refreshTaskBadge()
+            }
+        })
+
+    })
+
+    function refreshTaskBadge(){
+        pid = $(".tasks").attr("production-id")
+        $("[data-id='"+pid+"'] .add-task").attr("count", $(".tasks .task").length)
+    }
+
+
+</script>

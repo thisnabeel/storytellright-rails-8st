@@ -1,0 +1,53 @@
+<div class="section jeopardy">
+	<h1>Jeopardy Questions:</h1>
+	<ul class="questions">
+		<% if @chapter.jeopardy_questions.present? %>
+			<% @chapter.jeopardy_questions.each do |q| %>
+				<li>
+					<span><%= q %></span> 
+					<i class="fa fa-times remove-jeo-question"></i>
+				</li>
+			<% end %>
+		<% else %>
+			<% @chapter.update(jeopardy_questions: []) %>
+		<% end %>
+	</ul>
+	<input type="text" class="jeopardy-question form-control">
+	<div class="btn btn-block btn-primary submit-jeopardy-question">Add Question</div>
+</div>
+
+<script>
+	$(".submit-jeopardy-question").on("click", function(){
+		text = $(".jeopardy-question").val()
+		$(".jeopardy .questions").append(`<li><span>`+text+`</span> <i class="fa fa-times remove-jeo-question"></i></li>`)
+		$(".jeopardy-question").val("")
+		save_jeopardy()
+	})
+
+	$("body").on("click", ".remove-jeo-question", function(){
+		$(this).parent().remove()
+		save_jeopardy()
+	})
+
+	function save_jeopardy(){
+		array = []
+	   $(".jeopardy .questions li").each(function(){
+			text = $(this).find("span").html()
+			array.push(text)
+	   })
+
+	   $.ajax({
+	       type: "PUT",
+	       dataType: "json",
+	       url: '/chapters/<%= @chapter.id %>',
+	       contentType: 'application/json',
+	       data: JSON.stringify({ 
+	          jeopardy_questions: array,
+	          _method:'post' 
+	       }),
+	       success: function(res){
+	         console.log(res)
+	       }
+	   })
+	}
+</script>

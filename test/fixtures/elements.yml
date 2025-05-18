@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  body: MyText
+  source: MyString
+  position: 1
+  tags: MyString
+  location: MyString
+  elementable_id: 1
+  elementable_type: MyString
+
+two:
+  body: MyText
+  source: MyString
+  position: 1
+  tags: MyString
+  location: MyString
+  elementable_id: 1
+  elementable_type: MyString

@@ -1,0 +1,355 @@
+<style>
+	.question-box {
+		background-color: #fff;
+		margin: 50px 0 ;
+		border-radius: 25px;
+	}
+
+	.question-box .fr-view, .question-box input, .question-box .fr-view p {
+		font-family: 'VT323', monospace !important;
+		font-size: 24px;
+	}
+
+
+	.Wallop {
+		display: none;
+		padding: 25px 75px;
+		background: #fff;
+		-webkit-box-shadow: 10px 10px 0px 0px rgba(0,0,0,0.75);
+		-moz-box-shadow: 10px 10px 0px 0px rgba(0,0,0,0.75);
+		box-shadow: 10px 10px 0px 0px rgba(0,0,0,0.75);
+	}
+
+
+</style>
+
+<div style="margin-top:135px;">
+<ul class="timeline">
+  <li>
+    <p class="event"><span class="year">0%</span> <span class="short-desc">event title</span></p>
+    <p class="details">Some info about when this happened</p>
+  </li>
+  <li>
+    <p class="event"><span class="year">10%</span> <span class="short-desc">event title</span></p>
+    <p class="details">Some info about when this happened</p>
+  </li>
+  <li>
+    <p class="event"><span class="year">20%</span> <span class="short-desc">event title</span></p>
+    <p class="details">Some info about when this happened</p>
+  </li>
+  <li>
+    <p class="event"><span class="year">27%</span> <span class="short-desc">event titlee</span></p>
+    <p class="details">Some info about when this happened</p>
+  </li>
+  <li>
+    <p class="event"><span class="year">47%</span> <span class="short-desc">event title</span></p>
+    <p class="details">Some info about when this happened</p>
+  </li>
+</ul>
+</div>
+
+<script>
+	$(".timeline li").each(function(){
+		$(this).css({"left":$(this).find(".year").html()})
+	})
+
+  $.fn.timeline = function(options) {
+    var settings = $.extend(
+      {
+        // These are the defaults.
+        eventSpacing: "chronological",
+        timelineDirection: "vertical",
+        timelineSize: "800px"
+      },
+      options
+    );
+    var firstYear = $(".timeline li:first-child .year").text();
+    var lastYear = $(".timeline li:last-child .year").text();
+    var timeSpan = lastYear - firstYear;
+    var percentBetween = 90 / timeSpan;
+
+    //  direction of timeline.
+    $(".timeline").addClass(settings.timelineDirection);
+    
+    // timeline size
+    if($(".timeline").hasClass("horizontal")) {
+      $(".timeline").css("width", settings.timelineSize);
+    } else {
+      $(".timeline").css("height", settings.timelineSize);
+    }
+    //  Add spacing between events chronological or equal
+    if (settings.eventSpacing === "chronological") {
+      $.each($(".timeline li"), function(i, val) {
+        var year = $(val)
+          .find(".year")
+          .text();
+        var spacing = (year - firstYear) * percentBetween;
+        if (settings.timelineDirection === "horizontal") {
+          $(val).css("left", spacing + "%");
+        } else {
+          $(val).css("top", spacing + "%");
+        }
+      });
+    } else {
+      $.each($(".timeline li"), function(i, val) {
+        var year = $(val)
+          .find(".year")
+          .text();
+        percentBetween = 90 / ($(".timeline li").length - 1);
+        console.log(percentBetween);
+        var spacing = i * percentBetween;
+        if (settings.timelineDirection === "horizontal") {
+          $(val).css("left", spacing + "%");
+        } else {
+          $(val).css("top", spacing + "%");
+        }
+      });
+    }
+  };
+
+$("ul.timeline").timeline({
+  eventSpacing: "chronological",
+  timelineDirection: "horizontal",
+  timelineSize: "100%"
+});
+
+</script>
+
+
+<% slices = {
+	0 => {
+		"title" => "You",
+		"color" => "#95a5a6",
+		"short" => "A character is in a zone of comfort"
+	},
+	1 => {
+		"title" => "Anticipation",
+		"color" => "#3498db",
+		"short" => "But they want something"
+	},
+	2 => {
+		"title" => "Dream",
+		"color" => "#f1c40f",
+		"short" => "They enter an unfamiliar situation"
+	},
+	3 => {
+		"title" => "Frustration",
+		"color" => "#e67e22",
+		"short" => "Struggle or Adapt"
+	},
+	4 => {
+		"title" => "Nightmare",
+		"color" => "#2c3e50",
+		"short" => "Find what they wanted"
+	},
+	5 => {
+		"title" => "Destruction",
+		"color" => "#e74c3c",
+		"short" => "Pay its price / Suffer",
+		"gap" => 2
+	},
+} %>
+
+<!-- How much slice space we need totalt if its 2 width each -->
+
+<% marks = slices.count * 2 %>
+<!-- How much blank space we need if we consider the marks space -->
+<% has_gaps = false %>
+<% slices.each do |slice| %>
+	<% if slice[1]["gap"].present? %>
+		<% has_gaps = true %>
+	<% end %>
+<% end %>
+<% if has_gaps == true %>
+	<% blank_space = (100 - 16).to_f / 8.to_f %>
+<% else %>
+	<% blank_space = (100 - marks).to_f / slices.count.to_f %>
+<% end %>
+
+
+<div class="circle">
+	<div id="qtpie">
+	  <div>
+	    <svg viewbox="0 0 200 200">
+	    	<% slices.each_with_index do |slice, index| %>
+				<path class="slice" data-pie="2" data-desc="<%= slice[1]["title"] %>" data-color="<%= slice[1]["color"] %>" style="fill: <%= slice[1]["color"] %>" data-semi-circle="<%= 'life' if [0,1,2,6,7].include? index %>" />
+				<% if slice[1]["gap"] %>
+					<% blank_space = 4 * slices.count %>
+					<path class="blank" data-pie="<%= blank_space * slice[1]["gap"] %>"/>
+				<% else %>
+					<path class="blank" data-pie="<%= blank_space %>"/>
+				<% end %>
+	    	<% end %>
+	      <!-- <path class="blank" data-pie="2"/> -->
+	      <circle transform="translate(100, 100)">
+	        </svg>
+	      </div>
+	  </div>
+</div>
+
+ <div class="Wallop beats Wallop--slide">
+	<div class="Wallop-list">
+	<% slices.each_with_index do |slice, index| %>
+	  <div class="Wallop-item" data-position="<%= index %>">
+	  	<div class="question-box">
+	      <h1>#<%= index + 1 %>: <%= slice[1]["title"] %></h1>
+	      <p><%= slice[1]["short"] %></p>
+	      <hr>
+		  <textarea></textarea>
+		<hr>
+		</div>
+		
+	  </div>
+	<% end %>
+	</div>
+  </div>
+
+<script>
+	
+	var slider = document.querySelector('.Wallop');
+	var Wallop = new Wallop(slider);
+
+	function activateWallop(){
+		$(".Wallop").show()
+		$(".Wallop").addClass("wallop-activated")
+	}
+	
+	$("path").on("click", function(){
+		color = $(this).attr("data-color")
+		title = $(this).attr("data-desc")
+		id = $(".slice").index(this)
+
+		if (!$(".Wallop").hasClass("wallop-activated")) {
+			activateWallop()
+		}
+
+		Wallop.goTo(id);
+
+		// $("body")
+		// 	.css({"background":color})
+		$(".Wallop").css({
+			"-webkit-box-shadow": "10px 10px 0px 0px " + color,
+			"-moz-box-shadow": "10px 10px 0px 0px " + color,
+			"box-shadow": "10px 10px 0px 0px " + color,
+		})
+
+		$(".qtpieInside")
+			.css('color',color)
+			.html(title)
+			.fadeIn(200);
+
+		$(this)
+			.siblings().removeClass("active-slice")
+		$(this)
+			.addClass("active-slice")
+
+		$(this)
+			.siblings().css({
+				"stroke": "none",
+	    		"stroke-width": "none"
+			})
+
+		if ($(this).attr("data-semi-circle") == "life" ){
+			$("body").css({
+				"background": "#ece9e6",
+    			"background": "-webkit-linear-gradient(to right, #ece9e6, #ffffff)",
+    			"background": "linear-gradient(to right, #ece9e6, #ffffff)"
+			})
+			$(this)
+				.css({
+					"stroke": "#000",
+		    		"stroke-width": "2px"
+				})
+
+		} else {
+			$("body").css({
+				"background": "#200122",
+    			"background": "-webkit-linear-gradient(to right, rgb(32, 1, 34), rgb(0, 0, 0))",
+    			"background": "linear-gradient(to right, rgb(32, 1, 34), rgb(0, 0, 0))"
+			})
+			$(this)
+				.css({
+					"stroke": "#fff",
+		    		"stroke-width": "2px"
+				})
+		}
+	})
+
+	$("textarea").froalaEditor({
+		key: froalaKey,
+		toolbarInline: true,
+  		charCounterCount: false,
+  		toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'color', 'emoticons', '-', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'indent', 'outdent', '-', 'insertImage', 'insertLink', 'insertFile', 'insertVideo', 'undo', 'redo']
+
+	})
+
+	$('textarea').on('froalaEditor.focus', function (e, editor) {
+	  // Do something here.
+	  console.log("hi")
+	  if (!$(".Wallop").hasClass("input-focused")){
+	  	$(".Wallop").addClass("input-focused")
+	  }
+	});
+
+	$(document).click(function(e){
+
+	    // Check if click was triggered on or within #menu_content
+	    // console.log($(e.target).closest(".fr-view").length)
+	    if( $(e.target).closest(".fr-view").length < 1 ) {
+	        $(".Wallop").removeClass("input-focused")
+	    }
+
+	    // Otherwise
+	    // trigger your click function
+	});
+
+	$(document).keydown(function(e) {
+
+		if ( $(".Wallop").hasClass("input-focused") == false ) {
+			
+			// count = $(".slice").length
+			// quarter = count / 4
+			// half = quarter + quarter
+			// third = half + quarter
+
+			// $(".slice").eq(third).trigger("click")
+
+		    switch(e.which) {
+		        case 37: // left
+			        slice = $(".slice").index($(".active-slice"))
+			        last = $(".slice").length
+			        next = slice - 1
+			        // alert(slice)
+			        if ( next == last ){
+						$(".slice").first().trigger("click")
+			        } else {
+						$(".slice").eq( next ).trigger("click")
+			        }
+		        break;
+
+		        case 38: // up
+					// count = $(".slice").length
+					// $(".slice").first().trigger("click")
+		        break;
+
+		        case 39: // right
+			        slice = $(".slice").index($(".active-slice"))
+			        last = $(".slice").length
+			        next = slice + 1
+			        // alert(slice)
+			        if ( next == last ){
+						$(".slice").first().trigger("click")
+			        } else {
+						$(".slice").eq( next ).trigger("click")
+			        }
+		        break;
+
+		        case 40: // down
+		        break;
+
+		        default: return; // exit this handler for other keys
+		    }
+		    e.preventDefault(); // prevent the default action (scroll / move caret)
+		}
+	});
+</script>

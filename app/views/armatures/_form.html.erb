@@ -1,0 +1,21 @@
+<%= form_for(@armature) do |f| %>
+  <% if @armature.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@armature.errors.count, "error") %> prohibited this armature from being saved:</h2>
+
+      <ul>
+      <% @armature.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :message %><br>
+    <%= f.text_field :message %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

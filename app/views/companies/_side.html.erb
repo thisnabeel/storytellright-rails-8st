@@ -1,0 +1,446 @@
+<style>
+
+
+
+    #side-bar-company {
+        display: flex;
+        flex-direction: column;
+        flex-basis: 16%;
+        color: #fff;
+        position: sticky;
+    }
+
+    .my-companies {
+        left: 0px;
+        top: 0px;
+        /* padding: 14px; */
+        background: #1e1f21;
+        height: 100vh;
+        position: relative;
+    }
+    .my-companies a {
+        color: #F5F4F3;
+        display: block;
+        /* padding: 14px; */
+        cursor: pointer;
+    }
+
+    #active-company {
+        background: #4B4C4D;
+    }
+
+
+    .send-company {
+		position: absolute;
+		top: 10px;
+		right: 10px;
+		font-size: 24px;
+		color: #fff;
+		display:none;
+        border-radius: 20px;
+	}
+
+    .company-linker .send-company {
+        display: block;
+        background: #ccc;
+        padding: 10px;
+        
+    }
+
+	.send-company:hover {
+		color: #000;
+	}
+
+    .company-link {
+        color: #ccc;
+    }
+
+    .link-this {
+        color: red;
+    }
+
+    /*  */
+
+    .company {
+        position: relative;
+    }
+
+    .all-tasks {
+        background: #FFCD89;
+        padding: 8px;
+        border-radius: 5px;
+        font-size: 12px;
+        position: absolute;
+        right: -30px;
+        top: 6px;
+        width: auto;
+        display: inline-block;
+    }
+    .all-tasks[count="0"]{
+        display: none;
+    }
+
+    .company[productions="0"] a {
+        color: #ccc;
+    } 
+
+    <% if @company.present? %>
+
+    .team[code="<%= @company.code %>"] {
+        background: #4B4C4D;
+    }
+
+    <% end %>
+
+    <% if @production.present? %>
+
+        .project[code="<%= @production.code %>"] {
+            background: #4B4C4D;
+        }
+
+        .project[code="<%= @production.code %>"] {
+            background: #4B4C4D;
+        }
+
+    <% end %>
+    
+    #open-companies-bar {
+        position: absolute;
+        color: #fff;
+        top: 10px;
+        right: 10px;
+    }
+
+    #teams-header {
+        font-size: 14px;
+        padding-left: 10px;
+        color: #828282;
+    }
+
+    #my-teams li {
+        align-items: center;
+        display: flex;
+        /* height: 28px; */
+        font-size: 14px;
+    }
+
+    #my-teams .team, 
+    #my-teams .project a {
+        padding: 4px 24px;
+    }
+
+    #my-teams .project {
+        position: relative;
+    }
+
+    
+
+    #my-teams li:hover {
+        background: #343434;
+    }
+
+    #my-teams .caret {
+        padding-right: 10px;
+    }
+
+    #my-teams .project {
+        display: none;
+    }
+
+    #my-teams .caret.fa-caret-down,
+    #my-teams .show-projects .caret.fa-caret-right {
+        display:none;
+    }
+
+    #my-teams .caret.fa-caret-right,
+    #my-teams .show-projects .caret.fa-caret-down {
+        display: block;
+    }
+
+    #my-teams .show-projects .project {
+        display: list-item;
+    }
+
+    .team {
+        position: relative;
+    }
+
+    .team-extra, .project-extra {
+        position: absolute;
+        right: 10px;
+        top: 7px;
+        font-size: 12px;
+        display:none;
+    }
+
+
+    .team:hover .team-extra,
+    .project:hover .project-extra {
+        display: block;
+    }
+
+    .hover-gray {
+        color: #828282;
+    }
+
+    .hover-gray:hover {
+        color: inherit;
+    }
+
+    /*  */
+    #team-options,
+    #project-options {
+        position: absolute;
+        background: #fdfdfd;
+        border-radius: 8px;
+        display: none;
+        
+    }
+    #team-options ul,
+    #project-options ul {
+        margin: 0;
+    }
+    #team-options li,
+    #project-options li {
+        padding: 10px;
+    }
+    #team-options li:hover,
+    #project-options li:hover {
+        background: #f1f8ff;
+        border-radius: 8px;
+    }
+
+    #add-team {
+        padding: 8px 0;
+    }
+
+</style>
+
+<aside class="my-companies" id="side-bar-company">
+    <i id="open-companies-bar" class="fa fa-bars"></i>
+    <hr>
+
+    
+    <h4 id="teams-header">Teams:</h4>
+    <ul id="my-teams" class="clean-list">
+        <% current_user.companies.each do |company| %>
+            <%= render "companies/company", company: company %>
+        <% end %>
+        <li id="add-team" class="hover-gray">+ Add Team</li>
+    </ul>
+
+</aside>
+
+<div id="team-options">
+    <ul class="clean-list">
+        <li class="edit-team">Edit Team Settings...</li>
+        <li class="delete-team">Delete Team</li>
+    </ul>
+</div>
+
+<div id="project-options">
+    <ul class="clean-list">
+        <li class="delete-project">Delete Project</li>
+    </ul>
+</div>
+
+
+<script>
+    $("body").on("click", ".my-companies .company-link", function(){
+        $("body").toggleClass("company-linker")
+        $(this).toggleClass("link-this").siblings().removeClass("link-this")
+    })
+    
+
+    // 
+    $("body").on("click", ".send-company", function(){
+        li = $(this).closest("li")
+        item_id = li.attr("data-id")
+        company_id = $(".link-this").attr("data-id")
+        company_title = $(".link-this").attr("data-title")
+        productionable_type = li.attr("production-type")
+
+
+        Swal.fire({
+            title: 'Linking...',
+        })
+
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: '/productions',
+            contentType: 'application/json',
+            data: JSON.stringify({ 
+                productionable_type: productionable_type,
+                productionable_id: item_id,
+                company_id: company_id,
+                _method:'post' 
+            }),
+            success: function(res){
+                console.log(res)
+                
+                Swal.fire({
+                    title: 'Production Added!',
+                    text: `${item_id} is now linked to ${company_title}`
+                })
+                
+                $("body").toggleClass("company-linker")
+                $(".link-this").removeClass("link-this")
+            },
+            error: function(){
+                
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Already Linked!',
+                })
+
+                $("body").toggleClass("company-linker")
+                $(".link-this").removeClass("link-this")
+            }
+        })
+
+    })
+
+    // 
+    $("body").on("click", ".toggle-companies-bar", function(){
+
+    })
+
+    // 
+    $("body").on("click", ".team", function(){
+        li = $(this).closest("section")
+        $(this).closest("section").toggleClass("show-projects")
+    })
+
+    $("body").on("click", "#add-team", function(){
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: '/companies',
+            contentType: 'application/json',
+            dataType : 'script',
+            data: JSON.stringify({ 
+                user_id: <%= current_user.id %>,
+                title: "untld_team",
+                _method:'post' 
+            }),
+            success: function(res){
+                console.log(res)
+            }
+        })
+    })
+
+    // 
+    $("body").on("click", ".add-project", function(e){
+        e.stopPropagation();
+        company_id = $(this).closest("section").attr("company-id")
+        list = $(this).closest("section")
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: '/productions',
+            contentType: 'application/json',
+            dataType: "script",
+            data: JSON.stringify({ 
+                productionable_type: null,
+                company_id: company_id,
+                title: "untld_project",
+                _method:'post' 
+            }),
+            success: function(res){
+            }
+        })
+
+    })
+
+
+// 
+function getOffset(el) {
+  const rect = el.getBoundingClientRect();
+  return {
+    left: rect.left + window.scrollX,
+    top: rect.top + window.scrollY
+  };
+}
+    $("body").on("click", ".team-options", function(e){
+        e.stopPropagation();
+        position = getOffset($(this)[0]);
+        $("#team-options").show().css({
+            "top": position["top"] + 17,
+            "left": position["left"],
+        })
+        $("#team-options")
+        .attr("company-id", $(this)
+        .closest("section")
+        .attr("company-id"))
+    })
+
+    $("body").on("click", ".project-options", function(e){
+        e.stopPropagation();
+        position = getOffset($(this)[0]);
+        $("#project-options").show().css({
+            "top": position["top"] + 17,
+            "left": position["left"],
+        })
+        $("#project-options").attr("project-id", $(this).closest(".project").attr("project-id"))
+    })
+
+    function hideOptions(){
+        $("#team-options, #project-options, #prod-options").hide()
+    }
+    window.onscroll = function() {
+        hideOptions()
+    };
+
+    $("body").on("click", ".delete-team", function(){
+        id = $(this).closest("#team-options").attr('company-id');
+        section = $("section[company-id="+id+"]");
+        $.ajax({
+            type: "DELETE",
+            dataType: "json",
+            url: '/companies/'+id,
+            contentType: 'application/json',
+            data: JSON.stringify({ 
+                _method:'post' 
+            }),
+            success: function(){
+                section.remove()
+            }
+        })
+        hideOptions()
+    })
+
+    // 
+
+    $("body").on("click", ".delete-project", function(){
+        id = $(this).closest("#project-options").attr('project-id');
+        section = $(".project[project-id="+id+"]");
+        $.ajax({
+            type: "DELETE",
+            dataType: "json",
+            url: '/productions/'+id,
+            contentType: 'application/json',
+            data: JSON.stringify({ 
+                _method:'post' 
+            }),
+            success: function(){
+                section.remove()
+            }
+        })
+        hideOptions()
+    })
+
+    $(document).mouseup(function(e) 
+    {
+        var container = $("#team-options, #project-options, #prod-options");
+
+        // if the target of the click isn't the container nor a descendant of the container
+        if (!container.is(e.target) && container.has(e.target).length === 0) 
+        {
+            container.hide();
+        }
+    });
+
+</script>
+
+<%= render "companies/settings" %>

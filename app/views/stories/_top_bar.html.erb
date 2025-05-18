@@ -1,0 +1,243 @@
+<style>
+	/**/
+	.scaffold > article {
+		display: none;
+	}
+
+	article[key='<%= @story.bookmark %>'] {
+		display: block;
+	}
+	
+	.fable {
+		position: absolute;
+	    right: -6px;
+	    top: 35%;
+	    color: #484848;
+	}
+
+	/* .swal2-container.swal2-backdrop-show, .swal2-container.swal2-noanimation {
+    	background: #fff;
+    	z-index: 999999;
+	} */
+
+	#flexbox {
+		/* display: none; */
+	}
+</style>
+
+<div class="top-bar">
+	<ul>
+		<li toggle="scaffold">Purpose</li>
+		<li toggle="hell">Destination</li>
+		<%# <li toggle="climax">Climax</li> %>
+		<li toggle="proofs">Route</li>
+		<li toggle="plot">Plot</li>
+		<li toggle="spine">Spine</li>
+		<!-- <li toggle="minimal">Minimal</li> -->
+		<li toggle="scenes">Scenes</li>
+	</ul>
+	<a class="fa fa-book fable clean-a" target="_blank" href="/stories/<%= @story.id %>/read"></a>
+
+	<!--  -->
+	<div class="progress">
+	<div class="progress-bar" role="progressbar" 
+	aria-valuemin="0" aria-valuemax="100" style="width:0%">
+	</div>
+	</div>
+	<p class="percentage text-center">0%</p>
+	<!--  -->
+
+</div>
+
+<script>
+
+	initial_load = false;
+	// 
+	setTimeout(function(){ 
+    	refreshFull()
+	}, 3000);
+
+	// Swal.fire({
+	// 	title: 'Building Story...',
+	// 	allowOutsideClick: false,
+	// 	showCancelButton: false,
+	// 	showConfirmButton: false,
+	// })
+
+	function refreshFull(){
+		// Act I 'Because'
+		$(".II-because p").html( 
+			$(".act-1-highlight").find(".description").val() 
+		)
+		
+		// Trailer Make
+		$('.trailer-main-copy').html($("[data-save-code='bonfire-deny-accept-3']").find(".fr-view").html())
+
+		// 
+		$(".message").html($("[data-save-code='armature']").find(".fr-view").html())
+
+		$(".mebe").html($("[data-save-code='bonfire-deny-accept-3']").find(".fr-view").html())
+
+		// bonfire-deny-accept-1
+		$(".me-intro").html($("[data-save-code='bonfire-deny-accept-1']").find(".fr-view").html())
+
+		$(".me-climax-1").html(
+			$("[data-save-code='bonfire-deny-accept-4']").find(".fr-view").html() + " OR " + $("[data-save-code='bonfire-deny-accept-5']").find(".fr-view").html())
+
+		// $(".intro-task").html($(".act-1-highlight .description").val())
+		// $(".plot-task").html($("[data-save-code='catalyst'] .fr-view").html())
+		// $(".climax-task").html($(".act-3-highlight .description").val())
+
+
+		// 
+		$("[fetch]").each(function(){
+			html = $(this).find(".fr-view").text()
+			put = $(this).attr("fetch")
+			$("[put='"+put+"']").html(html)
+		})
+
+		updateProgress()
+		
+
+	}
+
+	refreshFull()
+
+	showScenes()
+	// 
+
+	$(".top-bar li[toggle='<%= @story.bookmark %>']").addClass('active-view')
+	topToggleSwitch('<%= @story.bookmark %>')
+
+	$("body").on("click", ".top-bar li", function(){
+		// $(".scenes").toggle()
+		// $(".scaffold").toggle()
+		$(".top-bar .active-view").removeClass("active-view")
+		$(this).addClass('active-view')
+		
+		toggle = $(this).attr("toggle")
+
+		$.ajax({
+		    type: "PUT",
+		    dataType: "json",
+		    url: '/stories/<%= @story.id %>',
+		    contentType: 'application/json',
+		    data: JSON.stringify({ 
+		       bookmark: toggle,
+		       _method:'post' 
+		    }),
+		    success: function(res){
+		      console.log(res)
+		    }
+		})
+
+
+		topToggleSwitch(toggle)
+	})
+
+	function topToggleSwitch(toggle){
+		$(".scaffold > article").hide()
+		refreshFull()
+		switch (toggle) {
+		    case "scaffold":
+		    // If pressed up
+				$("article[key='scaffold']").show()
+		        return;
+		    case "minimal":
+		    // If pressed down
+				$("article[key='minimal']").show()
+		        return;
+		    case "scenes":
+		    // If pressed down
+		    	$("article[key='scenes']").show()
+		    	showScenes()
+		        return;
+		    case "spine":
+		    // If pressed down
+		    	$("article[key='spine']").show()
+		        return;
+		    case "climax":
+		    // If pressed down
+		    	$("article[key='climax']").show()
+		        return;
+		    case "hell":
+		    	$("article[key='hell']").show()
+		    	return;
+		   	case "proofs":
+		   		$("article[key='proofs']").show()
+		   		return;
+			case "plot":
+		   		$("article[key='plot']").show()
+		   		return;
+		    default:
+		        return;
+		}
+	}
+
+	function showScenes(){
+		$("#part-7 .find").each(function(){
+			console.log("hi")
+			console.log("#part-pre-4 ."+$(this).attr("find"))
+			find = $(this).attr("find")
+
+			html = $("[data-save-code='"+find+"']").find(".fr-view").html()
+			$(this).find(".enter").html(html)
+		})
+	}
+
+
+	var options = {
+	    callback: function (value) { 
+	    	saveStory()
+	    	save()
+	    },
+	    wait: 750,
+	    highlight: true,
+	    allowSubmit: false,
+	    captureLength: 2
+	}
+
+	// 
+	function updateProgress(){
+		total = $(".spine > div").length
+		number = 0
+		$(".spine > div").each(function(){
+			if ($(this).find(".fr-view").length) {
+				if ($(this).find(".fr-view").html() != ("" || "<p><br></p>")) {
+					number += 1
+				}
+			} else {
+				content = $(this).find(".masc > div").html()
+				console.log("content", content)
+				if ( content != "" && content != "<p><br></p>") {
+					console.log(true)
+					number += 1
+				}
+			}
+		})
+		result = parseFloat(parseFloat(number, 10) * 100)/ parseFloat(total, 10);
+	    console.log(result.toFixed(2))
+	    final_perc = Math.round(result.toFixed(2));
+	    $(".progress-bar").css({"width":final_perc+"%"})
+	    $(".percentage").html(final_perc+"%")
+
+		initial_load = true;
+
+	}
+
+	// function checkLoad() {
+	// 	console.log($(".percentage").html().indexOf("NaN") >= 0)
+	// 	if ($(".percentage").html().indexOf("NaN") >= 0) {
+
+	// 	} else if (initial_load === true) {
+	// 		$("#flexbox").fadeIn()
+	// 		Swal.close()
+	// 	}
+	// }
+
+	// setInterval(function(){ 
+	// 	checkLoad()
+	// }, 100);
+
+
+</script>

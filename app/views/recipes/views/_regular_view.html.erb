@@ -1,0 +1,139 @@
+<p id="notice"><%= notice %></p>
+
+<style>
+
+	body {
+		  
+
+background: #ddd6f3; /* fallback for old browsers */
+background: -webkit-linear-gradient(to left, #ddd6f3 , #faaca8); /* Chrome 10-25, Safari 5.1-6 */
+background: linear-gradient(to left, #ddd6f3 , #faaca8); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+        
+  }
+
+	
+
+	.beats-collection {
+		background-color: #fff;
+		margin: 50px 0 ;
+		border-radius: 25px;
+	}
+
+
+	.Wallop {
+	padding: 25px 75px;
+
+	}
+	.beat {
+		text-align: center;
+	}
+
+	.beat .minute {
+		color: #3cc2d9;
+	}
+
+	.buttons {
+		margin: 0 auto;
+		display: block;
+		text-align: center;
+	}
+
+	.tasks li {
+		text-align: left;
+	}
+
+	.tasks .field {
+		margin: 40px;
+	}
+
+	.question {
+		font-size: 17px;
+	}
+
+	.tasks textarea {
+		padding: 15px;
+	}
+
+	.fancy-select .trigger {
+    	width: 100% !important;
+	}
+
+	.fancy-select ul {
+		width: 100%;
+    	padding-left: 0px;
+	}
+
+	.minute {
+	}
+
+	.story_beat {
+		font-size: 24px;
+		text-align: center;
+		font-family: 'Gentium Book Basic', serif;
+
+	}
+
+</style>
+
+<p id="notice"><%= notice %></p>
+
+<a href="/">
+<span class="btn btn-warning">Go Back To Story</span>
+</a>
+
+<div class="beats-collection container">
+<br>
+ <div class="Wallop beats">
+	<div class="Wallop-list">
+	<% if @recipe.details.present? %>
+		<% @recipe.details.each_with_index do |td, index| %>
+		  <div class="Wallop-item">
+			  <div class="beat" style="padding: 15px;">
+			  		<h2 ><%= td["question_text"] %></h2>
+					<section><%= td["question_description"].html_safe %></section>
+					<% if td["question_choices"].present? %>
+					<% else %>
+						<input type="text" class="form-control text-center">
+					<% end %>
+			  </div>
+			<hr>
+
+		  </div>
+		<% end %>
+	<% end %>
+	</div>
+	<div class="buttons">
+	<button class="Wallop-buttonPrevious btn btn-primary btn-outline">Previous</button>
+	<button class="Wallop-buttonNext btn btn-primary btn-outline">Next</button>
+
+	</div>
+  </div>
+
+<br>
+
+<script>
+$(document)  
+
+  var slider = document.querySelector('.Wallop');
+
+  var Wallop = new Wallop(slider);
+
+  var handler = function(event) {
+    v = event.detail.currentItemIndex
+    console.log(v + 1)
+
+    $("[class*='act-']").each(function(){
+    	$(this).hide();
+    	time_start = parseInt($(this).find(".time_start").html());
+    	time_end = parseInt($(this).find(".time_end").html());
+    	console.log(time_start)
+    	if (time_start <= (v + 1) && time_end >= (v + 1) ) {
+    		$(this).show();
+    	}
+    });
+
+  };
+
+     Wallop.on('change', handler);
+
+</script>

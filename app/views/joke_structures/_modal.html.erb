@@ -1,0 +1,105 @@
+<style>
+  #jokeStructureModal {
+
+  }
+
+  #jokeStructureModal .modal-content {
+
+  }
+
+  #jokeStructureModal .modal-body {
+
+  }
+
+  .joke-structures-list li {
+    padding: 30px;
+    border: 14px solid #aeffff;
+    margin: 20px 0;
+    position: relative;
+  }
+
+  .js-title {
+    display: inline-block;
+    background: #aeffff;
+    padding: 10px;
+  } 
+
+  .joke-structures-list .remove-element {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+  }
+
+
+
+</style>
+
+<!-- Modal -->
+<div class="modal fade" id="jokeStructureModal" tabindex="-1" role="dialog" aria-labelledby="jokeStructureModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="jokeStructureModalLabel">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function jokeStructureModal(){
+    $("#jokeStructureModal").modal("show")
+  }
+
+  $("body").on("click", ".joke-structure-preview", function(){
+    console.log("hi")
+    val = $(this).closest("article").find("select").val()
+    $.getJSON( "/joke_structures/"+val, function( data ) {
+      console.log(data)
+      
+      $("#jokeTriggerModal").find(".modal-title").html(data["title"])
+      $("#jokeTriggerModal").find(".modal-body").html(data["description"])
+      $("#jokeTriggerModal").modal("show")
+
+    });
+  })
+  
+ 
+  // 
+  function laughs(){
+
+    console.log("hi")
+    
+    laughs_list = []
+    $(".laugh-list > li").each(function(){
+      output = {}
+      output["header"] = $(this).find(".laugh-header .fr-view").html()
+      
+      console.log(output)
+      js_list = []
+      
+      $(this).find(".js").each(function(){
+        js_list.push({
+          title: $(this).find(".js-title").html(),
+          body: $(this).find(".js-body .fr-view").html(),
+        })
+      })
+
+      output["list"] = js_list
+      laughs_list.push(output)
+    })
+
+    return laughs_list
+  }
+
+
+</script>

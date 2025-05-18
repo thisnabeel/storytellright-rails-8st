@@ -1,0 +1,28 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Listing Positive Traits</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Details</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @symbolisms.order("title ASC").each do |symbolism| %>
+      <tr>
+        <td><%= symbolism.title %></td>
+        <td><%= link_to 'Show', symbolism %></td>
+        <td><%= link_to 'Edit', edit_symbolism_path(symbolism) %></td>
+        <td><%= link_to 'Destroy', symbolism, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Positive trait', new_symbolism_path %>

@@ -1,0 +1,158 @@
+<style>
+
+    #newGameModal {
+        display: none;
+        background: #2c3e50 !important;
+        /*background: #fff !important;*/
+    }
+
+    .newGame-body {
+        font-family: 'Merriweather', serif;
+        font-size: 21px;
+        font-weight: 300;
+        line-height: 1.58em;
+        margin: 0 auto;
+        padding: 100px;
+        max-width: 740px;
+        color: #fffbf3;
+    }
+
+
+
+    .newGame-body input {
+        font-family: 'VT323', monospace;
+        text-align: center;
+        padding: 20px;
+        border-radius: 0;
+        background-color: transparent;
+        border: 0;
+        color: #F8EC23 !important;
+        outline: none; 
+        font-size: 24px;
+    }
+
+    .newGame-body input:focus {
+        background-color: transparent;
+        color: #F8EC23 !important;
+        border: 0;
+        outline: none; 
+    }
+
+    .close-newGameModal {
+        position: fixed;
+        background: #e6ac38;
+        color: #fff;
+        padding: 10px;
+    }
+
+    #newGameModal .btn {
+        font-family: 'VT323', monospace;
+    }
+    
+</style>
+
+    <!--  ROOM -->
+    <!--Call your modal-->
+    <a id="newGame" style="display:none;" href="#newGameModal">DEMO02</a>
+
+    <!--DEMO01-->
+    <div id="newGameModal">
+        <!--THIS IS IMPORTANT! to close the modal, the class name has to match the name given on the ID  class="close-animatedModal" -->
+        <div class="close-newGameModal"> 
+        	X
+        </div>
+        
+        <div class="newGame-body new-game">
+
+            <h2 class="text-center">Let's Start a New Game</h2>   
+            <input type="text" folder="title" class="form-control new-game-title-input save-this" placeholder="Give it a name... anything works for now">
+            <!--  -->
+            <input type="text" folder="series" class="form-control new-game-title-input save-this" placeholder="Is it a series?">
+            <!--  -->
+            <input type="text" folder="year" class="form-control new-game-title-input save-this" placeholder="Year?">
+            <!--  -->
+            <span class="btn btn-info save-new-game btn-block text-center">Save</span>
+
+        </div>
+
+    </div>
+
+<script>
+    $("#newGame").animatedModal({
+        animatedIn: "bounceInUp",
+        animatedOut: "bounceOutDown",
+        modalTarget:'newGameModal'
+    });
+    
+    function makeBox(res){
+        
+        if (res["original"] == true) {
+            original = "original"
+        } else {
+            original = "study"
+        }
+
+        game_box = `
+        <li class='`+original+`'>
+    
+            <span class="year">`+res["year"]+`</span>
+
+            <br>
+
+            <span class="delete-game" data-id="`+res["id"]+`">X</span>
+            <span class="game-title">
+                `+res["title"]+`
+            </span>
+
+            
+            
+            <a href="/games/`+res["id"]+`" class="enter-btn">
+                Enter
+            </a>
+        </li>
+        `
+        return game_box
+    }
+
+
+    $(".save-new-game").on("click", function(){
+        saveGame()
+    })
+
+    function saveGame(){
+        original = <%= @original %>
+
+        // alert(original)
+
+        
+
+        hash = { 
+              user_id: <%= current_user.id %>,
+              original: original,
+              _method:'post' 
+        }
+
+        $(".new-game .save-this").each(function(){
+            hash[$(this).attr("folder")] = $(this).val()
+        })
+
+       $.ajax({
+           type: "POST",
+           dataType: "json",
+           url: '/games',
+           contentType: 'application/json',
+           data: JSON.stringify(hash),
+           success: function(res){
+             console.log(res["id"])
+             $(".games-list li:last").before(makeBox(res))
+             $(".close-newGameModal").trigger("click")
+           }
+       })
+    }
+
+    $("body").on("click", ".add-game", function(){
+        $("#newGameModal").show()
+        $("#newGame").trigger("click")
+    })
+
+</script>

@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Production:</strong>
+  <%= @production_user.production_id %>
+</p>
+
+<p>
+  <strong>User:</strong>
+  <%= @production_user.user_id %>
+</p>
+
+<p>
+  <strong>Role:</strong>
+  <%= @production_user.role %>
+</p>
+
+<%= link_to 'Edit', edit_production_user_path(@production_user) %> |
+<%= link_to 'Back', production_users_path %>

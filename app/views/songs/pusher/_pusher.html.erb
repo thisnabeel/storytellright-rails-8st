@@ -1,0 +1,55 @@
+  <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
+  <script>
+
+    // Enable pusher logging - don't include this in production
+    // Pusher.logToConsole = true;
+
+    var pusher = new Pusher('e6efc10ac1252fe7b8ab', {
+      cluster: 'us3'
+    });
+
+    var channel = pusher.subscribe("<%= "song-#{@song.id}" %>");
+    channel.bind('update-song', function(data) {
+      
+      console.log(data)
+
+      song = data["song"]
+      folder = song["folder"]
+      writer_id = data["writer_id"]
+
+
+      if (<%= current_user.id %> != writer_id) {
+
+        $(".message").val(song["message"])
+
+        $(".folder").empty()
+
+        $.each(song["folder"]["sections"], function(index, item){
+          $(".folder").append(
+            `<li 
+                data-title="`+item["title"]+`"
+                data-body="`+item["body"]+`"
+                data-color="`+item["color"]+`"
+                data-timestamp="`+(item["timestamp"] || "")+`"
+                data-chords="`+(item["chords"] || "")+`"
+                data-lyrics="`+(encodeURIComponent(item["lyrics"]) || "")+`"
+                data-demos="`+(encodeURIComponent(JSON.stringify(item["demos"])) || "")+`"
+                data-font="`+(item["font"] || "")+`"
+                style="background: `+item["color"]+`; color: `+item["font"]+`">
+                <span class='remove'><i class="fa fa-times"></i></span>
+                <span class="title-final" contentEditable>`+item["title"]+`</span>
+                <section class="train">
+                  <div class="fa fa-arrow-left"></div>
+                  <div class="fa fa-arrow-right"></div>
+                </section>
+            </li>`
+          )
+        })
+
+        $(".folder li:last").addClass("active-tab").siblings().removeClass("active-tab")
+        select_tab($(".folder li:last"))
+
+      }
+
+    });
+  </script>

@@ -1,0 +1,240 @@
+<style>
+
+  .folder {
+    line-height: 70px;
+  }
+
+  .folder li {
+    display: inline-block;
+    padding: 10px;
+    background: #fff;
+    margin: 5px;
+    position: relative;
+    font-size: 34px;
+  }
+
+  .folder li.active-tab {
+    box-shadow: -1px 7px 13px 9px black;
+  }
+
+  span.remove {
+    position: absolute;
+    top: -25px;
+    right: 5px;
+    height: 10px;
+    width: 10px;
+    font-size: 10px;
+  }
+
+  .colors li {
+    display: inline-block;
+    height: 20px;
+    width: 40px;
+    border-radius: 10px;
+  }
+
+
+  .section-nav .btn {
+    border: 1px solid #000;
+  }
+
+  .btn-active {
+    background-color: #000;
+    color: #fff;
+  }
+
+  .story-title {
+    padding: 60px;
+    padding-bottom: 0px;
+    text-align: center;
+  }
+
+  .message, .message:focus {
+    border-radius: 5px;
+    font-size: 22px;
+    /*background: blue;*/
+    /*color: #fff;*/
+    text-align: center;
+    padding: 40px;
+    padding-bottom: 0;
+
+    background: #fff9fe;
+    color: #841175;
+  }
+
+
+  .boolean-toggle {
+    position: relative;
+      text-align: right;
+  }
+
+  /**/
+  .folder-show {
+    display: none;
+  }
+
+  <% if @song.link.present? %>
+  <% else %>
+    #ytplayer {
+      display: none;
+    }
+  <% end %>
+
+</style>
+
+<h1 class="story-title">
+
+  <textarea>
+    <%= @song.title %>
+  </textarea>
+
+</h1>
+
+<%= render "songs/components/inputs" %>
+
+
+  <section class="boolean-toggle">
+    <input type="checkbox" id="status" data-group-cls="btn-group-lg" data-off-title="Unready" data-on-title="Ready">
+  </section>
+
+  <br>
+
+<textarea class="message form-control" placeholder="Enter Thesis Here..."><%= @song.message %></textarea>
+
+
+  <div id="ytplayer"></div>
+
+
+<div class="section-nav row hidden">
+  <div class="col-lg-6">
+    <div class="btn btn-lg btn-active btn-block" toggle="folder-container">
+      Structure
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div class="btn btn-lg btn-block" toggle="elements-container">
+      Elements
+    </div>
+  </div>
+</div>
+
+<div class="sections">
+  
+
+  <%= render "songs/sections/folder" %>  
+
+</div>
+
+
+
+<script>
+  $("body").on("click", ".section-nav .btn", function(){
+    $(".btn-active").removeClass("btn-active");
+    $(this).addClass("btn-active");
+    $("section[toggle='"+$(this).attr("toggle")+"']")
+      .show()
+      .siblings()
+      .hide();
+
+  })
+
+  var messageTypeWatchOptions = {
+    callback: function (value) { 
+      saveSong()
+    },
+    wait: 750,
+    highlight: true,
+    allowSubmit: false,
+    captureLength: 2
+  }
+
+  $(".message").typeWatch( messageTypeWatchOptions );
+
+  function saveSong(){
+    
+    details = {}
+    folder = {}
+    // ----------------------------------
+
+    folder["sections"] = saveSections()
+    console.log(folder["sections"])
+
+
+    // ----------------------------------
+    details["message"] = $(".message").val()
+    details["_method"] = 'post' 
+    details["folder"] = folder
+    details["title"] = $(".story-title .fr-view").text()
+
+    details["year"] = $(".year-input").val()
+    details["artist"] = $(".artist-input").val()
+    details["link"] = $(".link-input").val()
+
+    original = $(".boolean-toggle .active").attr("title")
+    if (original == "Ready") {
+      details["original"] = true
+    } else {
+      details["original"] = false
+    }
+
+    console.log(folder)
+
+    $.ajax({
+        type: "PUT",
+        dataType: "json",
+        url: '/songs/<%= @song.id %>',
+        contentType: 'application/json',
+        data: JSON.stringify(details),
+        success: function(res){
+          console.log(res)
+        }
+    })
+
+  }
+
+  $(".story-title textarea").froalaEditor({
+    key: froalaKey,
+    toolbarInline: true,
+    charCounterCount: false,
+    toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'color', 'emoticons', '-', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'indent', 'outdent', '-', 'insertImage', 'insertLink', 'insertFile', 'insertVideo', 'undo', 'redo'],
+     saveInterval: 500
+    })
+    .on('froalaEditor.save.before', function (e, editor) {
+      saveSong()
+    })
+    .on('froalaEditor.save.after', function (e, editor, response) {
+      // After successfully save request.
+    })
+    .on('froalaEditor.save.error', function (e, editor, error) {
+      // Do something here.
+    });
+
+
+  $(':checkbox').checkboxpicker({
+    offLabel: 'Study',
+    onLabel: 'Original'
+  }
+  ).on('change', function(el) {
+    console.log($(this).attr('checked'))
+  });
+
+  <% if @song.original == true %>
+    $('#status').prop('checked', true);
+  <% end %>
+
+  $("body").on('click', ".boolean-toggle .btn-group .btn", function(){
+    saveSong()
+  })
+
+
+</script>
+
+
+<%= render "songs/keys" %>
+<%= render "songs/pusher/pusher" %>
+
+
+<% @inspirable_type = "Song" %>
+<% @inspirable_id = @song.id %>
+<% @inspirable = @song %>
+<%= render "inspirations/modal" %>

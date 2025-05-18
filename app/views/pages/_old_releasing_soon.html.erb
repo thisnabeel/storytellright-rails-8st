@@ -1,0 +1,24 @@
+	<section>
+		<h1>Releasing Soon:</h1>
+		<br>
+		<ul class="clean-list coming-soon">
+			
+			<% Story.where(user_id: User.first.id, original: true).where.not(pitch: nil).shuffle.each do |s| %>
+				<li>
+						<div class="row">
+							<div class="col-lg-6 col-md-6 col-sm-6">
+								<img src="<%= s.cover %>" alt="" role="presentation" class="jsx-2920405963 progressive-image item-image jsx-2126225085 rounded hover-opacity expand">
+							</div>
+							<div class="col-lg-6 col-md-6 col-sm-6">
+								<span class="story-title">
+									<%= s.title %>
+								</span>
+								<%= s.pitch.html_safe %>
+							</div>
+						</div>
+						<hr>
+				</li>
+			<% end %>
+
+		</ul>
+	</section>

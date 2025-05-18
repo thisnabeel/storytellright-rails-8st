@@ -1,0 +1,317 @@
+<style>
+  
+  .visuals-list {
+    list-style: none;
+    padding: none;
+  }
+
+  .visuals-list > li {
+    position: relative;
+    width: 300px;
+    margin: 20px;
+    padding: 40px;
+    display: inline-block;
+    vertical-align: top;
+
+    box-shadow: 0 0 10px 1px #c8c8c8;
+    border-radius: 20px;
+    text-align: center;
+    background-color: #fff;
+  }
+
+  .visual-title {
+    font-family: 'sf';
+        text-align: center;
+        font-size: 24px;
+  }
+
+  .enter-btn {
+      display: block;
+    width: 100%;
+    margin-top: 30px;
+    padding: 15px 10px;
+    
+    border: 4px solid #ccc;
+    border-radius: 80px;
+    
+    font-size: .9em;
+    font-weight: bold;
+    line-height: 1em;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+  }
+
+  .enter-btn, .delete-visual {
+    color: #ccc;
+    cursor: pointer;
+  }
+
+  .enter-btn:hover, .delete-visual:hover {
+    color: #000;
+    border: 4px solid #000;
+  }
+
+  .delete-visual:hover {
+    border: 0;
+  }
+
+  .delete-visual {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    border: 0;
+  }
+
+  .add-visual {
+    border: none;
+      background: #c8c8c8 !important;
+      color: white;
+      font-size: 45px;
+  }
+
+
+
+  .visuals-list > li.original {
+    box-shadow: 0 0 10px 1px #f1d60e;
+    padding: 36px;
+      border: 4px solid #f6edb7;
+  }
+
+  .year {
+    position: absolute;
+      top: -12px;
+      left: -20px;
+      background: #000;
+      color: #fff;
+      padding: 3px 5px;
+      border-radius: 7px;
+    font-family: 'VT323', monospace;
+  }
+
+
+  .top-nav .btn-info {
+    padding: 7px;
+    border-radius: 5px;
+  }
+
+  .fa-play-circle {
+      position: absolute;
+      bottom: 4px;
+      right: 0;
+      right: 8px;
+      font-size: 30px;
+      color: #cddfff;
+  }
+
+  .series-title {
+    display: block;
+    background: #FFF8DD;
+    color: #7e3dba;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+  }
+
+  /**/
+  .cover-image img {
+ 
+  }
+
+  /**/
+  /**/
+  .visual-armature {
+    text-align: left;
+    background: #fff9fe;
+    color: #841175;
+    padding: 18px;
+    border-radius: 4px;
+  }
+  .visual-armature p {
+    margin: 0;
+    padding: 0;
+  }
+
+
+  /**/
+
+  .visuals-list > li:hover .make-template {
+    display: block;
+  }
+
+  .make-template {
+      left: 13px;
+      position: absolute;
+      top: -11px;
+      font-size: 24px;
+      display: none;
+      padding: 13px;
+      line-height: 0;
+      background: #fff;
+  }
+
+
+  .has-inspirations {
+      position: absolute;
+      left: 0px;
+      bottom: 0px;
+      font-size: 29px;
+      color: #797912;
+      background: #ffff55;
+      width: 50px;
+      border-radius: 0px 20px 0px 20px;
+  }
+
+  .has-inspirations:hover {
+    color: #b984c6;
+  }
+
+  /**/
+
+  
+  .series-title {
+    display: block;
+    background: #FFF8DD;
+    color: #7e3dba;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+  }
+
+
+  .visual-challenge {
+    text-align: left;
+    background: #d55329;
+    color: #fff;
+    padding: 18px;
+    border-radius: 4px;
+  }
+
+  .visual-title {
+      display: none;
+  }
+
+</style>
+
+
+
+
+<p><%= @visuals.count %> visuals</p>
+
+<hr>
+<h1><%= title %>:</h1>
+<%# <%= render "visuals/finder" %> 
+
+<section class="masonry-container">
+<% @visuals.each do |m| %>
+  <div class='<%= m.original == true ? 'original' : 'study' %>'>
+
+
+    <% if m.inspirations.present? %>  
+      <span class="has-inspirations" data-id="<%= m.id %>">
+        <i class="fa fa-lightbulb-o"></i>
+      </span>
+    <% end %>
+  
+    <% if User.is_admin? current_user%>
+      <a href="/visuals/<%= m.id %>">
+        <img src="<%= m.try(:link) %>" alt="">
+      </a>
+    <% else %>
+        <img src="<%= m.try(:link) %>" alt="">
+    <% end %>
+
+    <div class="necessity">
+      <%= m.check("necessity").html_safe if m.check("necessity").present? %>
+    </div>
+
+    <br>
+
+    <span class="delete-visual" data-id="<%= m.id %>">X</span>
+
+
+    <span class="visual-title">
+      <%= m.title %>
+    </span>
+
+        
+  </div>
+  <% end %>
+</section>
+
+
+<ul class="visuals-list">
+  <li class="add-visual">
+    +
+  </li>
+</ul>
+
+<% if user_signed_in? %>
+
+<%= render "visuals/new_visual" %>
+
+<script>
+
+  $("body").on("click", ".delete-visual", function(){
+    id = $(this).attr('data-id')
+    $(this).closest("li").remove()
+    deletevisual(id, $(this))
+  })
+
+    function deletevisual(id, li){
+       $.ajax({
+           type: "POST",
+           dataType: "json",
+           url: '/delete_visual',
+           contentType: 'application/json',
+           data: JSON.stringify({ 
+              id: id,
+              _method:'post' 
+           }),
+           success: function(res){
+             li.remove()
+           }
+       })
+    }
+
+
+  $("body").on("click", ".make-template", function(){
+    li = $(this).closest("li")
+    title = "["+ li.find(".visual-title").text()+"]"+"Template"
+    armature = li.find('.visual-armature').text()
+
+    deets = {
+            armature: armature
+    }
+    
+    console.log(deets)
+
+    hash = {}
+    hash["user_id"] = "<%= current_user.id %>"
+    hash["title"] = title
+    hash["original"] = true
+    hash["details"] = deets
+    hash["_method"] = "post"
+
+
+       $.ajax({
+           type: "POST",
+           dataType: "json",
+           url: '/create_visual',
+           contentType: 'application/json',
+           data: JSON.stringify(hash),
+           success: function(res){
+             // console.log(res["id"])
+             console.log(res)
+             alert("Created!")
+           }
+       })
+
+  })
+
+</script>
+
+<% end %>
+
+
+<% @inspirable_type = "Visual" %>
+<%= render "inspirations/modal" %>

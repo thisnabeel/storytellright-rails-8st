@@ -1,0 +1,971 @@
+<style>
+
+	.acts {
+		margin: 10px 0;
+	}
+	.act {
+		padding: 10px;
+	}
+
+	.act h1 {
+		text-align: center;
+		font-family: 'VT323', monospace;
+		color: #e74c3c;
+	}
+
+	.message-form .fr-view p {
+		/* font-family: 'VT323', monospace !important; */
+		/* font-size: 24px; */
+	}
+
+	.acts i {
+		font-size: 20px;
+		cursor: pointer;
+	}
+
+	.acts .fleshed-out-act {
+		color: #27ae60;
+	}
+
+	.fleshed-out {
+		display: none;
+	}
+
+	.froalize .fr-view {
+		/*background-color: #fff;*/
+		color: #9e7806;
+	}
+
+	.story-wrapper {
+		padding: 100px;
+	}
+	.story-title {
+		/*padding: 30px;*/
+	}
+
+	.necessary-form li {
+		list-style: none;
+    	background: #fff;
+    	padding: 10px;
+    	margin: 10px;
+	}
+
+	.necessary-form>ul>li {
+		position: relative;
+	}
+
+	.characters li {
+		border: 6px solid #E8E8E8;
+	}
+
+	.characters .character-name input {
+		background-color: #ffffff;
+    	color: #007bff;
+    	font-weight: bold;
+	}
+
+	.connection {
+		padding: 14px 0;
+	}
+
+	.characters {
+		display: none;
+	}
+	
+	#characters-list-opener, .characters-list-opener {
+	    position: fixed;
+	    left: 0;
+	    top: 0;
+	    height: 100%;
+	    background: #fdfcfc;
+	    padding: 10px;
+	    min-width: 10px;
+	    
+	    -webkit-box-shadow: 10px 10px 70px -16px rgba(0,0,0,0.56);
+		-moz-box-shadow: 10px 10px 70px -16px rgba(0,0,0,0.56);
+		box-shadow: 10px 10px 70px -16px rgba(0,0,0,0.56);
+	}
+
+	#notes-opener, .notes-opener {
+	    position: fixed;
+	    right: 0;
+	    top: 0;
+	    height: 100%;
+	    background: #a5fffb !important;
+	    padding: 10px;
+	    min-width: 10px;
+	    
+	    -webkit-box-shadow: 10px 10px 70px -16px rgba(0,0,0,0.56);
+		-moz-box-shadow: 10px 10px 70px -16px rgba(0,0,0,0.56);
+		box-shadow: 10px 10px 70px -16px rgba(0,0,0,0.56);
+	}
+
+	#notes a {
+		color: #92eaff;
+	}
+
+	#notes {
+		display: none;
+	    position: fixed;
+	    right: 0;
+	    top: 0;
+	    height: 100%;
+	    padding: 30px;
+	    background: #2e2222;
+    	color: #fff;
+	    min-width: 225px;
+   		max-width: 225px;
+		-webkit-box-shadow: -10px 10px 17px -16px rgba(0,0,0,0.38);
+		-moz-box-shadow: -10px 10px 17px -16px rgba(0,0,0,0.38);
+		box-shadow: -10px 10px 17px -16px rgba(0,0,0,0.38);
+	}
+
+	#characters-list {
+		display: none;
+	    position: fixed;
+	    left: 0;
+	    top: 0;
+	    height: 100%;
+	    padding: 30px;
+	    background: #f7f5f4;
+	    min-width: 225px;
+   		max-width: 225px;
+		-webkit-box-shadow: 10px 10px 17px -16px rgba(0,0,0,0.38);
+		-moz-box-shadow: 10px 10px 17px -16px rgba(0,0,0,0.38);
+		box-shadow: 10px 10px 17px -16px rgba(0,0,0,0.38);
+	}
+
+	#characters-list li {
+		list-style: none;
+		padding: 6px;
+		background-color: #FEFEFE;
+		margin: 6px 0;
+		border-radius: 10px;
+		font-family: 'VT323', monospace !important;
+		font-size: 22px;
+	}
+
+	.boolean-toggle {
+		position: relative;
+    	text-align: right;
+	}
+	
+	.color-nav {
+		/*display: inline;*/
+	}
+	.color-select {
+		display: inline-block;
+	    height: 10px;
+	    width: 50px;
+	    margin: 0px;
+	    border-radius: 3px;
+	}
+	
+	.color-select.villian {
+		border: 1px solid #ff4757;
+	}
+	.color-select.villian.active,
+	#characters-list .villian {
+		background: #ff4757;
+		color: #fff;
+	}
+
+	.color-select.clone,  {
+		border: 1px solid #2ed573;
+	}
+	.color-select.clone.active {
+		background: #2ed573;
+	}
+
+	.color-select.support {
+		border: 1px solid #70a1ff;
+	}
+	.color-select.support.active {
+		background: #70a1ff;
+	}
+
+	.color-select.alternative,
+	#characters-list .alternative
+	 {
+		border: 1px solid #f9ca24;
+	}
+
+	.color-select.alternative.active,
+	#characters-list .alternative {
+		background: #f9ca24;
+	}
+	
+	.color-blue .fr-view {
+		color: #0669c1 !important;
+	}
+
+
+/*	.characters-count-badge {
+		height: 10px;
+		width: 10px;
+		position: absolute;
+		top: 0px;
+		right: -10px;
+		color: #9b59b6;
+	}*/
+
+	.mini-input {
+		max-width: 200px;
+		display: inline-block;
+		position: relative;
+		right: 0;
+	}
+
+	.extra-details {
+		display: none;
+	}
+
+	.inputs {
+		position: relative;
+		max-width: 210px;
+		margin: 0 auto;
+	}
+
+	.toggle-extra {
+		position: absolute;
+		right: -20px;
+		top: 20px;
+		font-size: 22px;
+	}
+
+	article.part {
+		padding: 20px;
+	}
+
+	#part-1 {
+		border: 20px solid #7bed9f;
+	}
+
+	#part-2 {
+		border: 20px solid #ff6b81;
+	}
+
+	#part-3 {
+		/*border: 20px solid #a29bfe;*/
+		background-color: #fff;
+	}
+
+	#part-4 {
+		/*border: 20px solid #3742fa;*/
+		background-color: #fff;
+	}
+
+/*	.armature, .punchline {
+		max-width: 55px;
+	}*/
+
+	.promise {
+		max-width: 25px;
+	}
+
+	.bomb {
+		max-width: 75px;
+	}
+
+	.armature-descendants {
+		list-style: none;
+	}
+
+	.armature-descendants li {
+	    display: inline-block;
+	    width: 20px;
+	    height: 20px;
+	    background-color: transparent;
+	    border: 2px solid #e84393;
+	    border-radius: 100%;
+	}
+
+	.selected {
+	    margin-top: 20px;
+	    line-height: 50px;
+	}
+
+	.selected li {
+		list-style: none;
+	    display: inline-block;
+	    padding: 14px;
+	    background: #fff;
+	    border-radius: 15px;
+	    margin: 4px;
+	    position: relative;
+	}
+
+	.selected .remove-item {
+		position: absolute;
+		top: 0px;
+		left: 0px;
+		color: #ccc;
+	}
+
+	.selected .remove-item:hover {
+		color: #000;
+	}
+
+	.modal-dialog .modal-title {
+		font-size: 34px;
+		color: #5f27cd;
+	}
+
+	.modal-dialog ul {
+		margin: 20px;
+	}
+
+	.modal-dialog {
+	    max-width: 690px;
+	    margin: 1.75rem auto;
+	}
+
+	.modal-content {
+		padding: 3rem;
+	}
+
+	.act-1.scenes-list li:not(:last-child),
+	.act-1.skeleton-list li:not(:last-child) {
+		background-color: #00a8ff;
+		color: #fff;
+	}
+
+	.act-1.scenes-list li:last-child,
+	.act-1.skeleton-list li:last-child {
+		/*border: 3px dashed #ed143d;*/
+		background-color: #B53471;
+		color: #fff;
+	}
+
+	.act-3.scenes-list li:first-child,
+	.act-3.skeleton-list li:first-child {
+	    background-color: #ed143d ;
+	    color: #fff;
+	}
+	
+	.act-3.scenes-list li:nth-child(2),
+	.act-3.skeleton-list li:nth-child(2) {
+	    background-color: #fff24f;
+	    color: #000000;
+	    margin-top: -10px;
+    	position: relative;
+    	top: -10px;
+    	left: 10px;
+    	border: 4px dashed #ff67af;
+	}
+
+	.act-3.scenes-list li:last-child,
+	.act-3.skeleton-list li:last-child {
+		background-color: #068733;
+		color: #fff;
+	}
+
+	.scenes-list, 
+	.skeleton-list {
+		list-style: none;
+	}
+
+	.scenes-list li,
+	.skeleton-list li {
+		padding: 20px;
+		-webkit-box-shadow: 0px 5px 14px -6px rgba(0,0,0,0.50);
+		-moz-box-shadow: 0px 5px 14px -6px rgba(0,0,0,0.50);
+		box-shadow: 0px 5px 14px -6px rgba(0,0,0,0.50);
+		position: relative;
+		margin: 10px 0;
+	}
+
+	.the-end, .scene-pic {
+		max-width: 90px;
+    	margin: 0 auto;
+    	display: block;
+	}
+
+	.scenes-list .remove-item {
+		position: absolute;
+		top: 0;
+		left: -5px;
+	}
+
+	.remove-item {
+		color: #f1f1f1;
+	}
+
+	.remove-item:hover {
+		color: #000;
+	}
+
+	@media (min-width: 576px) {
+		.modal-dialog {
+		    max-width: 690px;
+		    margin: 1.75rem auto;
+		}
+	}
+
+	.final-showdown {
+		position: absolute;
+    	top: 40px;
+    	z-index: 9;
+    	right: -20px;
+	}
+
+	.seatbelt {
+	    max-width: 125px;
+	    bottom: -25px;
+	    border-radius: 10px;
+	    z-index: 999;
+	    /*background: #bfa000;*/
+	    /*filter: invert(100%);*/
+	    /* right: 2.5em; */
+	    /* margin: 0 auto; */
+	    /* text-align: center; */
+		position: absolute;
+		margin-left: auto;
+		margin-right: auto;
+		left: 0;
+		right: 0;
+		/*padding: 10px;*/
+	}
+
+	#stories {
+		font-size: 44px;
+	}
+
+	.message {
+		border-radius: 5px;
+	    font-size: 34px;
+	    background: blue;
+	    color: #fff;
+	    text-align: center;
+	    padding: 40px;
+	}
+
+	a, a:visited, a:hover {
+		color: #fff;
+		text-decoration: none;
+	}
+
+	#left-story, #right-story {
+	    display: none;
+/*	    
+	    -webkit-box-shadow: 10px 10px 70px -16px rgba(0,0,0,0.56);
+		-moz-box-shadow: 10px 10px 70px -16px rgba(0,0,0,0.56);
+		box-shadow: 10px 10px 70px -16px rgba(0,0,0,0.56);*/
+	}
+
+
+	.promise-click {
+	    max-width: 45px;
+	    position: absolute;
+	    right: -25px;
+	    bottom: 10px;
+	}
+/*
+	.armature {
+		color: blue;
+	}*/
+
+	.truth_joy {
+		background-color: green;
+		color: #fff;
+		padding: 20px;
+	}
+
+	.denial_pain {
+		background-color: red;
+		color: #fff;
+		padding: 20px;
+	}
+
+	.guide {
+		/*display: none;*/
+		padding: 20px;
+	}
+
+	h3 .st-year {
+		display: inline;
+	}
+
+	h3 .st-title {
+		display: inline;
+	}
+
+
+	.page {
+		display: none;
+	}
+
+	.go-back-to-full {
+		position: fixed;
+		top: 10px;
+		left: 10px;
+	}
+
+
+	[contentEditable] {
+		padding: 0 10px;
+		border-bottom: 2px solid #000;
+	}
+
+	[contentEditable] p {
+		margin: 0;
+		padding: 0;
+	}
+</style>
+
+
+
+<a class="btn btn-warning btn-lg go-back-to-full" href="/stories/<%= @story.id %>">Full View</a>
+
+<div class="story-wrapper">
+	
+
+	
+	<!-- <div class="btn btn-info toggle-guide">Toggle Guide</div> -->
+
+	<section class="guide page" data-slug="essay-story-intro">
+		
+			<%= Page.find_by_slug("essay-story-intro").body.html_safe %>
+
+	</section>
+
+	<br><br>
+
+    <h3>
+		<span class="toggle-guide">The Thesis or Message</span> of the <div class="st-year" contentEditable key='year'><%= @story.year %></div> film <div class="st-title" contentEditable key='title'><%= @story.title %></div> is:
+	</h3>
+	
+	<br>
+
+	<section class="message armature with-link">
+		<div class="change-armature" contentEditable key='["armature"]'>
+			<%= @story.story_details["armature"].html_safe %>			
+		</div>
+	</section>
+
+	<br><br>
+
+
+	<h3>
+		<i>"<div class="st-title" contentEditable key="title"><%= @story.title %></div>"</i> primarily has a <u class="transition"></u> transition.
+	</h3>
+
+	
+	<hr>
+
+	<article class="part page" id="film-watch">
+		<video src="" width="100%" height="350px" controls>
+		</video>
+	</article>
+
+	<hr>
+		<div class="row">
+			<div class="col-lg-6 act-1-highlight">
+				<h1>Act I</h1>
+
+				<div class="btn btn-info btn-block play-time">
+					<i class="fa fa-play"></i>
+				</div>
+				
+				<br>
+				<p class="description" contentEditable key='["act-1-highlight"]["description"]'>
+					<%= @story.story_details["act-1-highlight"]["description"] %>
+				</p>
+			</div>
+			<div class="col-lg-6 act-3-highlight">
+				<h1>Act III</h1>
+				
+				<div class="btn btn-info btn-block play-time">
+					<i class="fa fa-play"></i>
+				</div>
+
+				<br>
+				<p class="description" contentEditable key='["act-3-highlight"]["description"]'>
+					<%= @story.story_details["act-3-highlight"]["description"] %>
+				</p>
+			</div>
+
+			<div class="col-lg-12 catalyst">
+				<h1>Act II</h1>
+				<div contentEditable key='["catalyst"]'>
+					<%= @story.story_details["catalyst"].try(:html_safe) %>
+				</div>
+				
+			</div>
+				
+			<div class="col-lg-12 guide page" data-slug="essay-story-act-II">
+				<% if Page.find_by_slug("essay-story-act-II").present? %>
+					<%= Page.find_by_slug("essay-story-act-II").body.html_safe %>
+				<% else %>
+
+					<br>ACT II is the largest part of the story and it's the part that's marketed through posters and trailers, so it's really important it's done properly. If not done properly you will have failed at your job of persuading the audience.
+					
+					<br>Here is a simple way to remember the job of ACT II.
+					<br>See to Feel.
+
+					<br>The storyteller has to SHOW the characters (and through them the audience):
+					<ul>
+						<li>1. The benefits of accepting the Truth, and/or</li>
+						<li>2. The harms of NOT accepting the Truth.</li>
+					</ul>
+
+					<br>So you have to SHOW your <u>arguments</u>.
+					
+					<br>But remember, the benefits and harms that you SHOW to each character you choose must be <u>arguments</u> that THEY should understand. 
+					
+					<br>That means, In ACT I, you have to ESTABLISH what kind of ACT II <u>arguments</u> will work on them. 
+					
+					<br>& That means establishing what they desire and what they fear in ACT 1 clearly, so that in ACT II you can use their established desires and fears to speak to their hearts.
+					
+					<br>Only then will your ACT II be reasonable and TRUE. 
+					<br>Finally in ACT III, if all was done properly in ACT II, your character(s) should FEEL the ultimate joy of Truth and/or the pain of Denial.  
+					
+					<br>In summary:
+					In ACT II, characters (and through them the audience) have to SEE the Truth, for them to really FEEL it in ACT III.
+
+				<% end %>
+				
+			</div>
+
+			<div class="col-lg-12 catalyst page">
+				<h1>
+					Act II
+				</h1>
+				<div>
+					<%= @story.story_details["catalyst"].try(:html_safe) %>
+				</div>
+			</div>
+
+			<section class="guide page" data-slug="essay-story-conclusion">
+
+				<% if Page.find_by_slug("essay-story-conclusion").present? %>
+					<%= Page.find_by_slug("essay-story-conclusion").body.html_safe %>
+				<% else %>
+					And all three pieces combine to persuade: <b>
+						<!-- <span class="armature"></span> -->
+						#{armature}
+					</b>   
+					
+					<br>
+					& Remember: 
+					Spoilers cannot ruin stories that have a clear message. Such well-told stories are endlessly rewatchable, because they are in their entirety, spectacular! 
+					So to experience this well crafted argument for : <b>#{armature}</b> make sure to watch:
+					#{st-title}
+					#{st-year}
+					#{st-writer}
+
+				<% end %>
+
+			</section>
+		</div>
+</div>
+
+<div id="left-story">
+	
+</div>
+
+<div id="right-story">
+	
+</div>
+
+<script>
+	$("#stories").on("change", function(){
+		// console.log("/stories/" + $(this).val())
+		getStory($(this).val())
+	})
+	
+	function getStory(val) {
+
+		$.getJSON( "/stories/" + val, function( data ) {
+			
+			// title = data["title"]
+			// $(".story-title").html(title)
+			console.log(data["title"])
+			$(".st-title").html(data["title"])
+			$(".st-year").html(data["year"])
+			$(".st-writer").html(data["writer"])
+
+
+			message = data["story_details"]["armature"]
+			$(".armature").html(message)
+						$(".with-link").html("<a href='/stories/"+data["id"]+"' target='_blank'>"+message+"</a>")
+
+
+			act1 = data["story_details"]["act-1-skeleton"]
+			act2 = data["story_details"]["act-2-skeleton"]
+			act3 = data["story_details"]["act-3-skeleton"]
+
+			catalyst = data["story_details"]["catalyst"]
+			$(".catalyst div").html(catalyst)
+
+			$(".skeleton-list").empty()
+			// console.log(data)
+			// console.log(act1)
+
+			transition = data["story_details"]["transition"];
+			
+			list = {
+				"d-a": {
+					title: "Denial -> Acceptance",
+					code_1: "a denial",
+					code_2: "an acceptance",
+					result: "The Joy of Truth",
+					style: "truth_joy"
+				},
+				"a-a": {
+					title: "Acceptance -> Acceptance",
+					code_1: "an acceptance",
+					code_2: "more acceptance of",
+					result: "The Joy of Truth",
+					style: "truth_joy"
+				},
+				"a-d": {
+					title: "Acceptance -> Denial",
+					code_1: "an acceptance",
+					code_2: "a denial",
+					result: "The Pain of Denial",
+					style: "denial_pain"
+				},
+				"d-d": {
+					title: "Denial -> Denial",
+					code_1: "a denial",
+					code_2: "a stubborn denial",
+					result: "The Pain of Denial",
+					style: "denial_pain"
+				},
+			}
+			
+			$(".result").empty()
+
+			$(".transition").empty().html(list[transition]["title"]);
+
+			$(".code_1").empty().html(list[transition]["code_1"]);
+			$(".code_2").empty().html(list[transition]["code_2"]);
+			
+			// act-I-fleshed-out
+			
+			console.log(data)
+			$("#film-watch video").attr("src", data["link"])
+
+			$(".fleshed-out-1").empty()
+			$(".fleshed-out-3").empty()
+			console.log(data["story_details"]["act-1-scenes"])
+			
+			$(".act-1-highlight").find(".description").html(data["story_details"]["act-1-highlight"]["description"])
+			$(".act-1-highlight").find(".play-time").attr("data-time", data["story_details"]["act-1-highlight"]["timestamp"])
+
+			$(".act-3-highlight").find(".description").html(data["story_details"]["act-3-highlight"]["description"])
+			$(".act-3-highlight").find(".play-time").attr("data-time", data["story_details"]["act-3-highlight"]["timestamp"])
+			// $(".fleshed-out-1").html("hi")
+			// $(".fleshed-out-1").html(act_1_scenes);
+			// $(".fleshed-out-3").html(data["story_details"]["act-3-scenes"].map());
+			
+			$(".result").html(list[transition]["result"]).attr("class", "result").addClass(list[transition]["style"])
+			// console.log(list[transition]["result"])
+
+			$.each(act1, function(index, item){
+				icon = ""
+				if ( index == 0 ) {
+					icon = `<img src="<%= asset_path('seat-belts.png') %>" alt="" class="img-responsive seatbelt">`
+				}
+				$(".act-1.skeleton-list").append(`
+					<li>
+						`+icon+`
+						<article class="body">
+							`+item+`
+						</article>
+					</li>`)
+			})
+
+			$.each(act2, function(index, item){
+				$(".act-2.skeleton-list").append(`
+					<li>
+						<article class="body">
+							`+item+`
+						</article>
+					</li>`)
+			})
+
+			$.each(act3, function(index, item){
+				icon = ""
+				if ( index == 1 ) {
+					icon = `<img src="<%= asset_path('promise.png') %>" alt="" class="img-responsive promise-click">`
+				}
+				$(".act-3.skeleton-list").append(`
+					<li>
+						`+icon+`
+						<article class="body">
+							`+item+`
+						</article>
+					</li>`)
+			})
+		});
+
+	}
+
+	function selectRandom() {
+
+	    // The dropdown list
+	    $selectList = $('#stories option');
+
+	    // Amount of options in it
+	    var options = $selectList.length;
+
+	    // Random number between 1 and the amount of options
+	    var random = Math.floor((Math.random() * options) + 1);
+
+	    // Select the option based in the random number
+	    $selectList.eq(random).prop('selected', true);
+
+	    getStory($('#stories').val())
+	}
+
+   selectRandom()
+
+   $("#left-story").on("click", function(){
+	index = $("#stories").prop('selectedIndex')
+		$selectList = $('#stories option');
+
+		next = index - 1
+		if ( next == 0 ) {
+			next = $selectList.length - 1
+		}
+		$selectList.eq(next).prop('selected', true);
+		getStory($('#stories').val())
+   })
+
+   $("#right-story").on("click", function(){
+		index = $("#stories").prop('selectedIndex')
+		$selectList = $('#stories option');
+
+		next = index + 1
+		if ( next == $selectList.length ) {
+			next = 0
+		}
+		$selectList.eq(next).prop('selected', true);
+		getStory($('#stories').val())
+   })
+
+// 
+	$(".time-skip span").on("click", function(){
+		vid = $("video")[0];
+		time = hmsToSecondsOnly($(this).html())
+		skipTime(vid, time)
+	})
+
+	$("#part-4").on("click", ".play-timestamp", function(){
+		val = $(this).closest("li").find(".timestamp").val()
+		vid = $("video")[0];
+		time = hmsToSecondsOnly(val)
+		skipTime(vid, time)
+	})
+
+  function skipTime(vid, time) {
+     vid.play();
+     vid.pause();
+     vid.currentTime = time;
+     vid.play();
+  };
+
+  function hmsToSecondsOnly(str) {
+      var p = str.split(':'),
+          s = 0, m = 1;
+
+      while (p.length > 0) {
+          s += m * parseInt(p.pop(), 10);
+          m *= 60;
+      }
+
+      return s;
+  }
+
+	$(".play-time").on("click", function(){
+		val = $(this).attr("data-time")
+				console.log(val)
+		vid = $("video")[0];
+		time = hmsToSecondsOnly(val)
+		skipTime(vid, time)
+	})
+
+	$(".toggle-guide").on("click", function(){
+		$(".guide").toggle()
+	})
+
+
+</script>
+
+
+<!-- 
+ -->
+
+<script>
+
+	function saveEditable(){
+
+		details = {}
+		
+		$.getJSON( "/stories/<%= @story.id %>", function( data ) {
+    		// console.log(data)
+    		details = data["story_details"]
+
+    		output = {}
+
+
+			$("[contenteditable]").each(function(){
+				key = $(this).attr('key')
+				if (key.indexOf("[") >= 0) {
+					// box = eval("details" + key) 
+					// box = $(this).html()
+
+					tag = "details" + key
+
+					eval(tag + "=" + "`" + $(this).html() + "`")
+					
+					// console.log(eval("details" + key) )
+				} else {
+					output[key] = $(this).html()
+				}
+			})
+
+			console.log(details)
+
+			output["story_details"] = details
+			
+			output["_method"] = 'post'
+
+			$.ajax({
+			    type: "PUT",
+			    dataType: "json",
+			    url: '/stories/<%= @story.id %>',
+			    contentType: 'application/json',
+			    data: JSON.stringify(output),
+			    success: function(res){
+			      console.log(res)
+			    }
+			})
+
+		});
+
+	}
+
+	$('body').on('focus', '[contenteditable]', function() {
+	    const $this = $(this);
+	    $this.data('before', $this.html());
+	}).on('blur keyup paste input', '[contenteditable]', function() {
+	    const $this = $(this);
+	    if ($this.data('before') !== $this.html()) {
+	        $this.data('before', $this.html());
+	        $this.trigger('change');
+			
+			val = $this.html()
+
+			// console.log($this.attr("key"))
+
+			$("[key='"+$this.attr("key")+"']").not(this).html(val)
+
+	        // console.log(val)
+	        saveEditable()
+	    }
+	});
+
+</script>

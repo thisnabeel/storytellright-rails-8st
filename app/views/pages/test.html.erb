@@ -1,0 +1,9 @@
+  <!-- Load from unpkg -->
+  <script src="https://unpkg.com/htmx.org@1.0.0"></script>
+  <!-- have a button POST a click via AJAX -->
+  <button hx-get="/stories/1.json" hx-swap="innerHTML" hx-target=".insert">
+    Click Me
+  </button>
+
+  <div class="insert">
+  </div>

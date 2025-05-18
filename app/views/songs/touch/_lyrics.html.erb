@@ -1,0 +1,231 @@
+<style>
+</style>
+
+`<style>
+  #viewSectionModal {
+
+  }
+
+  #viewSectionModal .modal-content {
+
+  }
+
+  #viewSectionModal .modal-body {
+
+  }
+
+  #viewSectionModal .lyric-chord {
+    position: relative;
+  }
+
+  #viewSectionModal .lyric-chord[data-chord] {
+    /*background: #ffff14;*/
+    color: inherit;
+  }
+
+   #viewSectionModal .lyric-chord[data-chord]::after {
+    content: attr(data-chord);
+    background: transparent;
+    font-weight: bold;
+    position: absolute;
+    left: 0;
+    top: -20px;
+  }
+
+  #viewSectionModal .song-folder {
+  	text-align: center;
+    padding: 0;
+    padding-bottom: 10px;
+    font-size: 14px;
+  }
+
+  #viewSectionModal .song-folder .title-final {
+    font-size: 18px;
+    position: relative;
+  }
+
+  #viewSectionModal .title-final .play-section {
+  	position: absolute;
+    right: 0px;
+    top: 0;
+    color: inherit;
+  }
+
+  #viewSectionModal article {
+  	padding: 40px;
+    border: 4px solid rgba(0,0,0,0.03);
+    border-top: 0;
+    text-align: left;
+    display: none;
+  }
+
+  #viewSectionModal iframe {
+	width: 100%;
+	height: 140px;
+    margin-top: 20px;
+  }
+
+  #viewSectionModal .fa-expand {
+	left: 25px;
+    position: absolute;
+    color: rgba(0,0,0,0.1);
+    z-index: 9999;
+  }
+
+  #viewSectionModal .fa-expand:hover {
+  	color: inherit !important;
+  }
+
+	
+
+</style>
+
+<!-- Modal -->
+<div class="modal fade" id="viewSectionModal" tabindex="-1" role="dialog" aria-labelledby="viewSectionModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title story-title" id="viewSectionModalLabel"></h5>
+        <small></small>
+      </div>
+      <div class="modal-body">
+
+      	  	<div id="modal-ytplayer"></div>
+
+		
+		<div class="song-folder">
+			
+		</div>
+
+      	<div class="section-lyrics">
+      		
+      	</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function viewSectionModal(){
+    $("#viewSectionModal").modal("show")
+  }
+</script>
+
+
+<script>
+
+	var tag = document.createElement('script');
+	tag.src = "https://www.youtube.com/player_api";
+	var firstScriptTag = document.getElementsByTagName('script')[0];
+	firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+	var player;
+	function onYouTubeIframeAPIReady() {
+	  player = new YT.Player('modal-ytplayer', {
+	    height: '360',
+		width: '100%',
+	  });
+	}
+
+	$("body").on("click", ".touch-lyrics", function(){
+		li = $(this).closest(".song")
+
+		var json = $(this).attr("data-section");
+		var section = JSON.parse(decodeURIComponent(json));
+		console.log(section)
+
+		// MAKE FOLDER
+		folder = $(this).closest(".folder")
+		output = $("#viewSectionModal .song-folder")
+		output.empty()
+		folder.clone().appendTo(output);
+
+		output.find(".fa-expand").remove()
+		output.find(".touch-lyrics").removeClass("touch-lyrics")
+		// ~~~~~~~~~~~~~~~~
+
+		// Populate Lyrics
+		output.find(".folder > li").each(function(){
+
+			article = JSON.parse(decodeURIComponent($(this).attr("data-section")));
+			$(this).append(`<div class="iframe-holder"></div>`)
+
+			$(this).prepend(`<div class="fa fa-expand"></div>`)
+			$(this).append(`<article>`+article["lyrics"]+`</article>`)
+
+			if (article["timestamp"]) {
+				$(this).find(".title-final").append(`
+					<i class="fa fa-play-circle play-section" data-timestamp="`+article["timestamp"]+`" data-link="`+li.attr("data-link")+`">
+					</i>`)
+			}
+		})
+		// ~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+		$("#viewSectionModal .section-lyrics").html("")
+		// 
+		$("#viewSectionModal .modal-title").html(li.find(".story-title").html())
+		// $("#viewSectionModal .modal-title").append(`<small class="story-artist">`+li.find(".story-artist").html()+`<small>`)
+
+		// 
+		
+		// Replace the 'ytplayer' element with an <iframe> and
+		// YouTube player after the API code downloads.
+		// player = new YT.Player('modal-ytplayer', {
+		//   height: '360',
+		//   width: '100%',
+		//   videoId: li.attr("data-link"),
+		// });
+
+		player.loadVideoById(li.attr("data-link"))
+		player.pauseVideo()
+
+		// 
+
+		viewSectionModal()
+	})
+
+	$('#viewSectionModal').on('hidden.bs.modal', function () {
+    	// do something…
+    	player.stopVideo()
+	});
+
+
+	$("body").on("click", "#viewSectionModal .fa-expand", function(){
+		$(this).closest('li').find("article").toggle()
+	})
+
+
+	$("body").on("click", ".fa-play-circle", function(){
+		// Load the IFrame Player API code asynchronously.
+		// $(".fa-play-circle iframe").empty()
+
+		// $(".iframe-holder").empty()
+		// box = $(this).closest("li").find(".iframe-holder")
+		// box.prepend(`<iframe src=""></iframe>`)
+		// videoId = $(this).attr("data-link")
+		timestamp = $(this).attr("data-timestamp")
+		seconds = getSeconds(timestamp)
+
+		if (player.getPlayerState() == 1) {
+			player.seekTo(seconds);
+		}
+		else {
+			ytSeconds = seconds;
+			player.playVideo();
+		}
+		// box.find("iframe").attr("src", "https://www.youtube.com/embed/"+videoId+"?autoplay=1&start="+getSeconds(timestamp));
+	})
+
+  function getSeconds(str) {
+      var p = str.split(':'),
+          s = 0, m = 1;
+
+      while (p.length > 0) {
+          s += m * parseInt(p.pop(), 10);
+          m *= 60;
+      }
+
+      return s;
+  }
+
+</script>

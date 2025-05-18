@@ -1,0 +1,107 @@
+<style>
+
+	#side {
+		/*display: none;*/
+	    position: fixed;
+	    z-index: 9999;
+	    left: 0;
+	    top: 0;
+	    height: 100%;
+	    padding: 30px;
+		background: #FEFDFD;
+	    min-width: 225px;
+   		max-width: 225px;
+		-webkit-box-shadow: -10px 10px 17px -16px rgba(0,0,0,0.38);
+		-moz-box-shadow: -10px 10px 17px -16px rgba(0,0,0,0.38);
+		box-shadow: -10px 10px 17px -16px rgba(0,0,0,0.38);
+	}
+
+	.close-side {
+
+    	position: absolute;
+    	right: 5px;
+    	top: 5px;
+    	font-size: 20px;
+    	color: #a8a8a8;
+	}
+
+	.show-side {
+		position: absolute;
+	    right: 10px;
+	    font-size: 20px;
+	    top: 10px;
+	    display: none;
+	}
+
+	ul > li > span {
+		font-weight: 200;
+	}
+
+</style>
+
+<div id="side">
+	<h1>Spine:</h1>
+	<hr>
+	<% spine = [
+		"Once upon a time",
+		"And every day",
+		"Until one day",
+		"Initially",
+		"And because of this",
+		"Until finally",
+		"And ever since that day"
+	]%>
+
+	<ul class="clean-list">
+		<li>
+			<span>Once upon a time:</span>
+			<div>
+				<%= @story.story_details["spine_masc_1"].html_safe if @story.check("spine_masc_1")%>
+			</div>
+		</li>
+		<li class="red">
+			<span>And every day:</span>
+			<div>
+				<%= @story.story_details["whose-hell"].html_safe if @story.check("whose-hell")%>
+			</div>
+		</li>
+		<li class="orange">
+			<span>Until one day:</span>
+			<div>
+				<%= @story.story_details["plot-curtain"].html_safe if @story.check("plot-curtain")%>
+			</div>
+		</li>
+		<li>
+			<span>And because of this:</span>
+			<div>
+				<%= @story.story_details["during"].html_safe if @story.check("during")%>
+			</div>
+		</li>
+		<li>
+			<span>And because of this:</span>
+			<div>
+				<%= @story.story_details["during-2"].html_safe if @story.check("during-2")%>
+			</div>
+		</li>
+		<li>
+			<span>Until finally:</span>
+			<div class="red">
+				<%= @story.story_details["red-3"].html_safe if @story.check("red-3")%>
+			</div>
+			<div class="climax">
+				<%= @story.story_details["climax"].html_safe if @story.check("climax")%>
+			</div>
+		</li>
+		<li>
+			<span>And ever since that day:</span>
+			<div>
+				<%= @story.story_details["spine_masc_7"].html_safe if @story.check("spine_masc_7")%>
+			</div>
+
+		</li>
+	</ul>
+
+
+	
+
+</div>

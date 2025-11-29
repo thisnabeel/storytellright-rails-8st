@@ -6,7 +6,7 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
 
-  has_many :stories
+  has_many :stories, through: :productions
   has_many :songs
 
   has_many :companies
@@ -14,6 +14,9 @@ class User < ActiveRecord::Base
   # has_many :production_users
   # has_many :productions, through: :production_users
   has_many :productions
+
+  has_many :user_feature_flags, dependent: :destroy
+  has_many :feature_flags, through: :user_feature_flags
 
 
   def generate_temporary_authentication_token

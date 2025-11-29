@@ -140,6 +140,11 @@ Rails.application.routes.draw do
   post '/chat_gpt/climax_ai' => "stories#climax_ai"
   post '/chat_gpt/harm_ai' => "stories#harm_ai"
 
+  # Feature Flags
+  get '/feature_flags/check' => "feature_flags#check"
+  post '/feature_flags/enable' => "feature_flags#enable"
+  post '/feature_flags/disable' => "feature_flags#disable"
+
   get '/fetcher/:search' => 'fetcher#fetch_quotes'
 
   get '/stats' => 'stories#stats'

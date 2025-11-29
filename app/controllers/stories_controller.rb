@@ -143,7 +143,30 @@ class StoriesController < ApplicationController
 	def originals
 		authenticate_user!
 		@original = true
-		@stories = Story.where(original: true, user_id: current_user.id).order("year DESC")
+		
+		# Get all story productionables through user's productions (recursively)
+		story_ids = []
+		
+		# Collect all productions (including nested ones) that belong to the user
+		def collect_story_ids(productions)
+			story_ids = []
+			productions.each do |production|
+				# Add stories from this production
+				story_ids += production.productions.where(productionable_type: "Story").pluck(:productionable_id)
+				# Recursively collect from nested productions
+				story_ids += collect_story_ids(production.productions)
+			end
+			story_ids
+		end
+		
+		story_ids = collect_story_ids(current_user.productions)
+		
+		@stories = Story.where(id: story_ids.uniq, original: true).order("updated_at DESC")
+		
+		respond_to do |format|
+			format.html
+			format.json { render json: @stories, each_serializer: StorySerializer }
+		end
 	end
 
 	def update

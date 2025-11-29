@@ -147,6 +147,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_18_105350) do
     t.index ["essay_id"], name: "index_essays_on_essay_id"
   end
 
+  create_table "feature_flags", force: :cascade do |t|
+    t.string "title", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.index ["title"], name: "index_feature_flags_on_title", unique: true
+  end
+
   create_table "games", id: :serial, force: :cascade do |t|
     t.string "title"
     t.text "details"
@@ -358,6 +365,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_18_105350) do
     t.datetime "updated_at", precision: nil, null: false
   end
 
+  create_table "user_feature_flags", force: :cascade do |t|
+    t.bigint "feature_flag_id", null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.index ["feature_flag_id", "user_id"], name: "index_user_feature_flags_on_feature_flag_id_and_user_id", unique: true
+    t.index ["feature_flag_id"], name: "index_user_feature_flags_on_feature_flag_id"
+    t.index ["user_id"], name: "index_user_feature_flags_on_user_id"
+  end
+
   create_table "users", id: :serial, force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -396,4 +413,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_18_105350) do
   end
 
   add_foreign_key "essays", "essays"
+  add_foreign_key "user_feature_flags", "feature_flags"
+  add_foreign_key "user_feature_flags", "users"
 end

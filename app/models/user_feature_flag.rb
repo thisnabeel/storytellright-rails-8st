@@ -5,3 +5,4 @@ class UserFeatureFlag < ActiveRecord::Base
   validates :feature_flag_id, uniqueness: { scope: :user_id }
 end
 
+

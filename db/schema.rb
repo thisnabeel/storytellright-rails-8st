@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_18_105350) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_19_221220) do
   create_schema "_heroku"
   create_schema "heroku_ext"
 
@@ -35,6 +35,25 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_18_105350) do
     t.string "slug"
     t.datetime "created_at", precision: nil
     t.datetime "updated_at", precision: nil
+  end
+
+  create_table "audio_clip_blocks", force: :cascade do |t|
+    t.integer "audio_clip_id"
+    t.string "title"
+    t.decimal "time", precision: 10, scale: 2
+    t.decimal "end_time", precision: 10, scale: 2
+    t.integer "position"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["audio_clip_id"], name: "index_audio_clip_blocks_on_audio_clip_id"
+  end
+
+  create_table "audio_clips", force: :cascade do |t|
+    t.string "title"
+    t.string "audio_url"
+    t.string "filename"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "chapters", id: :serial, force: :cascade do |t|

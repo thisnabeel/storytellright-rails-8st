@@ -28,6 +28,14 @@ Rails.application.routes.draw do
   resources :articles
   resources :chapters
   resources :presentations
+  resources :audio_clips do
+    collection do
+      post :upload
+    end
+    member do
+      post :update_blocks
+    end
+  end
 
   resources :wizard do
     collection do

@@ -183,10 +183,14 @@ class StoriesController < ApplicationController
 				encrypted: true
 			)
 
-			pusher.trigger("story-#{@story.id}", 'update-story', {
-				story: @story,
-				writer_id: current_user.id
-			})
+			begin
+				pusher.trigger("story-#{@story.id}", 'update-story', {
+					story: @story,
+					writer_id: current_user&.id
+				})
+			rescue StandardError => e
+				Rails.logger.warn("Pusher story update failed: #{e.message}")
+			end
 			
 
 		    format.json { render json: @story }

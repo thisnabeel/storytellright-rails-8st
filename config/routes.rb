@@ -100,6 +100,9 @@ Rails.application.routes.draw do
   match "/500", to: "errors#internal_server_error", via: :all
 
   resources :stories
+  get '/stories/:story_id/fix' => 'story_fixes#show'
+  put '/stories/:story_id/fix' => 'story_fixes#update'
+  patch '/stories/:story_id/fix' => 'story_fixes#update'
   resources :recipes
   resources :story_recipes
   resources :symbolisms

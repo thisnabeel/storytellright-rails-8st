@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_12_19_221220) do
+ActiveRecord::Schema[8.0].define(version: 2026_09_19_235901) do
   create_schema "_heroku"
   create_schema "heroku_ext"
 
@@ -351,6 +351,27 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_19_221220) do
     t.integer "production_id"
     t.jsonb "story_details", default: {}, null: false
     t.index ["user_id"], name: "index_stories_on_user_id"
+  end
+
+  create_table "story_fix_cards", force: :cascade do |t|
+    t.integer "story_fix_id", null: false
+    t.string "title"
+    t.string "bucket", default: "elements", null: false
+    t.integer "position", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["story_fix_id", "bucket", "position"], name: "index_story_fix_cards_on_story_fix_id_and_bucket_and_position"
+    t.index ["story_fix_id"], name: "index_story_fix_cards_on_story_fix_id"
+  end
+
+  create_table "story_fixes", force: :cascade do |t|
+    t.integer "story_id", null: false
+    t.text "flawed_belief"
+    t.text "thesis"
+    t.text "climax"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["story_id"], name: "index_story_fixes_on_story_id", unique: true
   end
 
   create_table "story_maps", id: :serial, force: :cascade do |t|

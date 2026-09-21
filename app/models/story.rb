@@ -15,6 +15,8 @@ class Story < ActiveRecord::Base
 	
 	has_many :presentations, as: :presentable
 
+	has_one :story_fix, dependent: :destroy
+
 	# include Writing
 
 	def init_story
